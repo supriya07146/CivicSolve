@@ -1,0 +1,756 @@
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
+
+/* =========================================================
+   CIVICSOLVE REGISTRATION
+   One illustration scene: the big green phone card is the
+   registration panel, with the girl, plant, lock, envelope,
+   thumb and gear placed around it.
+   ========================================================= */
+
+.register-page {
+  --teal: #0f9d84;
+  --teal-bright: #14d3ac;
+  --phone: #2cd5b5;          /* the green phone card */
+  --phone-edge: #1f2a3c;     /* dark side edge of the phone */
+  --page-bg: #f3fcf9;        /* also used for the phone notch cut-out */
+  --pale: #dff6ef;           /* pale illustration shapes */
+  --navy: #0a1b30;
+  --sky: #38bdf8;
+  --sky-deep: #1d6fc4;
+  --mint: #e9fbf6;
+  --ink: #06382f;            /* dark green text used on the phone */
+  --muted: #5b6b7c;
+  --line: #e3ecf1;
+  --glow: 0 0 0 1px rgba(20, 211, 172, 0.25), 0 12px 40px rgba(20, 211, 172, 0.28);
+
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-family: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  color: var(--navy);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  background: var(--page-bg);
+  overflow-x: hidden;
+}
+
+.register-page *,
+.register-page *::before,
+.register-page *::after {
+  box-sizing: border-box;
+}
+
+.register-page h1,
+.register-page h2,
+.register-page h3,
+.register-page p {
+  margin: 0;
+  padding: 0;
+}
+
+
+/* =========================================================
+   KEYFRAMES
+   ========================================================= */
+
+@keyframes regFadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@keyframes regFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes regPhoneIn {
+  from { opacity: 0; transform: translateY(34px) scale(0.97); }
+  to   { opacity: 1; transform: none; }
+}
+
+@keyframes regDecoIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@keyframes regGirlIn {
+  from { opacity: 0; transform: translateX(-40px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@keyframes regBob {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-5px); }
+}
+
+@keyframes regDecoBob {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-10px); }
+}
+
+@keyframes regSpin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes regNudge {
+  0%, 100% { transform: translateX(0); }
+  50%      { transform: translateX(3px); }
+}
+
+@keyframes regPop {
+  from { opacity: 0; transform: translateX(-8px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@keyframes regPulse {
+  0%   { box-shadow: 0 0 0 0 rgba(20, 211, 172, 0.7); }
+  100% { box-shadow: 0 0 0 10px rgba(20, 211, 172, 0); }
+}
+
+
+/* =========================================================
+   STAGE + SCENE
+   ========================================================= */
+
+.register-stage {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px 20px;
+}
+
+/* Everything in the illustration is positioned inside this box.
+   Percent values below are relative to the scene. */
+.register-scene {
+  position: relative;
+  width: min(1120px, 100%);
+  padding: 96px 0 56px;
+}
+
+.scene-decor,
+.scene-front {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.scene-decor { z-index: 1; }
+.scene-front { z-index: 3; }
+
+.deco {
+  position: absolute;
+  display: block;
+  height: auto;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* pale floor ellipse under everything */
+.scene-ground {
+  position: absolute;
+  left: 3%;
+  right: 3%;
+  bottom: 30px;
+  height: 52px;
+  border-radius: 50%;
+  background: #daf3ea;
+  opacity: 0.8;
+}
+
+
+/* =========================================================
+   PNG PARTS  (tweak left/top/right/bottom/width to nudge)
+   ========================================================= */
+
+.deco-envelope {
+  left: 33%;
+  top: 1%;
+  width: 13%;
+  animation: regDecoBob 6s ease-in-out infinite;
+}
+
+.deco-lock {
+  left: 13%;
+  top: 9%;
+  width: 8%;
+  animation: regDecoBob 5.2s ease-in-out -1.5s infinite;
+}
+
+.deco-thumb {
+  left: 3%;
+  top: 57%;
+  width: 7%;
+  animation: regDecoBob 5.6s ease-in-out -3s infinite;
+}
+
+.deco-gear {
+  right: 2%;
+  top: 50%;
+  width: 9%;
+  animation: regSpin 28s linear infinite;
+}
+
+.deco-girl {
+  left: 1%;
+  bottom: 38px;
+  width: 25%;
+  animation: regGirlIn 1s cubic-bezier(0.2, 0.7, 0.2, 1) 0.5s both;
+}
+
+.deco-plant {
+  right: 10%;
+  bottom: 48px;
+  width: 11%;
+  transform-origin: 50% 100%;
+  animation: regDecoIn 0.9s ease 0.9s both;
+}
+
+
+/* =========================================================
+   CSS-BUILT PARTS (the 2 you don't have as PNG)
+   ========================================================= */
+
+/* ---- browser window, top right, partly behind the phone ---- */
+.deco-browser {
+  right: 3%;
+  top: 6%;
+  width: 34%;
+  height: 38%;
+  border-radius: 10px;
+  background: var(--pale);
+  overflow: hidden;
+  opacity: 0.95;
+  animation: regDecoIn 0.9s ease 0.7s both;
+}
+
+.deco-browser-bar {
+  height: 15%;
+  min-height: 26px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 14px;
+  background: #22c870;
+}
+
+.deco-browser-bar i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #fff;
+}
+
+.deco-browser-body {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 20px 8% 0;
+}
+
+.deco-browser-body span {
+  height: 34px;
+  border-radius: 3px;
+  background: #fff;
+}
+
+.deco-browser-body span:nth-child(3) {
+  opacity: 0.6;
+}
+
+/* ---- verified card, left, behind the girl ---- */
+.deco-check {
+  left: 3%;
+  top: 34%;
+  width: 22%;
+  height: 25%;
+  border: 3px solid #d3f1e7;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.75);
+  animation: regDecoIn 0.9s ease 0.8s both;
+}
+
+.deco-check-line {
+  position: absolute;
+  left: 12%;
+  height: 12px;
+  border-radius: 2px;
+  background: #d9f3ea;
+}
+
+.deco-check-line-1 { top: 16%; width: 60%; }
+.deco-check-line-2 { top: 34%; width: 74%; }
+
+.deco-check-badge {
+  position: absolute;
+  left: 12%;
+  bottom: 14%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--phone-edge);
+  border-radius: 50%;
+  background: #fff;
+}
+
+
+/* =========================================================
+   THE PHONE CARD  =  REGISTRATION PANEL
+   ========================================================= */
+
+.register-phone {
+  position: relative;
+  z-index: 2;
+  width: min(640px, 100%);
+  margin: 0 auto;
+  padding: 62px 34px 26px;
+  background: var(--phone);
+  border-radius: 20px;
+  box-shadow: 0 30px 60px rgba(15, 157, 132, 0.22);
+  animation: regPhoneIn 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+/* dark side edge of the phone */
+.phone-edge {
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  bottom: 0;
+  right: -22px;
+  width: 44px;
+  border-radius: 0 20px 20px 0;
+  background: var(--phone-edge);
+}
+
+/* top notch cut-out (same colour as the page) */
+.phone-notch {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 190px;
+  height: 26px;
+  transform: translateX(-50%);
+  border-radius: 0 0 16px 16px;
+  background: var(--page-bg);
+}
+
+/* small dark tab beside the notch, like the illustration */
+.phone-notch::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -12px;
+  width: 14px;
+  height: 22px;
+  border-radius: 0 0 0 10px;
+  background: var(--phone-edge);
+  z-index: -1;
+}
+
+
+/* =========================================================
+   HEADER (inside the phone)
+   ========================================================= */
+
+.selection-header {
+  text-align: center;
+  margin-bottom: 26px;
+}
+
+.selection-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  color: var(--teal);
+  background: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  animation: regFadeUp 0.7s ease 0.25s both;
+}
+
+.selection-label::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--teal-bright);
+  animation: regPulse 1.6s infinite;
+}
+
+.selection-header h1 {
+  margin: 14px 0 8px;
+  color: var(--ink);
+  font-size: clamp(28px, 5vw, 38px);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  animation: regFadeUp 0.7s ease 0.35s both;
+}
+
+.selection-header p {
+  max-width: 440px;
+  margin: 0 auto;
+  color: #0a4d41;
+  font-size: 15px;
+  animation: regFadeUp 0.7s ease 0.45s both;
+}
+
+
+/* =========================================================
+   REGISTRATION OPTIONS (white cards on the green phone)
+   ========================================================= */
+
+.registration-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.registration-option {
+  position: relative;
+  min-height: 262px;
+  padding: 22px;
+  border: 1px solid transparent;
+  border-radius: 18px;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  overflow: hidden;
+  transition:
+    border-color 0.3s ease,
+    box-shadow 0.35s ease,
+    transform 0.35s ease;
+  animation: regFadeUp 0.8s ease both;
+}
+
+.citizen-option {
+  background: linear-gradient(160deg, #ffffff 0%, var(--mint) 100%);
+  animation-delay: 0.55s;
+}
+
+.organization-option {
+  background: linear-gradient(160deg, #ffffff 0%, #e8f5fe 100%);
+  animation-delay: 0.7s;
+}
+
+.registration-option:hover {
+  transform: translateY(-6px);
+}
+
+.citizen-option:hover {
+  border-color: var(--teal-bright);
+  box-shadow: 0 14px 34px rgba(6, 56, 47, 0.28);
+}
+
+.organization-option:hover {
+  border-color: var(--sky);
+  box-shadow: 0 14px 34px rgba(6, 56, 47, 0.28);
+}
+
+.registration-option:active {
+  transform: translateY(-2px);
+}
+
+.registration-option:focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: 3px;
+}
+
+
+/* =========================================================
+   OPTION ICONS
+   ========================================================= */
+
+.option-icon {
+  width: 52px;
+  height: 52px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 15px;
+  animation: regBob 4.5s ease-in-out infinite;
+}
+
+.citizen-icon {
+  color: #fff;
+  background: linear-gradient(135deg, var(--teal), var(--teal-bright));
+  box-shadow: 0 8px 20px rgba(15, 157, 132, 0.4);
+}
+
+.organization-icon {
+  color: #fff;
+  background: linear-gradient(135deg, var(--sky-deep), var(--sky));
+  box-shadow: 0 8px 20px rgba(56, 189, 248, 0.45);
+  animation-delay: -2s;
+}
+
+
+/* =========================================================
+   OPTION CONTENT
+   ========================================================= */
+
+.option-content {
+  width: 100%;
+}
+
+.option-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.option-title-row h2 {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.citizen-option .option-title-row h2 { color: #0b7a67; }
+.organization-option .option-title-row h2 { color: var(--sky-deep); }
+
+.option-arrow {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background: #fff;
+  border: 1px solid var(--line);
+  transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+}
+
+.option-arrow svg {
+  animation: regNudge 2s ease-in-out infinite;
+}
+
+.citizen-option .option-arrow { color: var(--teal); }
+.organization-option .option-arrow { color: var(--sky-deep); }
+
+.citizen-option:hover .option-arrow {
+  color: #fff;
+  background: var(--teal);
+  border-color: var(--teal);
+}
+
+.organization-option:hover .option-arrow {
+  color: #fff;
+  background: var(--sky-deep);
+  border-color: var(--sky-deep);
+}
+
+.option-content > p {
+  min-height: 72px;
+  margin: 12px 0 14px;
+  font-size: 13.5px;
+  line-height: 1.7;
+}
+
+.citizen-option .option-content > p { color: #3f6b63; }
+.organization-option .option-content > p { color: #48688a; }
+
+.option-features {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.option-features span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  animation: regPop 0.6s ease both;
+}
+
+.citizen-option .option-features span { color: #0b6b5a; }
+.organization-option .option-features span { color: #1a5c97; }
+
+/* features appear one after another */
+.citizen-option .option-features span:nth-child(1) { animation-delay: 1.0s; }
+.citizen-option .option-features span:nth-child(2) { animation-delay: 1.12s; }
+.citizen-option .option-features span:nth-child(3) { animation-delay: 1.24s; }
+.organization-option .option-features span:nth-child(1) { animation-delay: 1.15s; }
+.organization-option .option-features span:nth-child(2) { animation-delay: 1.27s; }
+.organization-option .option-features span:nth-child(3) { animation-delay: 1.39s; }
+
+.citizen-option .option-features svg { color: var(--teal); }
+.organization-option .option-features svg { color: var(--sky-deep); }
+
+
+/* =========================================================
+   LOGIN + BACK HOME (dark text on the green phone)
+   ========================================================= */
+
+.registration-login {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  margin-top: 24px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(6, 56, 47, 0.22);
+  font-size: 14.5px;
+  animation: regFadeIn 0.8s ease 1.2s both;
+}
+
+.registration-login span {
+  color: #0a4d41;
+}
+
+.registration-login a {
+  color: var(--ink);
+  font-weight: 800;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: letter-spacing 0.25s ease;
+}
+
+.registration-login a:hover {
+  letter-spacing: 0.03em;
+}
+
+.back-home {
+  display: block;
+  width: fit-content;
+  margin: 12px auto 0;
+  color: #0a4d41;
+  font-size: 13.5px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s ease, transform 0.25s ease;
+  animation: regFadeIn 0.8s ease 1.3s both;
+}
+
+.back-home:hover {
+  color: var(--ink);
+  transform: translateX(-4px);
+}
+
+.register-page a:focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+.registration-footer {
+  margin-top: 8px;
+  text-align: center;
+  color: #2f7a6c;
+  font-size: 12.5px;
+  font-weight: 500;
+  animation: regFadeIn 0.8s ease 1.4s both;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+/* smaller laptops: shrink the side parts so they never cover the panel */
+@media (max-width: 1180px) {
+  .deco-girl   { width: 22%; left: 0; }
+  .deco-plant  { right: 6%; width: 10%; }
+  .deco-browser { width: 30%; }
+}
+
+/* tablets + phones: panel goes full width, only small floaters stay */
+@media (max-width: 980px) {
+  .register-scene {
+    padding: 84px 22px 40px;
+  }
+
+  .register-phone {
+    width: min(620px, 100%);
+    margin-right: auto;
+  }
+
+  .phone-edge {
+    right: -14px;
+    width: 28px;
+  }
+
+  .deco-girl,
+  .deco-browser,
+  .deco-check,
+  .deco-thumb,
+  .deco-gear,
+  .deco-plant {
+    display: none;
+  }
+
+  .scene-ground { display: none; }
+
+  .deco-lock {
+    left: 8%;
+    top: 8px;
+    width: 54px;
+  }
+
+  .deco-envelope {
+    left: auto;
+    right: 10%;
+    top: 14px;
+    width: 84px;
+  }
+}
+
+@media (max-width: 640px) {
+  .register-stage {
+    padding: 12px 10px 16px;
+  }
+
+  .register-scene {
+    padding: 78px 14px 32px 8px;
+  }
+
+  .register-phone {
+    padding: 56px 18px 22px;
+    border-radius: 18px;
+  }
+
+  .phone-notch {
+    width: 140px;
+  }
+
+  .registration-options {
+    grid-template-columns: 1fr;
+  }
+
+  .registration-option {
+    min-height: auto;
+  }
+
+  .option-content > p {
+    min-height: auto;
+  }
+}
+
+
+/* =========================================================
+   ACCESSIBILITY
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .register-page *,
+  .register-page *::before,
+  .register-page *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

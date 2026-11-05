@@ -1,0 +1,1125 @@
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
+
+/* =========================================================
+   CIVICSOLVE — LOGIN (compact, real-person walker)
+   ========================================================= */
+
+.login-page {
+  --green-dark: #0a5c4a;
+  --green-deep: #06402f;
+  --teal: #0f9d84;
+  --teal-bright: #14d3ac;
+  --mint: #e9fbf6;
+  --sky: #38bdf8;
+  --navy: #0a1b30;
+  --text: #0f2236;
+  --line: #dbe8e5;
+  --danger: #dc2626;
+  --shadow-lg: 0 24px 60px rgba(10, 60, 50, 0.16);
+  --glow: 0 0 0 1px rgba(20, 211, 172, 0.3), 0 12px 36px rgba(20, 211, 172, 0.26);
+
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  padding: 20px;
+  box-sizing: border-box;
+  overflow: hidden;
+  font-family: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  background: linear-gradient(180deg, #d4f6ec 0%, #eafaf5 45%, #f6fbfa 100%);
+}
+
+.login-page *,
+.login-page *::before,
+.login-page *::after {
+  box-sizing: border-box;
+}
+
+.login-page::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(15, 157, 132, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(15, 157, 132, 0.07) 1px, transparent 1px);
+  background-size: 46px 46px;
+  -webkit-mask-image: radial-gradient(ellipse at center, #000 30%, transparent 75%);
+  mask-image: radial-gradient(ellipse at center, #000 30%, transparent 75%);
+}
+
+.login-page::after {
+  content: "";
+  position: absolute;
+  inset: -10%;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 12% 12%, rgba(20, 211, 172, 0.40), transparent 30%),
+    radial-gradient(circle at 90% 22%, rgba(56, 189, 248, 0.32), transparent 30%),
+    radial-gradient(circle at 70% 95%, rgba(10, 92, 74, 0.22), transparent 34%),
+    radial-gradient(circle at 5% 90%, rgba(139, 92, 246, 0.14), transparent 28%);
+  animation: lgDrift 16s ease-in-out infinite alternate;
+}
+
+
+/* =========================================================
+   KEYFRAMES
+   ========================================================= */
+
+@keyframes lgDrift {
+  0%   { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(30px, -24px) scale(1.06); }
+}
+@keyframes lgCardIn {
+  from { opacity: 0; transform: translateY(30px) scale(0.97); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes lgFadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes lgFadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes lgShine { to { transform: translateX(520%) skewX(-20deg); } }
+@keyframes lgBar {
+  0%   { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+@keyframes lgPulse {
+  0%   { box-shadow: 0 0 0 0 rgba(20, 211, 172, 0.7); }
+  100% { box-shadow: 0 0 0 10px rgba(20, 211, 172, 0); }
+}
+@keyframes lgBob {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-4px); }
+}
+@keyframes lgCheckPop {
+  from { opacity: 0; transform: scale(0.3) rotate(-30deg); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes lgFloat {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-9px); }
+}
+@keyframes lgSpin { to { transform: rotate(360deg); } }
+@keyframes lgSway {
+  0%, 100% { transform: rotate(-3deg); }
+  50%      { transform: rotate(3deg); }
+}
+@keyframes lgCloud {
+  0%   { transform: translateX(-20px); }
+  100% { transform: translateX(40px); }
+}
+@keyframes lgTwinkle {
+  0%, 100% { opacity: 0.2; transform: scale(0.6) rotate(0deg); }
+  50%      { opacity: 1;   transform: scale(1.1) rotate(45deg); }
+}
+@keyframes lgRise {
+  0%   { transform: translateY(0) scale(0.6); opacity: 0; }
+  15%  { opacity: 0.7; }
+  100% { transform: translateY(-110vh) scale(1.1); opacity: 0; }
+}
+
+
+/* ---- generated walk cycle (inverse kinematics: planted stance foot, heel-strike to toe-off) ---- */
+@keyframes lgThigh {
+  0% { transform: rotate(-23.07deg); }
+  2.08% { transform: rotate(-26.53deg); }
+  4.17% { transform: rotate(-25.61deg); }
+  6.25% { transform: rotate(-24.05deg); }
+  8.33% { transform: rotate(-23.75deg); }
+  10.42% { transform: rotate(-23.08deg); }
+  12.5% { transform: rotate(-22.16deg); }
+  14.58% { transform: rotate(-20.90deg); }
+  16.67% { transform: rotate(-19.39deg); }
+  18.75% { transform: rotate(-17.85deg); }
+  20.83% { transform: rotate(-16.31deg); }
+  22.92% { transform: rotate(-14.78deg); }
+  25% { transform: rotate(-13.25deg); }
+  27.08% { transform: rotate(-11.72deg); }
+  29.17% { transform: rotate(-10.20deg); }
+  31.25% { transform: rotate(-8.67deg); }
+  33.33% { transform: rotate(-7.15deg); }
+  35.42% { transform: rotate(-5.62deg); }
+  37.5% { transform: rotate(-4.09deg); }
+  39.58% { transform: rotate(-2.65deg); }
+  41.67% { transform: rotate(-1.35deg); }
+  43.75% { transform: rotate(0.32deg); }
+  45.83% { transform: rotate(2.25deg); }
+  47.92% { transform: rotate(2.41deg); }
+  50% { transform: rotate(-0.28deg); }
+  52.08% { transform: rotate(-3.89deg); }
+  54.17% { transform: rotate(-6.80deg); }
+  56.25% { transform: rotate(-7.93deg); }
+  58.33% { transform: rotate(-6.74deg); }
+  60.42% { transform: rotate(-4.25deg); }
+  62.5% { transform: rotate(-3.52deg); }
+  64.58% { transform: rotate(-3.48deg); }
+  66.67% { transform: rotate(-4.69deg); }
+  68.75% { transform: rotate(-7.44deg); }
+  70.83% { transform: rotate(-11.70deg); }
+  72.92% { transform: rotate(-17.21deg); }
+  75% { transform: rotate(-23.56deg); }
+  77.08% { transform: rotate(-30.17deg); }
+  79.17% { transform: rotate(-36.38deg); }
+  81.25% { transform: rotate(-41.52deg); }
+  83.33% { transform: rotate(-45.08deg); }
+  85.42% { transform: rotate(-46.81deg); }
+  87.5% { transform: rotate(-46.73deg); }
+  89.58% { transform: rotate(-45.14deg); }
+  91.67% { transform: rotate(-42.46deg); }
+  93.75% { transform: rotate(-38.83deg); }
+  95.83% { transform: rotate(-34.60deg); }
+  97.92% { transform: rotate(-29.91deg); }
+  100% { transform: rotate(-23.07deg); }
+}
+@keyframes lgShank {
+  0% { transform: rotate(6.25deg); }
+  2.08% { transform: rotate(15.77deg); }
+  4.17% { transform: rotate(16.14deg); }
+  6.25% { transform: rotate(15.43deg); }
+  8.33% { transform: rotate(17.74deg); }
+  10.42% { transform: rotate(19.45deg); }
+  12.5% { transform: rotate(20.67deg); }
+  14.58% { transform: rotate(21.24deg); }
+  16.67% { transform: rotate(21.31deg); }
+  18.75% { transform: rotate(21.30deg); }
+  20.83% { transform: rotate(21.29deg); }
+  22.92% { transform: rotate(21.29deg); }
+  25% { transform: rotate(21.28deg); }
+  27.08% { transform: rotate(21.28deg); }
+  29.17% { transform: rotate(21.28deg); }
+  31.25% { transform: rotate(21.28deg); }
+  33.33% { transform: rotate(21.28deg); }
+  35.42% { transform: rotate(21.29deg); }
+  37.5% { transform: rotate(21.28deg); }
+  39.58% { transform: rotate(21.49deg); }
+  41.67% { transform: rotate(21.98deg); }
+  43.75% { transform: rotate(21.74deg); }
+  45.83% { transform: rotate(20.95deg); }
+  47.92% { transform: rotate(23.57deg); }
+  50% { transform: rotate(31.46deg); }
+  52.08% { transform: rotate(40.53deg); }
+  54.17% { transform: rotate(47.51deg); }
+  56.25% { transform: rotate(50.97deg); }
+  58.33% { transform: rotate(50.62deg); }
+  60.42% { transform: rotate(48.63deg); }
+  62.5% { transform: rotate(50.74deg); }
+  64.58% { transform: rotate(53.10deg); }
+  66.67% { transform: rotate(56.17deg); }
+  68.75% { transform: rotate(60.13deg); }
+  70.83% { transform: rotate(64.66deg); }
+  72.92% { transform: rotate(69.13deg); }
+  75% { transform: rotate(72.84deg); }
+  77.08% { transform: rotate(75.09deg); }
+  79.17% { transform: rotate(75.33deg); }
+  81.25% { transform: rotate(73.30deg); }
+  83.33% { transform: rotate(69.02deg); }
+  85.42% { transform: rotate(62.82deg); }
+  87.5% { transform: rotate(55.20deg); }
+  89.58% { transform: rotate(46.87deg); }
+  91.67% { transform: rotate(38.62deg); }
+  93.75% { transform: rotate(30.62deg); }
+  95.83% { transform: rotate(23.31deg); }
+  97.92% { transform: rotate(16.50deg); }
+  100% { transform: rotate(6.25deg); }
+}
+@keyframes lgFoot {
+  0% { transform: rotate(4.82deg); }
+  2.08% { transform: rotate(0.14deg); }
+  4.17% { transform: rotate(3.93deg); }
+  6.25% { transform: rotate(7.74deg); }
+  8.33% { transform: rotate(6.01deg); }
+  10.42% { transform: rotate(3.63deg); }
+  12.5% { transform: rotate(1.48deg); }
+  14.58% { transform: rotate(-0.34deg); }
+  16.67% { transform: rotate(-1.92deg); }
+  18.75% { transform: rotate(-3.45deg); }
+  20.83% { transform: rotate(-4.98deg); }
+  22.92% { transform: rotate(-6.51deg); }
+  25% { transform: rotate(-8.03deg); }
+  27.08% { transform: rotate(-9.56deg); }
+  29.17% { transform: rotate(-11.08deg); }
+  31.25% { transform: rotate(-12.61deg); }
+  33.33% { transform: rotate(-14.13deg); }
+  35.42% { transform: rotate(-15.66deg); }
+  37.5% { transform: rotate(-17.19deg); }
+  39.58% { transform: rotate(-18.83deg); }
+  41.67% { transform: rotate(-20.63deg); }
+  43.75% { transform: rotate(-22.06deg); }
+  45.83% { transform: rotate(-23.14deg); }
+  47.92% { transform: rotate(-23.93deg); }
+  50% { transform: rotate(-23.21deg); }
+  52.08% { transform: rotate(-19.61deg); }
+  54.17% { transform: rotate(-14.05deg); }
+  56.25% { transform: rotate(-8.97deg); }
+  58.33% { transform: rotate(-6.32deg); }
+  60.42% { transform: rotate(-6.43deg); }
+  62.5% { transform: rotate(-10.87deg); }
+  64.58% { transform: rotate(-16.72deg); }
+  66.67% { transform: rotate(-22.87deg); }
+  68.75% { transform: rotate(-27.96deg); }
+  70.83% { transform: rotate(-30.58deg); }
+  72.92% { transform: rotate(-30.15deg); }
+  75% { transform: rotate(-29.63deg); }
+  77.08% { transform: rotate(-29.02deg); }
+  79.17% { transform: rotate(-27.36deg); }
+  81.25% { transform: rotate(-23.79deg); }
+  83.33% { transform: rotate(-17.82deg); }
+  85.42% { transform: rotate(-10.59deg); }
+  87.5% { transform: rotate(-5.74deg); }
+  89.58% { transform: rotate(-2.82deg); }
+  91.67% { transform: rotate(-0.62deg); }
+  93.75% { transform: rotate(2.22deg); }
+  95.83% { transform: rotate(4.02deg); }
+  97.92% { transform: rotate(3.03deg); }
+  100% { transform: rotate(4.82deg); }
+}
+@keyframes lgPelvis {
+  0% { transform: translateY(8.57px); }
+  4.17% { transform: translateY(8.84px); }
+  8.33% { transform: translateY(8.89px); }
+  12.50% { transform: translateY(8.72px); }
+  16.67% { transform: translateY(8.21px); }
+  20.83% { transform: translateY(7.46px); }
+  25% { transform: translateY(6.75px); }
+  29.17% { transform: translateY(5.99px); }
+  33.33% { transform: translateY(5.21px); }
+  37.50% { transform: translateY(4.54px); }
+  41.67% { transform: translateY(4.01px); }
+  45.83% { transform: translateY(3.60px); }
+  50% { transform: translateY(3.31px); }
+  54.17% { transform: translateY(3.16px); }
+  58.33% { transform: translateY(3.13px); }
+  62.50% { transform: translateY(3.23px); }
+  66.67% { transform: translateY(3.46px); }
+  70.83% { transform: translateY(3.82px); }
+  75% { transform: translateY(4.30px); }
+  79.17% { transform: translateY(4.97px); }
+  83.33% { transform: translateY(5.86px); }
+  87.50% { transform: translateY(6.66px); }
+  91.67% { transform: translateY(7.39px); }
+  95.83% { transform: translateY(8.07px); }
+  100% { transform: translateY(8.57px); }
+}
+@keyframes lgSettleThighA { from { transform: rotate(-23.07deg); } to { transform: rotate(0deg); } }
+@keyframes lgSettleShankA { from { transform: rotate(6.25deg); } to { transform: rotate(0deg); } }
+@keyframes lgSettleFootA { from { transform: rotate(4.82deg); } to { transform: rotate(0deg); } }
+@keyframes lgSettleThighB { from { transform: rotate(-0.28deg); } to { transform: rotate(0deg); } }
+@keyframes lgSettleShankB { from { transform: rotate(31.46deg); } to { transform: rotate(0deg); } }
+@keyframes lgSettleFootB { from { transform: rotate(-23.21deg); } to { transform: rotate(0deg); } }
+@keyframes lgSettlePelvis { from { transform: translateY(8.57px); } to { transform: translateY(0); } }
+
+@keyframes lgShoulder {
+  0% { transform: rotate(18.00deg); }
+  6.25% { transform: rotate(16.63deg); }
+  12.5% { transform: rotate(12.73deg); }
+  18.75% { transform: rotate(6.89deg); }
+  25% { transform: rotate(0.00deg); }
+  31.25% { transform: rotate(-6.89deg); }
+  37.5% { transform: rotate(-12.73deg); }
+  43.75% { transform: rotate(-16.63deg); }
+  50% { transform: rotate(-18.00deg); }
+  56.25% { transform: rotate(-16.63deg); }
+  62.5% { transform: rotate(-12.73deg); }
+  68.75% { transform: rotate(-6.89deg); }
+  75% { transform: rotate(-0.00deg); }
+  81.25% { transform: rotate(6.89deg); }
+  87.5% { transform: rotate(12.73deg); }
+  93.75% { transform: rotate(16.63deg); }
+  100% { transform: rotate(18.00deg); }
+}
+@keyframes lgElbow {
+  0% { transform: rotate(-2.00deg); }
+  6.25% { transform: rotate(-2.91deg); }
+  12.5% { transform: rotate(-5.51deg); }
+  18.75% { transform: rotate(-9.41deg); }
+  25% { transform: rotate(-14.00deg); }
+  31.25% { transform: rotate(-18.59deg); }
+  37.5% { transform: rotate(-22.49deg); }
+  43.75% { transform: rotate(-25.09deg); }
+  50% { transform: rotate(-26.00deg); }
+  56.25% { transform: rotate(-25.09deg); }
+  62.5% { transform: rotate(-22.49deg); }
+  68.75% { transform: rotate(-18.59deg); }
+  75% { transform: rotate(-14.00deg); }
+  81.25% { transform: rotate(-9.41deg); }
+  87.5% { transform: rotate(-5.51deg); }
+  93.75% { transform: rotate(-2.91deg); }
+  100% { transform: rotate(-2.00deg); }
+}
+@keyframes lgSettleShoulderA { from { transform: rotate(18deg); } to { transform: rotate(0deg); } }
+@keyframes lgSettleShoulderB { from { transform: rotate(-18deg); } to { transform: rotate(0deg); } }
+@keyframes lgSettleElbowA { from { transform: rotate(-2deg); } to { transform: rotate(0deg); } }
+@keyframes lgSettleElbowB { from { transform: rotate(-26deg); } to { transform: rotate(0deg); } }
+@keyframes lgHairSway { 0%,100%{transform:rotate(-5deg)} 50%{transform:rotate(6deg)} }
+@keyframes lgBlink { 0%,93%,100%{transform:scaleY(1)} 96%{transform:scaleY(0.1)} }
+
+/* ---- person walking in ---- */
+@keyframes lgWalkIn {
+  from { transform: translateX(calc(var(--walk-dist) * -1)); }
+}
+
+@keyframes lgBreathe {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-2px); }
+}
+@keyframes lgShadowStep {
+  0%, 50%, 100% { transform: translateX(-50%) scaleX(1);    opacity: 0.28; }
+  25%, 75%      { transform: translateX(-50%) scaleX(0.82); opacity: 0.18; }
+}
+@keyframes lgDust {
+  0%   { opacity: 0; transform: translate(0, 0) scale(0.4); }
+  30%  { opacity: 0.55; }
+  100% { opacity: 0; transform: translate(-26px, -14px) scale(1.5); }
+}
+@keyframes lgBubbleIn {
+  from { opacity: 0; transform: translateY(10px) scale(0.7); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes lgWave {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50%      { transform: translateY(-3px) rotate(-0.8deg); }
+}
+
+
+/* =========================================================
+   CONTAINER + LAYOUT
+   ========================================================= */
+
+.login-container {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 1140px;
+  margin: auto;
+}
+
+.login-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 480px);
+  align-items: center;
+  gap: 20px;
+}
+
+/* floating particles */
+.login-particles {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
+}
+.particle {
+  position: absolute;
+  bottom: -20px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--teal-bright);
+  opacity: 0;
+  animation: lgRise 14s linear infinite;
+}
+.particle-1  { left: 6%;  animation-delay: 0s;   }
+.particle-2  { left: 15%; animation-delay: 3s;  width: 7px;  height: 7px;  background: var(--sky); }
+.particle-3  { left: 26%; animation-delay: 6s;  width: 12px; height: 12px; }
+.particle-4  { left: 38%; animation-delay: 1.5s; width: 6px;  height: 6px;  background: #22c55e; }
+.particle-5  { left: 49%; animation-delay: 8s;  background: var(--sky); }
+.particle-6  { left: 60%; animation-delay: 4s;  width: 8px;  height: 8px; }
+.particle-7  { left: 70%; animation-delay: 10s; width: 12px; height: 12px; background: #22c55e; }
+.particle-8  { left: 81%; animation-delay: 2s;  width: 7px;  height: 7px;  background: var(--sky); }
+.particle-9  { left: 90%; animation-delay: 7s; }
+.particle-10 { left: 97%; animation-delay: 11s; width: 6px; height: 6px; }
+
+
+/* =========================================================
+   SCENE
+   ========================================================= */
+
+.login-scene {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  /* walking timing. Login.jsx overwrites --cycles / --walk-dist so the
+     number of strides exactly fits the distance (feet never slide). */
+  --cycle: 0.85s;
+  --cycles: 6;
+  --walk-time: calc(var(--cycles) * var(--cycle));
+  --walk-dist: 80vw;
+}
+
+.login-decor {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.decor-float { animation: lgFloat 6s ease-in-out infinite; }
+.decor-float-2 { animation-duration: 7.5s; animation-delay: -2s; }
+.decor-float-3 { animation-duration: 5s; animation-delay: -1s; }
+.decor-dot { animation: lgFloat 5s ease-in-out infinite; }
+.decor-dot-2 { animation-delay: -2.5s; }
+.decor-cloud { animation: lgCloud 14s ease-in-out infinite alternate; }
+.decor-cloud-2 { animation-duration: 18s; animation-delay: -6s; }
+.decor-star {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: lgTwinkle 3s ease-in-out infinite;
+}
+.decor-star-2 { animation-delay: -1.5s; }
+
+/* right-side decor */
+.login-card-wrap { position: relative; min-width: 0; }
+
+.login-side-decor { position: absolute; z-index: 0; pointer-events: none; }
+.login-side-decor svg { display: block; width: 100%; height: auto; overflow: visible; }
+
+.side-envelope { top: 30px; left: calc(100% - 26px); width: 108px; animation: lgFloat 6s ease-in-out infinite; }
+.side-gear { top: 46%; left: calc(100% - 18px); width: 90px; animation: lgSpin 26s linear infinite; }
+.side-plant { bottom: -6px; left: calc(100% - 22px); width: 90px; }
+.side-plant-leaves {
+  transform-box: view-box;
+  transform-origin: 50px 78px;
+  animation: lgSway 5s ease-in-out infinite;
+}
+
+.login-ground {
+  position: absolute;
+  left: -30%;
+  right: -4%;
+  bottom: 6px;
+  height: 26px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(15, 157, 132, 0.30), transparent 70%);
+}
+
+/* ---- the walker: a real photo ---- */
+.login-walker {
+  position: absolute;
+  left: 50%;
+  bottom: 8px;
+  z-index: 3;
+  width: 180px;
+  animation: lgWalkIn var(--walk-time) linear both;
+}
+
+.walker-figure {
+  position: relative;
+  width: 100%;
+}
+
+.walker-svg { display: block; width: 100%; height: auto; overflow: visible; }
+
+/* real-person sprite sheet: one frame per step, plays only while walking */
+.walker-sprite {
+  width: 100%;
+  background-repeat: no-repeat;
+  background-size: calc(var(--frames) * 100%) 100%;
+  background-position: 0 0;
+  filter: drop-shadow(0 12px 12px rgba(10, 60, 50, 0.22));
+  animation: lgSprite var(--cycle) steps(var(--frames)) var(--cycles);
+}
+.walker-sprite.flip { transform: scaleX(-1); }
+
+@keyframes lgSprite {
+  to { background-position: calc(100% * var(--frames) / (var(--frames) - 1)) 0; }
+}
+
+/* articulated walker: every joint pivots in viewBox coordinates */
+.walker-pelvis, .walker-thigh, .walker-shank, .walker-foot,
+.walker-arm, .walker-fore, .walker-hair { transform-box: view-box; }
+.walker-thigh { transform-origin: 120px 204px; }
+.walker-shank { transform-origin: 120px 295px; }
+.walker-foot  { transform-origin: 120px 386px; }
+.walker-arm   { transform-origin: 118px 104px; }
+.walker-fore  { transform-origin: 118px 172px; }
+.walker-hair  { transform-origin: 110px 36px; }
+
+/* NB: settle animations use fill-mode "forwards" ONLY. With "both", their
+   "from" keyframe would apply during the delay and freeze the walking legs. */
+.walker-pelvis {
+  animation:
+    lgPelvis calc(var(--cycle) / 2) linear calc(var(--cycles) * 2),
+    lgSettlePelvis 0.35s ease-out var(--walk-time) forwards,
+    lgBreathe 3.6s ease-in-out calc(var(--walk-time) + 0.4s) infinite;
+}
+.walker-thigh-a { animation: lgThigh var(--cycle) linear var(--cycles), lgSettleThighA 0.4s ease-out var(--walk-time) forwards; }
+.walker-shank-a { animation: lgShank var(--cycle) linear var(--cycles), lgSettleShankA 0.4s ease-out var(--walk-time) forwards; }
+.walker-foot-a  { animation: lgFoot  var(--cycle) linear var(--cycles), lgSettleFootA  0.4s ease-out var(--walk-time) forwards; }
+.walker-thigh-b,
+.walker-shank-b,
+.walker-foot-b { animation-delay: calc(var(--cycle) * -0.5), var(--walk-time); }
+.walker-thigh-b { animation-name: lgThigh, lgSettleThighB; animation-duration: var(--cycle), 0.4s; animation-timing-function: linear, ease-out; animation-iteration-count: calc(var(--cycles) + 0.5), 1; animation-fill-mode: none, forwards; }
+.walker-shank-b { animation-name: lgShank, lgSettleShankB; animation-duration: var(--cycle), 0.4s; animation-timing-function: linear, ease-out; animation-iteration-count: calc(var(--cycles) + 0.5), 1; animation-fill-mode: none, forwards; }
+.walker-foot-b  { animation-name: lgFoot,  lgSettleFootB;  animation-duration: var(--cycle), 0.4s; animation-timing-function: linear, ease-out; animation-iteration-count: calc(var(--cycles) + 0.5), 1; animation-fill-mode: none, forwards; }
+
+/* arms swing opposite to the legs */
+.walker-arm-a  { animation: lgShoulder var(--cycle) linear var(--cycles), lgSettleShoulderA 0.4s ease-out var(--walk-time) forwards; }
+.walker-fore-a { animation: lgElbow    var(--cycle) linear var(--cycles), lgSettleElbowA    0.4s ease-out var(--walk-time) forwards; }
+.walker-arm-b  { animation-name: lgShoulder, lgSettleShoulderB; animation-duration: var(--cycle), 0.4s; animation-timing-function: linear, ease-out; animation-iteration-count: calc(var(--cycles) + 0.5), 1; animation-fill-mode: none, forwards; animation-delay: calc(var(--cycle) * -0.5), var(--walk-time); }
+.walker-fore-b { animation-name: lgElbow, lgSettleElbowB; animation-duration: var(--cycle), 0.4s; animation-timing-function: linear, ease-out; animation-iteration-count: calc(var(--cycles) + 0.5), 1; animation-fill-mode: none, forwards; animation-delay: calc(var(--cycle) * -0.5), var(--walk-time); }
+.walker-hair { animation: lgHairSway calc(var(--cycle) * 1.2) ease-in-out infinite; }
+.walker-eye {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: lgBlink 4.2s infinite;
+}
+
+.walker-shadow {
+  position: absolute;
+  left: 50%;
+  bottom: -6px;
+  width: 70%;
+  height: 14px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, #0a5c4a, transparent 70%);
+  transform: translateX(-50%);
+  animation: lgShadowStep calc(var(--cycle) / 2) ease-in-out calc(var(--cycles) * 2);
+}
+
+/* little dust puffs behind the feet while walking */
+.walker-dust {
+  position: absolute;
+  bottom: 2px;
+  left: 18%;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  opacity: 0;
+  animation: lgDust var(--cycle) ease-out backwards var(--cycles);
+}
+.dust-2 { left: 28%; animation-delay: 0.2s; }
+.dust-3 { left: 8%;  animation-delay: 0.4s; }
+
+/* speech bubble appears when she stops */
+.login-bubble {
+  position: absolute;
+  top: -38px;
+  left: 20%;
+  width: max-content;
+  max-width: 200px;
+  padding: 9px 13px;
+  border: 1.5px solid var(--teal-bright);
+  border-radius: 14px 14px 14px 4px;
+  background: #fff;
+  color: var(--green-dark);
+  font-size: 12.5px;
+  font-weight: 700;
+  line-height: 1.4;
+  box-shadow: 0 10px 24px rgba(15, 157, 132, 0.2);
+  transform-origin: left bottom;
+  animation:
+    lgBubbleIn 0.5s cubic-bezier(0.2, 0.9, 0.3, 1.3) var(--walk-time) both,
+    lgWave 3s ease-in-out calc(var(--walk-time) + 0.6s) infinite;
+}
+
+
+/* =========================================================
+   CARD (compact)
+   ========================================================= */
+
+.login-card {
+  position: relative;
+  z-index: 1;
+  padding: 26px 30px 20px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  box-shadow: var(--shadow-lg);
+  animation: lgCardIn 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.login-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background: linear-gradient(90deg, var(--green-dark), var(--teal), var(--teal-bright), var(--sky), var(--green-dark));
+  background-size: 200% auto;
+  animation: lgBar 6s linear infinite;
+}
+
+.login-card::after {
+  content: "";
+  position: absolute;
+  top: -120px;
+  right: -120px;
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(20, 211, 172, 0.18), transparent 70%);
+  pointer-events: none;
+}
+
+.login-card > * { position: relative; z-index: 1; }
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.login-header { text-align: center; margin-bottom: 16px; }
+
+.login-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  padding: 5px 13px;
+  border-radius: 999px;
+  color: var(--teal);
+  background: rgba(20, 211, 172, 0.13);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  animation: lgFadeUp 0.7s ease 0.3s both;
+}
+.login-label::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--teal-bright);
+  animation: lgPulse 1.6s infinite;
+}
+
+.login-header h1 {
+  margin: 0;
+  color: var(--green-dark);
+  font-size: clamp(22px, 4vw, 27px);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  animation: lgFadeUp 0.7s ease 0.4s both;
+}
+
+
+/* =========================================================
+   FORM ENTRANCE
+   ========================================================= */
+
+.login-card form > * { animation: lgFadeUp 0.7s ease both; }
+.login-card form > :nth-child(1) { animation-delay: 0.55s; }
+.login-card form > :nth-child(2) { animation-delay: 0.65s; }
+.login-card form > :nth-child(3) { animation-delay: 0.75s; }
+.login-card form > :nth-child(4) { animation-delay: 0.85s; }
+.login-card form > :nth-child(5) { animation-delay: 0.95s; }
+
+
+/* =========================================================
+   PANEL CHOICE
+   ========================================================= */
+
+.login-panels {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.login-panel {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 12px;
+  text-align: left;
+  font-family: inherit;
+  border: 1.5px solid var(--line);
+  border-radius: 14px;
+  background: #fbfefd;
+  cursor: pointer;
+  transition: border-color 0.25s ease, background 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+}
+.login-panel:hover {
+  border-color: var(--teal-bright);
+  background: linear-gradient(135deg, #ffffff, var(--mint));
+  transform: translateY(-3px);
+  box-shadow: 0 12px 26px rgba(15, 157, 132, 0.16);
+}
+.login-panel.selected {
+  border-color: var(--teal);
+  background: linear-gradient(135deg, #f0fdf9, #d9f7ee);
+  box-shadow: var(--glow);
+}
+.login-panel:focus-visible { outline: 3px solid var(--teal-bright); outline-offset: 2px; }
+
+.login-panel-icon {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  font-size: 17px;
+  animation: lgBob 4.5s ease-in-out infinite;
+}
+.citizen-panel-icon {
+  background: linear-gradient(135deg, #cdf5e6, #e9fbf6);
+  box-shadow: 0 6px 14px rgba(15, 157, 132, 0.2);
+}
+.organization-panel-icon {
+  background: linear-gradient(135deg, #cfeafc, #e8f5fe);
+  box-shadow: 0 6px 14px rgba(56, 189, 248, 0.25);
+  animation-delay: -2s;
+}
+
+.login-panel-content { padding-right: 14px; }
+.login-panel-content h2 { margin: 0 0 2px; color: var(--green-dark); font-size: 14px; font-weight: 800; }
+.login-panel-content p { margin: 0; color: #4f7f75; font-size: 10.5px; line-height: 1.4; }
+
+.panel-check {
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--green-dark), var(--teal-bright));
+  box-shadow: 0 4px 10px rgba(15, 157, 132, 0.4);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 800;
+  animation: lgCheckPop 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.4) both;
+}
+.panel-check:empty { display: none; }
+
+.login-error { display: block; margin-top: 4px; color: var(--danger); font-size: 12px; font-weight: 500; }
+.panel-error { margin-top: 6px; }
+
+
+/* =========================================================
+   FIELDS
+   ========================================================= */
+
+.login-form-group { margin-top: 12px; }
+
+.login-form-group label {
+  display: block;
+  margin-bottom: 5px;
+  color: #0a5c4a;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.login-form-group input {
+  width: 100%;
+  height: 44px;
+  padding: 0 14px;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  background: #fbfefd;
+  outline: none;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 14px;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease, transform 0.25s ease;
+}
+.login-form-group input:hover { border-color: #b5ddd3; }
+.login-form-group input:focus {
+  border-color: var(--teal);
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(20, 211, 172, 0.16);
+  transform: translateY(-1px);
+}
+.login-form-group input::placeholder { color: #9db2ad; }
+
+.login-password-wrapper { position: relative; }
+.login-password-wrapper input { padding-right: 70px; }
+.login-password-wrapper button {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 5px 9px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--teal);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+.login-password-wrapper button:hover { background: rgba(20, 211, 172, 0.14); }
+
+
+/* =========================================================
+   REMEMBER ME + FORGOT (one row)
+   ========================================================= */
+
+.login-options {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 12px 0 14px;
+}
+
+.remember-login {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #3f6b63;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.remember-login input { width: 16px; height: 16px; accent-color: var(--teal); }
+
+.login-options a {
+  color: var(--teal);
+  font-size: 12.5px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: color 0.2s ease, letter-spacing 0.25s ease;
+}
+.login-options a:hover { color: var(--green-dark); letter-spacing: 0.02em; }
+
+
+/* =========================================================
+   SUBMIT
+   ========================================================= */
+
+.login-submit-button {
+  position: relative;
+  width: 100%;
+  height: 48px;
+  border: none;
+  border-radius: 12px;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--green-deep) 0%, var(--green-dark) 35%, var(--teal) 75%, var(--teal-bright) 100%);
+  color: #fff;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  box-shadow: 0 10px 26px rgba(10, 92, 74, 0.35);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.login-submit-button::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -60%;
+  width: 30%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+  transform: skewX(-20deg);
+  animation: lgShine 3.4s ease-in-out infinite;
+}
+.login-submit-button:hover { transform: translateY(-3px); box-shadow: var(--glow); }
+.login-submit-button:active { transform: translateY(-1px); }
+.login-submit-button:disabled { opacity: 0.7; cursor: not-allowed; transform: none; box-shadow: none; }
+.login-submit-button:focus-visible,
+.login-password-wrapper button:focus-visible { outline: 3px solid var(--teal-bright); outline-offset: 2px; }
+
+
+/* =========================================================
+   BOTTOM + FOOTER
+   ========================================================= */
+
+.login-register {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+  color: #3d6f8f;
+  font-size: 13px;
+  animation: lgFadeIn 0.8s ease 1.2s both;
+}
+.login-register a {
+  color: var(--teal);
+  font-weight: 800;
+  text-decoration: none;
+  transition: letter-spacing 0.25s ease, color 0.25s ease;
+}
+.login-register a:hover { color: var(--green-dark); letter-spacing: 0.03em; }
+
+.login-footer {
+  margin: 12px 0 0;
+  text-align: center;
+  color: #2f7a6c;
+  font-size: 12px;
+  font-weight: 500;
+  animation: lgFadeIn 0.8s ease 1.4s both;
+}
+
+.login-server-error {
+  margin-bottom: 10px;
+  padding: 10px 12px;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  background: #fff1f2;
+  color: #b91c1c;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1359px) {
+  .login-side-decor { display: none; }
+}
+
+@media (max-width: 1019px) {
+  .login-container { max-width: 560px; }
+  .login-layout { grid-template-columns: 1fr; gap: 4px; }
+  .login-scene { height: 240px; }
+  .login-decor { display: none; }
+  .login-walker { left: calc(50% - 70px); width: 140px; }
+  
+  .login-bubble { left: 80%; top: -8px; max-width: 160px; font-size: 11.5px; }
+  .login-ground { left: -10%; right: -10%; bottom: 0; }
+}
+
+@media (max-width: 600px) {
+  .login-page { padding: 14px; }
+  .login-card { padding: 22px 18px 18px; border-radius: 20px; }
+  .login-panels { grid-template-columns: 1fr; }
+  .login-scene { height: 200px; }
+  .login-walker { left: calc(50% - 55px); width: 110px; }
+  
+  .login-bubble { max-width: 140px; }
+}
+
+
+/* =========================================================
+   ACCESSIBILITY — no motion
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .login-page,
+  .login-page *,
+  .login-page *::before,
+  .login-page *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+
+/* =========================================================
+   EXTRA WALKER ANIMATIONS — path, aura, arrows to the card
+   ========================================================= */
+
+@keyframes lgPath  { to { background-position: 36px 0; } }
+@keyframes lgAura  { 0%,100% { opacity: 0.35; transform: scale(0.95); } 50% { opacity: 0.9; transform: scale(1.08); } }
+@keyframes lgChevron { 0%,100% { opacity: 0.15; transform: translateX(0); } 50% { opacity: 1; transform: translateX(8px); } }
+
+/* dashed path she walks along, scrolling toward the card */
+.login-path {
+  position: absolute;
+  left: -30%;
+  right: 0;
+  bottom: 14px;
+  height: 4px;
+  z-index: 1;
+  background: repeating-linear-gradient(90deg, rgba(15, 157, 132, 0.55) 0 18px, transparent 18px 36px);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 40%);
+  mask-image: linear-gradient(90deg, transparent, #000 40%);
+}
+
+/* soft teal glow behind her once she arrives */
+.walker-aura {
+  position: absolute;
+  inset: 6% -25% 0;
+  z-index: -1;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(20, 211, 172, 0.4), transparent 65%);
+  opacity: 0;
+  animation: lgAura 2.8s ease-in-out var(--walk-time) infinite backwards;
+}
+
+/* arrows pointing at the login card */
+.walker-arrows {
+  position: absolute;
+  left: calc(50% + 190px);
+  bottom: 150px;
+  z-index: 3;
+  display: flex;
+  color: var(--teal-bright);
+  font-size: 34px;
+  font-weight: 800;
+  line-height: 1;
+  opacity: 0;
+}
+.walker-arrows span {
+  opacity: 0;
+  animation: lgChevron 1.4s ease-in-out calc(var(--walk-time) + 0.4s) infinite;
+}
+.walker-arrows span:nth-child(2) { animation-delay: calc(var(--walk-time) + 0.6s); }
+.walker-arrows span:nth-child(3) { animation-delay: calc(var(--walk-time) + 0.8s); }
+.walker-arrows { opacity: 1; }
+
+@media (max-width: 1019px) {
+  .walker-arrows { display: none; }
+}
+
+/* ===== BOY WALKER (image) ===== */
+@keyframes lgStep {
+  0%, 100% { transform: translateY(0) rotate(-1.5deg); }
+  50%      { transform: translateY(-10px) rotate(1.5deg); }
+}
+
+.login-walker { width: 150px; }
+
+.walker-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  transform-origin: 50% 100%;
+  filter: drop-shadow(0 12px 12px rgba(10, 60, 50, 0.22));
+  animation:
+    lgStep calc(var(--cycle) / 2) ease-in-out calc(var(--cycles) * 2),
+    lgBreathe 3.6s ease-in-out calc(var(--walk-time) + 0.2s) infinite;
+}
+
+@media (max-width: 1019px) {
+  .login-walker { left: calc(50% - 48px); width: 96px; }
+  .login-bubble { top: -6px; }
+}
+
+@media (max-width: 600px) {
+  .login-walker { left: calc(50% - 40px); width: 80px; }
+}
+
+/* ===== standing pose after the walk ===== */
+@keyframes lgSpriteOut { to { opacity: 0; } }
+@keyframes lgIdleIn    { to { opacity: 1; } }
+
+.walker-sprite {
+  filter: drop-shadow(0 12px 12px rgba(10, 60, 50, 0.22));
+  animation:
+    lgSprite var(--cycle) steps(var(--frames)) var(--cycles),
+    lgSpriteOut 0.01s linear var(--walk-time) forwards;
+}
+
+.walker-idle {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: auto;
+  opacity: 0;
+  pointer-events: none;
+  filter: drop-shadow(0 12px 12px rgba(10, 60, 50, 0.22));
+  animation:
+    lgIdleIn 0.2s ease var(--walk-time) forwards,
+    lgBreathe 3.6s ease-in-out calc(var(--walk-time) + 0.3s) infinite;
+}

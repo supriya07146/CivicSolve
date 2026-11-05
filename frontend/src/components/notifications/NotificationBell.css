@@ -1,0 +1,346 @@
+
+.cs-notification {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    z-index: 1000;
+    font-family: inherit;
+}
+
+.cs-notification-trigger {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    color: #596579;
+    background: #ffffff;
+    border: 1px solid #e8ebf2;
+    border-radius: 13px;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.cs-notification-trigger:hover,
+.cs-notification-trigger.is-open {
+    color: #5145cd;
+    background: #f5f3ff;
+    border-color: #ded9ff;
+}
+
+.cs-notification-trigger:focus-visible,
+.cs-notification button:focus-visible {
+    outline: 3px solid #c7c2ff;
+    outline-offset: 2px;
+}
+
+.cs-notification-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 19px;
+    height: 19px;
+    padding: 0 5px;
+    color: #ffffff;
+    background: #e64e62;
+    border: 2px solid #ffffff;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.cs-notification-dropdown {
+    position: absolute;
+    top: calc(100% + 13px);
+    right: 0;
+    width: min(410px, calc(100vw - 28px));
+    overflow: hidden;
+    color: #253047;
+    background: #ffffff;
+    border: 1px solid #e8ebf2;
+    border-radius: 17px;
+    box-shadow: 0 18px 55px rgba(28, 36, 65, 0.16);
+    animation: cs-notification-enter 0.18s ease-out;
+}
+
+@keyframes cs-notification-enter {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.cs-notification-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 19px 20px 16px;
+    border-bottom: 1px solid #edf0f5;
+}
+
+.cs-notification-header h3 {
+    margin: 0;
+    color: #202a40;
+    font-size: 16px;
+    font-weight: 750;
+}
+
+.cs-notification-header p {
+    margin: 5px 0 0;
+    color: #8790a3;
+    font-size: 12px;
+}
+
+.cs-notification-refresh {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    color: #6c668e;
+    background: #f5f3ff;
+    border: 0;
+    border-radius: 10px;
+    font-size: 22px;
+    cursor: pointer;
+}
+
+.cs-notification-toolbar {
+    display: flex;
+    justify-content: flex-end;
+    padding: 10px 17px;
+    border-bottom: 1px solid #f0f1f6;
+}
+
+.cs-notification-toolbar button,
+.cs-notification-footer button {
+    padding: 4px 0;
+    color: #5b50d5;
+    background: transparent;
+    border: 0;
+    font-size: 12px;
+    font-weight: 650;
+    cursor: pointer;
+}
+
+.cs-notification button:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+.cs-notification-error {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin: 12px;
+    padding: 11px 12px;
+    color: #a52d3b;
+    background: #fff0f1;
+    border-radius: 9px;
+    font-size: 12px;
+}
+
+.cs-notification-error button {
+    flex-shrink: 0;
+    color: #a52d3b;
+    background: transparent;
+    border: 0;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.cs-notification-list {
+    max-height: 420px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+
+.cs-notification-item {
+    position: relative;
+    display: flex;
+    align-items: stretch;
+    gap: 4px;
+    padding: 4px 10px 4px 12px;
+    border-bottom: 1px solid #f0f2f6;
+    transition: background 0.15s ease;
+}
+
+.cs-notification-item:hover {
+    background: #fafaff;
+}
+
+.cs-notification-item.is-unread {
+    background: #f8f7ff;
+}
+
+.cs-notification-item.is-unread:hover {
+    background: #f1efff;
+}
+
+.cs-notification-content {
+    display: flex;
+    align-items: flex-start;
+    flex: 1;
+    min-width: 0;
+    gap: 11px;
+    padding: 12px 2px;
+    text-align: left;
+    color: inherit;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+}
+
+.cs-notification-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 37px;
+    width: 37px;
+    height: 37px;
+    background: #efedff;
+    border-radius: 12px;
+    font-size: 17px;
+}
+
+.cs-notification-copy {
+    display: flex;
+    flex: 1;
+    min-width: 0;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.cs-notification-copy strong {
+    overflow-wrap: anywhere;
+    color: #283149;
+    font-size: 12px;
+    font-weight: 750;
+    line-height: 1.5;
+}
+
+.cs-notification-message {
+    overflow-wrap: anywhere;
+    color: #6e788e;
+    font-size: 12px;
+    line-height: 1.55;
+}
+
+.cs-notification-copy time {
+    margin-top: 2px;
+    color: #9aa2b2;
+    font-size: 10px;
+    line-height: 1.5;
+}
+
+.cs-notification-unread-dot {
+    flex-shrink: 0;
+    width: 8px;
+    height: 8px;
+    margin-top: 6px;
+    background: #6657df;
+    border-radius: 50%;
+}
+
+.cs-notification-delete {
+    align-self: flex-start;
+    flex-shrink: 0;
+    width: 27px;
+    height: 27px;
+    margin-top: 10px;
+    color: #9299aa;
+    background: transparent;
+    border: 0;
+    border-radius: 7px;
+    font-size: 19px;
+    cursor: pointer;
+}
+
+.cs-notification-delete:hover {
+    color: #d34253;
+    background: #fff0f1;
+}
+
+.cs-notification-state {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 170px;
+    padding: 24px;
+    color: #929aab;
+    font-size: 12px;
+    text-align: center;
+}
+
+.cs-notification-state strong {
+    color: #424c63;
+    font-size: 13px;
+}
+
+.cs-notification-empty-icon {
+    font-size: 30px;
+}
+
+.cs-notification-spinner {
+    width: 24px;
+    height: 24px;
+    border: 3px solid #e9e6ff;
+    border-top-color: #6558db;
+    border-radius: 50%;
+    animation: cs-notification-spin 0.7s linear infinite;
+}
+
+@keyframes cs-notification-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.cs-notification-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 19px;
+    color: #9aa2b2;
+    background: #fcfcfe;
+    font-size: 10px;
+}
+
+@media (max-width: 480px) {
+    .cs-notification-dropdown {
+        position: fixed;
+        top: 76px;
+        right: 10px;
+        left: 10px;
+        width: auto;
+        max-width: calc(100% - 20px);
+        max-height: calc(100dvh - 90px);
+        border-radius: 14px;
+    }
+
+    .cs-notification-list {
+        max-height: min(420px, calc(100dvh - 250px));
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .cs-notification-dropdown,
+    .cs-notification-spinner {
+        animation: none;
+    }
+}

@@ -1,0 +1,835 @@
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
+
+/* =========================================================
+   CIVICSOLVE — CITIZEN REGISTRATION
+   Wide card: form on the left, teal panel + illustration on
+   the right (the illustration overlaps the panel edge).
+   Class names are unchanged, so the page logic is not affected.
+   ========================================================= */
+
+.citizen-register-page {
+  --green-dark: #0a5c4a;
+  --green-deep: #06402f;
+  --teal: #0f9d84;
+  --teal-bright: #14d3ac;
+  --panel: #2cd5b5;           /* teal side panel (same green as the register page phone) */
+  --page-bg: #f3fcf9;
+  --mint: #e9fbf6;
+  --sky: #38bdf8;
+  --sky-deep: #1d6fc4;
+  --navy: #0a1b30;
+  --ink: #0a2e27;
+  --text: #0f2236;
+  --muted: #5b6b7c;
+  --line: #dbe8e5;
+  --danger: #dc2626;
+  --shadow-lg: 0 28px 70px rgba(10, 60, 50, 0.16);
+  --glow: 0 0 0 1px rgba(20, 211, 172, 0.3), 0 12px 36px rgba(20, 211, 172, 0.26);
+
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  padding: 48px 20px;
+  box-sizing: border-box;
+  overflow: hidden;
+  font-family: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  background: var(--page-bg);
+}
+
+.citizen-register-page *,
+.citizen-register-page *::before,
+.citizen-register-page *::after {
+  box-sizing: border-box;
+}
+
+
+/* =========================================================
+   KEYFRAMES
+   ========================================================= */
+
+@keyframes crCardIn {
+  from { opacity: 0; transform: translateY(34px) scale(0.98); }
+  to   { opacity: 1; transform: none; }
+}
+
+@keyframes crFadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@keyframes crFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes crArtIn {
+  from { opacity: 0; transform: translateX(30px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@keyframes crShine {
+  to { transform: translateX(520%) skewX(-20deg); }
+}
+
+@keyframes crPulse {
+  0%   { box-shadow: 0 0 0 0 rgba(20, 211, 172, 0.7); }
+  100% { box-shadow: 0 0 0 10px rgba(20, 211, 172, 0); }
+}
+
+@keyframes crFloat {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-9px); }
+}
+
+
+/* =========================================================
+   CONTAINER  (+ dotted corners like the reference)
+   ========================================================= */
+
+.citizen-register-container {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 1040px;
+  margin: auto;
+}
+
+.citizen-register-container::before,
+.citizen-register-container::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  width: 170px;
+  height: 170px;
+  pointer-events: none;
+  background-image: radial-gradient(circle, rgba(15, 157, 132, 0.4) 1.6px, transparent 1.8px);
+  background-size: 17px 17px;
+}
+
+.citizen-register-container::before {
+  top: -26px;
+  left: -34px;
+}
+
+.citizen-register-container::after {
+  bottom: 40px;
+  right: -34px;
+}
+
+
+/* =========================================================
+   CARD = form side + art side
+   ========================================================= */
+
+.citizen-register-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 26px;
+  box-shadow: var(--shadow-lg);
+  animation: crCardIn 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.cr-form-side {
+  position: relative;
+  z-index: 2;
+  padding: 38px 24px 32px 48px;
+}
+
+
+/* =========================================================
+   ART SIDE: teal panel + illustration
+   ========================================================= */
+
+.cr-art-side {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 0;
+  animation: crArtIn 1s cubic-bezier(0.2, 0.7, 0.2, 1) 0.4s both;
+}
+
+/* the teal panel starts part-way across the art side,
+   so the clipboard and leaves stay on the white area */
+.cr-art-side::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 28%;
+  background:
+    radial-gradient(circle, rgba(255, 255, 255, 0.22) 1.6px, transparent 1.8px) 0 0 / 22px 22px,
+    var(--panel);
+}
+
+.cr-illustration {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  max-width: 470px;
+  height: auto;
+  overflow: visible;
+  user-select: none;
+}
+
+.cr-float {
+  animation: crFloat 5s ease-in-out infinite;
+}
+
+.cr-float-2 {
+  animation-duration: 6.4s;
+  animation-delay: -2.4s;
+}
+
+
+/* =========================================================
+   BRAND
+   ========================================================= */
+
+.auth-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 24px;
+  text-decoration: none;
+  color: var(--navy);
+  animation: crFadeIn 0.8s ease both;
+}
+
+.auth-brand-icon {
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--green-dark), var(--teal) 60%, var(--teal-bright));
+  color: #fff;
+  font-size: 19px;
+  font-weight: 800;
+  box-shadow: 0 6px 16px rgba(15, 157, 132, 0.4);
+  transition: transform 0.4s ease;
+}
+
+.auth-brand:hover .auth-brand-icon {
+  transform: rotate(-8deg) scale(1.08);
+}
+
+.auth-brand span {
+  display: block;
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--green-dark);
+  line-height: 1.2;
+}
+
+.auth-brand small {
+  display: block;
+  margin-top: 1px;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--teal);
+}
+
+
+/* =========================================================
+   HEADER (left aligned)
+   ========================================================= */
+
+.citizen-register-header {
+  text-align: left;
+  margin-bottom: 26px;
+}
+
+.auth-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  color: var(--teal);
+  background: rgba(20, 211, 172, 0.13);
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  animation: crFadeUp 0.7s ease 0.3s both;
+}
+
+.auth-label::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--teal-bright);
+  animation: crPulse 1.6s infinite;
+}
+
+.citizen-register-header h1 {
+  margin: 0;
+  color: var(--ink);
+  font-size: clamp(26px, 3.6vw, 32px);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  animation: crFadeUp 0.7s ease 0.4s both;
+}
+
+.citizen-register-header p {
+  max-width: 460px;
+  margin: 10px 0 0;
+  color: #3d6f8f;
+  font-size: 14px;
+  line-height: 1.7;
+  animation: crFadeUp 0.7s ease 0.5s both;
+}
+
+
+/* =========================================================
+   FORM
+   ========================================================= */
+
+/* fields rise in one after another (direct children of the form) */
+.citizen-register-card form > * {
+  animation: crFadeUp 0.7s ease both;
+}
+.citizen-register-card form > :nth-child(1) { animation-delay: 0.55s; }
+.citizen-register-card form > :nth-child(2) { animation-delay: 0.65s; }
+.citizen-register-card form > :nth-child(3) { animation-delay: 0.75s; }
+.citizen-register-card form > :nth-child(4) { animation-delay: 0.85s; }
+.citizen-register-card form > :nth-child(5) { animation-delay: 0.95s; }
+.citizen-register-card form > :nth-child(6) { animation-delay: 1.05s; }
+.citizen-register-card form > :nth-child(7) { animation-delay: 1.15s; }
+.citizen-register-card form > :nth-child(8) { animation-delay: 1.25s; }
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--green-dark);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.form-group label span {
+  color: var(--danger);
+}
+
+.form-group input {
+  width: 100%;
+  height: 46px;
+  padding: 0 14px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: #fff;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 13.5px;
+  outline: none;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.form-group input:hover {
+  border-color: #b5ddd3;
+}
+
+.form-group input:focus {
+  border-color: var(--teal);
+  box-shadow: 0 0 0 4px rgba(20, 211, 172, 0.16);
+}
+
+.form-group input::placeholder {
+  color: #9db2ad;
+}
+
+.form-error {
+  display: block;
+  margin-top: 5px;
+  color: var(--danger);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+
+/* =========================================================
+   PASSWORD
+   ========================================================= */
+
+.password-wrapper {
+  position: relative;
+}
+
+.password-wrapper input {
+  padding-right: 74px;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 5px 9px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--teal);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.password-toggle:hover {
+  background: rgba(20, 211, 172, 0.14);
+}
+
+.password-strength {
+  margin-top: 8px;
+}
+
+.strength-bars {
+  display: flex;
+  gap: 5px;
+}
+
+.strength-bars span {
+  height: 5px;
+  flex: 1;
+  border-radius: 10px;
+  background: #e3efec;
+  transition: background 0.3s ease;
+}
+
+.strength-bars span.active {
+  background: linear-gradient(90deg, var(--green-dark), var(--teal-bright));
+}
+
+.password-strength small {
+  display: block;
+  margin-top: 5px;
+  color: #3d6f8f;
+  font-size: 11.5px;
+  font-weight: 600;
+}
+
+
+/* =========================================================
+   TERMS
+   ========================================================= */
+
+.terms-container {
+  margin: 4px 0 20px;
+  padding: 12px 14px;
+  border: 1px solid #cdeee5;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #f2fdf9, var(--mint));
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  color: #3f6b63;
+  font-size: 12.5px;
+  line-height: 1.55;
+  cursor: pointer;
+}
+
+.checkbox-label input {
+  width: 17px;
+  height: 17px;
+  margin-top: 2px;
+  accent-color: var(--teal);
+}
+
+.checkbox-label a {
+  color: var(--green-dark);
+  font-weight: 700;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(15, 157, 132, 0.4);
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.checkbox-label a:hover {
+  color: var(--teal);
+  border-color: var(--teal);
+}
+
+.submit-error {
+  margin: 0 0 14px;
+}
+
+
+/* =========================================================
+   BUTTON — teal with a moving shine
+   ========================================================= */
+
+.primary-auth-button {
+  position: relative;
+  width: 100%;
+  height: 48px;
+  border: none;
+  border-radius: 9px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #0a7a67 0%, var(--teal) 60%, #14b898 100%);
+  color: #fff;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  box-shadow: 0 10px 24px rgba(15, 157, 132, 0.32);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.primary-auth-button::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -60%;
+  width: 30%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+  transform: skewX(-20deg);
+  animation: crShine 3.4s ease-in-out infinite;
+}
+
+.primary-auth-button:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--glow);
+}
+
+.primary-auth-button:active {
+  transform: translateY(-1px);
+}
+
+.primary-auth-button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.primary-auth-button:focus-visible,
+.password-toggle:focus-visible,
+.location-current-button:focus-visible,
+.citizen-register-page a:focus-visible {
+  outline: 3px solid var(--teal-bright);
+  outline-offset: 2px;
+}
+
+
+/* =========================================================
+   BOTTOM LINKS + FOOTER
+   ========================================================= */
+
+.auth-bottom-text {
+  margin-top: 22px;
+  text-align: center;
+  color: #3d6f8f;
+  font-size: 13.5px;
+  animation: crFadeIn 0.8s ease 1.3s both;
+}
+
+.auth-bottom-text a {
+  color: var(--teal);
+  font-weight: 800;
+  text-decoration: none;
+  transition: letter-spacing 0.25s ease, color 0.25s ease;
+}
+
+.auth-bottom-text a:hover {
+  color: var(--green-dark);
+  letter-spacing: 0.03em;
+}
+
+.back-register {
+  display: block;
+  width: fit-content;
+  margin: 12px auto 0;
+  color: #3d6f8f;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s ease, transform 0.25s ease;
+  animation: crFadeIn 0.8s ease 1.4s both;
+}
+
+.back-register:hover {
+  color: var(--teal);
+  transform: translateX(-4px);
+}
+
+.auth-footer {
+  margin-top: 22px;
+  text-align: center;
+  color: #2f7a6c;
+  font-size: 12.5px;
+  font-weight: 500;
+  animation: crFadeIn 0.8s ease 1.5s both;
+}
+
+
+/* =========================================
+   LOCATION PICKER
+   ========================================= */
+
+.location-form-error {
+  margin-top: -10px;
+  margin-bottom: 16px;
+}
+
+.citizen-register-card .location-picker {
+  margin-bottom: 16px;
+}
+
+.citizen-register-card .location-picker-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+
+.citizen-register-card .location-picker-header label {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--green-dark);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.citizen-register-card .location-picker-header label span {
+  color: var(--danger);
+}
+
+.citizen-register-card .location-picker-header p {
+  margin: 0;
+  color: #5f7f8f;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.citizen-register-card .location-current-button {
+  border: 1px solid #b9ebdd;
+  background: linear-gradient(135deg, #f2fdf9, #dcf7ee);
+  color: var(--green-dark);
+  border-radius: 9px;
+  padding: 9px 12px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.25s ease;
+}
+
+.citizen-register-card .location-current-button:hover {
+  background: linear-gradient(135deg, var(--teal), var(--teal-bright));
+  border-color: var(--teal);
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(15, 157, 132, 0.3);
+}
+
+.citizen-register-card .location-current-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.citizen-register-card .location-input-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 46px;
+  padding: 0 14px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: #fff;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.citizen-register-card .location-input-box:focus-within {
+  border-color: var(--teal);
+  box-shadow: 0 0 0 4px rgba(20, 211, 172, 0.16);
+}
+
+.citizen-register-card .location-input-box input {
+  height: 44px;
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
+  transform: none;
+}
+
+.citizen-register-card .location-input-box input:focus {
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  transform: none;
+}
+
+.citizen-register-card .location-icon {
+  font-size: 17px;
+}
+
+.citizen-register-card .location-selected {
+  margin-top: 10px;
+  padding: 11px 14px;
+  background: linear-gradient(135deg, #f2fdf9, var(--mint));
+  border: 1px solid #cdeee5;
+  border-left: 4px solid var(--teal);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.citizen-register-card .location-selected strong {
+  color: var(--green-dark);
+  font-size: 12.5px;
+}
+
+.citizen-register-card .location-selected span {
+  color: #4f7f75;
+  font-size: 11.5px;
+}
+
+.citizen-register-card .location-error {
+  display: block;
+  margin-top: 7px;
+  color: var(--danger);
+  font-size: 12px;
+}
+
+
+/* =========================================================
+   FIELD NAMES — dark green everywhere
+   ========================================================= */
+
+.citizen-register-card label:not(.checkbox-label),
+.citizen-register-card .form-group label,
+.citizen-register-card .location-picker-header label {
+  color: #0a5c4a;
+  font-weight: 800;
+}
+
+.citizen-register-card label:not(.checkbox-label) span,
+.citizen-register-card .form-group label span,
+.citizen-register-card .location-picker-header label span {
+  color: var(--danger); /* required * stays red */
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+/* smaller laptops: give the form a little more room */
+@media (max-width: 1100px) {
+  .citizen-register-card {
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+  }
+
+  .cr-form-side {
+    padding-left: 36px;
+  }
+}
+
+/* tablets + phones: illustration is hidden, form takes the full card */
+@media (max-width: 880px) {
+  .citizen-register-card {
+    grid-template-columns: 1fr;
+    max-width: 620px;
+    margin: 0 auto;
+  }
+
+  .citizen-register-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    z-index: 3;
+    background: linear-gradient(90deg, var(--green-dark), var(--teal), var(--panel));
+  }
+
+  .cr-art-side {
+    display: none;
+  }
+
+  .cr-form-side {
+    padding: 38px 28px 30px;
+  }
+
+  .citizen-register-container::before,
+  .citizen-register-container::after {
+    display: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .citizen-register-page {
+    padding: 20px 12px;
+  }
+
+  .citizen-register-card {
+    border-radius: 22px;
+  }
+
+  .cr-form-side {
+    padding: 34px 18px 26px;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .citizen-register-card .location-picker-header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .citizen-register-card .location-current-button {
+    width: 100%;
+  }
+}
+
+
+/* =========================================================
+   ACCESSIBILITY
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .citizen-register-page,
+  .citizen-register-page *,
+  .citizen-register-page *::before,
+  .citizen-register-page *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

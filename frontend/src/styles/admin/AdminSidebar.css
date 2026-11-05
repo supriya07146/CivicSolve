@@ -1,0 +1,279 @@
+.admin-sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+
+    width: 270px;
+
+    display: flex;
+    flex-direction: column;
+
+    background: #111827;
+    color: #ffffff;
+
+    z-index: 1000;
+
+    box-sizing: border-box;
+
+    overflow-y: auto;
+}
+
+
+/* =========================
+   LOGO
+========================= */
+
+.admin-sidebar-logo {
+    height: 82px;
+
+    display: flex;
+    align-items: center;
+
+    padding: 0 24px;
+
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.admin-logo-mark {
+    width: 40px;
+    height: 40px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 11px;
+
+    background: #4f46e5;
+
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.admin-logo-text {
+    margin-left: 12px;
+
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+.admin-logo-text span {
+    font-weight: 400;
+}
+
+
+/* =========================
+   PROFILE
+========================= */
+
+.admin-sidebar-profile {
+    display: flex;
+    align-items: center;
+
+    margin: 20px 16px;
+
+    padding: 14px;
+
+    border-radius: 12px;
+
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.admin-profile-avatar {
+    width: 40px;
+    height: 40px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #4f46e5;
+
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.admin-profile-info {
+    display: flex;
+    flex-direction: column;
+
+    min-width: 0;
+
+    margin-left: 11px;
+}
+
+.admin-profile-info strong {
+    font-size: 13px;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.admin-profile-info span {
+    margin-top: 3px;
+
+    color: #9ca3af;
+
+    font-size: 11px;
+}
+
+
+/* =========================
+   NAVIGATION
+========================= */
+
+.admin-navigation {
+    flex: 1;
+
+    padding: 0 14px;
+}
+
+.admin-nav-section {
+    margin-bottom: 22px;
+}
+
+.admin-nav-title {
+    display: block;
+
+    padding: 0 12px;
+    margin-bottom: 8px;
+
+    color: #6b7280;
+
+    font-size: 10px;
+    font-weight: 700;
+
+    letter-spacing: 1px;
+}
+
+.admin-nav-link {
+    display: flex;
+    align-items: center;
+
+    width: 100%;
+    min-height: 44px;
+
+    margin-bottom: 4px;
+    padding: 0 12px;
+
+    box-sizing: border-box;
+
+    border-radius: 9px;
+
+    color: #d1d5db;
+    text-decoration: none;
+
+    font-size: 13px;
+    font-weight: 500;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.admin-nav-link:hover {
+    background: rgba(255, 255, 255, 0.07);
+    color: #ffffff;
+}
+
+.admin-nav-link.active {
+    background: #4f46e5;
+    color: #ffffff;
+}
+
+.admin-nav-icon {
+    width: 26px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-right: 8px;
+
+    font-size: 16px;
+}
+
+
+/* =========================
+   FOOTER
+========================= */
+
+.admin-sidebar-footer {
+    padding: 14px 16px 20px;
+
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.admin-logout-button {
+    width: 100%;
+    min-height: 44px;
+
+    display: flex;
+    align-items: center;
+
+    padding: 0 12px;
+
+    border: none;
+    border-radius: 9px;
+
+    background: transparent;
+
+    color: #d1d5db;
+
+    cursor: pointer;
+
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 500;
+
+    text-align: left;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease;
+}
+
+.admin-logout-button:hover {
+    background: rgba(239, 68, 68, 0.12);
+    color: #fca5a5;
+}
+
+
+/* =========================
+   SCROLLBAR
+========================= */
+
+.admin-sidebar::-webkit-scrollbar {
+    width: 5px;
+}
+
+.admin-sidebar::-webkit-scrollbar-thumb {
+    background: #374151;
+    border-radius: 10px;
+}
+
+
+@media (max-width: 900px) {
+
+    .admin-sidebar {
+        position: relative;
+        width: 100%;
+        min-height: auto;
+    }
+
+    .admin-navigation {
+        display: none;
+    }
+
+    .admin-sidebar-footer {
+        display: none;
+    }
+}

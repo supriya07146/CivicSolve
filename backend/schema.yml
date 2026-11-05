@@ -1,0 +1,1861 @@
+openapi: 3.0.3
+info:
+  title: CivicSolve API
+  version: 1.0.0
+  description: CivicSolve Community Problem and Solution Platform API. This API provides
+    citizen registration, organization registration, OTP verification, authentication,
+    password recovery, and organization administration.
+paths:
+  /api/admin/analytics/:
+    get:
+      operationId: admin_analytics_retrieve
+      tags:
+      - admin
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/admin/analytics/escalated/:
+    get:
+      operationId: admin_analytics_escalated_retrieve
+      tags:
+      - admin
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/admin/analytics/overdue/:
+    get:
+      operationId: admin_analytics_overdue_retrieve
+      tags:
+      - admin
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/admin/analytics/problems/{problem_code}/escalation/:
+    patch:
+      operationId: admin_analytics_problems_escalation_partial_update
+      parameters:
+      - in: path
+        name: problem_code
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - admin
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/admin/assignments/:
+    get:
+      operationId: admin_assignments_retrieve
+      tags:
+      - admin
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: admin_assignments_create
+      tags:
+      - admin
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/admin/assignments/{assignment_id}/:
+    get:
+      operationId: admin_assignments_retrieve_2
+      parameters:
+      - in: path
+        name: assignment_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - admin
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/admin/categories/:
+    get:
+      operationId: admin_categories_retrieve
+      tags:
+      - admin
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: admin_categories_create
+      tags:
+      - admin
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/admin/categories/{category_id}/:
+    get:
+      operationId: admin_categories_retrieve_2
+      parameters:
+      - in: path
+        name: category_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - admin
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          description: No response body
+    patch:
+      operationId: admin_categories_partial_update
+      parameters:
+      - in: path
+        name: category_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - admin
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/admin/categories/{category_id}/status/:
+    patch:
+      operationId: admin_categories_status_partial_update
+      parameters:
+      - in: path
+        name: category_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - admin
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/admin/complaints/:
+    get:
+      operationId: admin_complaints_list
+      tags:
+      - admin
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Complaint'
+          description: ''
+    post:
+      operationId: admin_complaints_create
+      tags:
+      - admin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ComplaintCreateRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ComplaintCreateRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ComplaintCreateRequest'
+        required: true
+      security:
+      - BearerAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ComplaintCreate'
+          description: ''
+  /api/admin/complaints/{complaint_code}/:
+    get:
+      operationId: admin_complaints_retrieve
+      parameters:
+      - in: path
+        name: complaint_code
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - admin
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Complaint'
+          description: ''
+  /api/admin/complaints/admin/:
+    get:
+      operationId: admin_complaints_admin_list
+      tags:
+      - admin
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Complaint'
+          description: ''
+  /api/admin/complaints/admin/{complaint_code}/:
+    get:
+      operationId: admin_complaints_admin_retrieve
+      parameters:
+      - in: path
+        name: complaint_code
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - admin
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Complaint'
+          description: ''
+  /api/admin/complaints/admin/{complaint_code}/review/:
+    patch:
+      operationId: admin_complaints_admin_review_partial_update
+      parameters:
+      - in: path
+        name: complaint_code
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - admin
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/admin/organizations/:
+    get:
+      operationId: admin_organizations_retrieve
+      tags:
+      - admin
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/admin/organizations/{organization_id}/:
+    get:
+      operationId: admin_organizations_retrieve_2
+      parameters:
+      - in: path
+        name: organization_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - admin
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/admin/organizations/{organization_id}/approve/:
+    patch:
+      operationId: admin_organizations_approve_partial_update
+      parameters:
+      - in: path
+        name: organization_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - admin
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/admin/organizations/{organization_id}/reject/:
+    patch:
+      operationId: admin_organizations_reject_partial_update
+      parameters:
+      - in: path
+        name: organization_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - admin
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/admin/organizations/{organization_id}/suspend/:
+    patch:
+      operationId: admin_organizations_suspend_partial_update
+      parameters:
+      - in: path
+        name: organization_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - admin
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/admin/problems/:
+    get:
+      operationId: admin_problems_retrieve
+      tags:
+      - admin
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/admin/problems/{problem_id}/:
+    get:
+      operationId: admin_problems_retrieve_2
+      parameters:
+      - in: path
+        name: problem_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - admin
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/admin/profile/:
+    get:
+      operationId: admin_profile_retrieve
+      tags:
+      - admin
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          description: No response body
+    patch:
+      operationId: admin_profile_partial_update
+      tags:
+      - admin
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/admin/profile/change-password/:
+    post:
+      operationId: admin_profile_change_password_create
+      tags:
+      - admin
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/admin/solutions/:
+    get:
+      operationId: admin_solutions_retrieve
+      tags:
+      - admin
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: admin_solutions_create
+      tags:
+      - admin
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/admin/solutions/{solution_id}/:
+    get:
+      operationId: admin_solutions_retrieve_2
+      parameters:
+      - in: path
+        name: solution_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - admin
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/admin/solutions/{solution_id}/review/:
+    patch:
+      operationId: admin_solutions_review_partial_update
+      parameters:
+      - in: path
+        name: solution_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - admin
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/admin/users/:
+    get:
+      operationId: admin_users_retrieve
+      description: Retrieve registered citizens with search and filtering. Only CivicSolve
+        administrators can access this endpoint.
+      summary: List and search citizens
+      parameters:
+      - in: query
+        name: email_verified
+        schema:
+          type: boolean
+        description: 'Filter by email verification: true or false.'
+      - in: query
+        name: location
+        schema:
+          type: string
+        description: Filter citizens by location.
+      - in: query
+        name: page
+        schema:
+          type: integer
+        description: Page number.
+      - in: query
+        name: page_size
+        schema:
+          type: integer
+        description: Number of records per page.
+      - in: query
+        name: problem_status
+        schema:
+          type: string
+        description: Filter citizens based on their reported problem status.
+      - in: query
+        name: search
+        schema:
+          type: string
+        description: Search by name, email, phone, or location.
+      - in: query
+        name: status
+        schema:
+          type: string
+        description: 'Filter by account status: active or inactive.'
+      tags:
+      - Admin - User Management
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/admin/users/{user_id}/:
+    get:
+      operationId: admin_users_retrieve_2
+      description: Retrieve complete citizen profile information and reported problem
+        statistics.
+      summary: View citizen profile
+      parameters:
+      - in: path
+        name: user_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Admin - User Management
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/admin/users/{user_id}/problems/:
+    get:
+      operationId: admin_users_problems_retrieve
+      description: Retrieve all problems reported by a specific citizen with optional
+        status and priority filtering.
+      summary: View citizen reported problems
+      parameters:
+      - in: query
+        name: page
+        schema:
+          type: integer
+        description: Page number.
+      - in: query
+        name: page_size
+        schema:
+          type: integer
+        description: Number of records per page.
+      - in: query
+        name: priority
+        schema:
+          type: string
+        description: Filter by problem priority.
+      - in: query
+        name: status
+        schema:
+          type: string
+        description: Filter by problem status.
+      - in: path
+        name: user_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Admin - User Management
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/admin/users/{user_id}/status/:
+    patch:
+      operationId: admin_users_status_partial_update
+      description: Activate or deactivate a citizen account. Deactivation does not
+        delete the citizen or their reported problems.
+      summary: Activate or deactivate citizen
+      parameters:
+      - in: path
+        name: user_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Admin - User Management
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedAdminCitizenStatusRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedAdminCitizenStatusRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedAdminCitizenStatusRequest'
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/auth/admin/login/:
+    post:
+      operationId: auth_admin_login_create
+      description: Authenticates an administrator and returns JWT access and refresh
+        tokens.
+      summary: Admin login
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminLoginRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AdminLoginRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AdminLoginRequest'
+        required: true
+      security:
+      - BearerAuth: []
+      - {}
+      responses:
+        '200':
+          description: Admin login successful.
+        '400':
+          description: Email and password are required.
+        '401':
+          description: Invalid admin credentials.
+        '403':
+          description: Admin access denied or account inactive.
+  /api/auth/citizen/register/:
+    post:
+      operationId: auth_citizen_register_create
+      description: Creates a new citizen account and sends an OTP to the registered
+        email address for verification.
+      summary: Register a citizen
+      tags:
+      - Citizen
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CitizenRegisterRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CitizenRegisterRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CitizenRegisterRequest'
+        required: true
+      security:
+      - BearerAuth: []
+      - {}
+      responses:
+        '201':
+          description: Citizen registered successfully. OTP sent to email.
+        '400':
+          description: Validation error.
+  /api/auth/citizen/resend-otp/:
+    post:
+      operationId: auth_citizen_resend_otp_create
+      description: Invalidates previous registration OTPs and sends a new OTP to the
+        citizen's email.
+      summary: Resend citizen registration OTP
+      tags:
+      - Citizen
+      security:
+      - BearerAuth: []
+      - {}
+      responses:
+        '200':
+          description: New OTP sent successfully.
+        '400':
+          description: Unable to resend OTP.
+  /api/auth/citizen/verify-otp/:
+    post:
+      operationId: auth_citizen_verify_otp_create
+      description: Verifies the OTP sent to the citizen's email address and activates
+        the citizen account.
+      summary: Verify citizen registration OTP
+      tags:
+      - Citizen
+      security:
+      - BearerAuth: []
+      - {}
+      responses:
+        '200':
+          description: OTP verified successfully.
+        '400':
+          description: Invalid, expired, or already-used OTP.
+  /api/auth/forgot-password/:
+    post:
+      operationId: auth_forgot_password_create
+      description: Starts the password recovery process by sending an OTP to the provided
+        email address.
+      summary: Request password reset OTP
+      tags:
+      - Authentication
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ForgotPasswordRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ForgotPasswordRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ForgotPasswordRequest'
+        required: true
+      security:
+      - BearerAuth: []
+      - {}
+      responses:
+        '200':
+          description: Password reset request processed.
+  /api/auth/login/:
+    post:
+      operationId: auth_login_create
+      description: Authenticates a citizen or organization using the selected panel
+        and returns JWT access and refresh tokens.
+      summary: Login
+      tags:
+      - Authentication
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+        required: true
+      security:
+      - BearerAuth: []
+      - {}
+      responses:
+        '200':
+          description: Login successful. JWT tokens returned.
+        '400':
+          description: Invalid login credentials or account status.
+  /api/auth/organization/register/:
+    post:
+      operationId: auth_organization_register_create
+      description: Registers a new organization. The organization starts in pending
+        verification status and receives an OTP for email verification.
+      summary: Register an organization
+      tags:
+      - Organization
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrganizationRegisterRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/OrganizationRegisterRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/OrganizationRegisterRequest'
+        required: true
+      security:
+      - BearerAuth: []
+      - {}
+      responses:
+        '201':
+          description: Organization registered successfully.
+        '400':
+          description: Validation error.
+  /api/auth/organization/resend-otp/:
+    post:
+      operationId: auth_organization_resend_otp_create
+      description: Invalidates previous registration OTPs and sends a new OTP to the
+        organization's email.
+      summary: Resend organization registration OTP
+      tags:
+      - Organization
+      security:
+      - BearerAuth: []
+      - {}
+      responses:
+        '200':
+          description: New OTP sent successfully.
+        '400':
+          description: Unable to resend OTP.
+  /api/auth/organization/verify-otp/:
+    post:
+      operationId: auth_organization_verify_otp_create
+      description: Verifies the organization's email OTP. Successful verification
+        does not automatically approve the organization; administrator approval is
+        still required.
+      summary: Verify organization registration OTP
+      tags:
+      - Organization
+      security:
+      - BearerAuth: []
+      - {}
+      responses:
+        '200':
+          description: Organization email verified successfully.
+        '400':
+          description: Invalid or expired OTP.
+  /api/auth/reset-password/:
+    post:
+      operationId: auth_reset_password_create
+      description: Changes the account password using a valid password reset token.
+      summary: Reset password
+      tags:
+      - Authentication
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResetPasswordRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ResetPasswordRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ResetPasswordRequest'
+        required: true
+      security:
+      - BearerAuth: []
+      - {}
+      responses:
+        '200':
+          description: Password reset successfully.
+        '400':
+          description: Invalid reset token or password validation error.
+  /api/auth/verify-reset-otp/:
+    post:
+      operationId: auth_verify_reset_otp_create
+      description: Verifies the password reset OTP and generates a temporary reset
+        token for changing the password.
+      summary: Verify password reset OTP
+      tags:
+      - Authentication
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VerifyResetOTPRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/VerifyResetOTPRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/VerifyResetOTPRequest'
+        required: true
+      security:
+      - BearerAuth: []
+      - {}
+      responses:
+        '200':
+          description: OTP verified successfully and reset token generated.
+        '400':
+          description: Invalid or expired OTP.
+  /api/notifications/:
+    get:
+      operationId: notifications_retrieve
+      tags:
+      - notifications
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/notifications/{notification_id}/:
+    delete:
+      operationId: notifications_destroy
+      parameters:
+      - in: path
+        name: notification_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - notifications
+      security:
+      - BearerAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/notifications/{notification_id}/read/:
+    patch:
+      operationId: notifications_read_partial_update
+      parameters:
+      - in: path
+        name: notification_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - notifications
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/notifications/read-all/:
+    post:
+      operationId: notifications_read_all_create
+      tags:
+      - notifications
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/notifications/unread-count/:
+    get:
+      operationId: notifications_unread_count_retrieve
+      tags:
+      - notifications
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/problems/{problem_id}/:
+    get:
+      operationId: problems_retrieve
+      description: Returns the details of a problem reported by the authenticated
+        citizen.
+      summary: Get problem details
+      parameters:
+      - in: path
+        name: problem_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Problems
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+          description: ''
+        '404':
+          description: Problem not found.
+  /api/problems/{problem_id}/attachments/:
+    post:
+      operationId: problems_attachments_create
+      description: Uploads an image or document related to a citizen's reported problem.
+      summary: Upload problem attachment
+      parameters:
+      - in: path
+        name: problem_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Problems
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProblemAttachmentCreateRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProblemAttachmentCreateRequest'
+        required: true
+      security:
+      - BearerAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemAttachment'
+          description: ''
+        '400':
+          description: Invalid attachment.
+        '403':
+          description: You cannot modify this problem.
+        '404':
+          description: Problem not found.
+  /api/problems/admin/:
+    get:
+      operationId: problems_admin_list
+      description: Returns all community problems for CivicSolve administrators.
+      summary: List all community problems
+      tags:
+      - Admin - Problems
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AdminProblem'
+          description: ''
+        '401':
+          description: Authentication required.
+        '403':
+          description: Admin access required.
+  /api/problems/admin/{problem_id}/:
+    get:
+      operationId: problems_admin_retrieve
+      description: Returns complete details of a community problem for administrators.
+      summary: Get problem details
+      parameters:
+      - in: path
+        name: problem_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Admin - Problems
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminProblem'
+          description: ''
+        '404':
+          description: Problem not found.
+  /api/problems/admin/{problem_id}/status/:
+    patch:
+      operationId: problems_admin_status_partial_update
+      description: Allows an administrator to update the workflow status of a community
+        problem.
+      summary: Update problem status
+      parameters:
+      - in: path
+        name: problem_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Admin - Problems
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminProblem'
+          description: ''
+        '400':
+          description: Invalid status.
+        '404':
+          description: Problem not found.
+  /api/problems/attachments/{attachment_id}/:
+    delete:
+      operationId: problems_attachments_destroy
+      description: Deletes an attachment belonging to the authenticated citizen's
+        problem.
+      summary: Delete problem attachment
+      parameters:
+      - in: path
+        name: attachment_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Problems
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          description: Attachment deleted successfully.
+        '403':
+          description: Permission denied.
+        '404':
+          description: Attachment not found.
+  /api/problems/categories/:
+    get:
+      operationId: problems_categories_list
+      description: Returns all active problem categories available for citizens.
+      summary: Get problem categories
+      tags:
+      - Problems
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProblemCategory'
+          description: ''
+  /api/problems/create/:
+    post:
+      operationId: problems_create_create
+      description: Allows an authenticated and verified citizen to report a new community
+        problem.
+      summary: Report a community problem
+      tags:
+      - Problems
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProblemCreateRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProblemCreateRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProblemCreateRequest'
+        required: true
+      security:
+      - BearerAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+          description: ''
+        '400':
+          description: Validation error.
+        '401':
+          description: Authentication required.
+        '403':
+          description: Citizen access required.
+  /api/problems/my/:
+    get:
+      operationId: problems_my_list
+      description: Returns all problems reported by the currently authenticated citizen.
+      summary: Get my reported problems
+      tags:
+      - Problems
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Problem'
+          description: ''
+        '401':
+          description: Authentication required.
+components:
+  schemas:
+    AdminLoginRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          minLength: 1
+          description: Administrator email address
+        password:
+          type: string
+          writeOnly: true
+          minLength: 1
+          description: Administrator password
+      required:
+      - email
+      - password
+    AdminProblem:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        problem_code:
+          type: string
+          format: uuid
+          readOnly: true
+        title:
+          type: string
+          maxLength: 200
+        description:
+          type: string
+        category:
+          type: integer
+        category_details:
+          allOf:
+          - $ref: '#/components/schemas/ProblemCategory'
+          readOnly: true
+        reported_by:
+          type: string
+          readOnly: true
+        location:
+          type: string
+          maxLength: 255
+        latitude:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,7})?$
+          nullable: true
+        longitude:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,7})?$
+          nullable: true
+        priority:
+          $ref: '#/components/schemas/PriorityEnum'
+        status:
+          $ref: '#/components/schemas/Status598Enum'
+        resolution_notes:
+          type: string
+        resolved_at:
+          type: string
+          format: date-time
+          nullable: true
+        attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProblemAttachment'
+          readOnly: true
+        assignments:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProblemAssignment'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - assignments
+      - attachments
+      - category
+      - category_details
+      - created_at
+      - description
+      - id
+      - location
+      - problem_code
+      - reported_by
+      - title
+      - updated_at
+    CitizenRegisterRequest:
+      type: object
+      properties:
+        full_name:
+          type: string
+          minLength: 2
+          maxLength: 100
+        email:
+          type: string
+          format: email
+          minLength: 1
+        phone:
+          type: string
+          minLength: 10
+          maxLength: 15
+        password:
+          type: string
+          writeOnly: true
+          minLength: 1
+        confirm_password:
+          type: string
+          writeOnly: true
+          minLength: 1
+        location:
+          type: string
+        latitude:
+          type: number
+          format: double
+          nullable: true
+        longitude:
+          type: number
+          format: double
+          nullable: true
+        terms_accepted:
+          type: boolean
+      required:
+      - confirm_password
+      - email
+      - full_name
+      - password
+      - phone
+      - terms_accepted
+    Complaint:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        complaint_code:
+          type: string
+          format: uuid
+          readOnly: true
+        target_type:
+          $ref: '#/components/schemas/TargetTypeEnum'
+        problem:
+          type: integer
+          nullable: true
+        problem_title:
+          type: string
+          readOnly: true
+        target_organization:
+          type: integer
+          nullable: true
+        target_organization_name:
+          type: string
+          readOnly: true
+        title:
+          type: string
+          maxLength: 200
+        description:
+          type: string
+        status:
+          allOf:
+          - $ref: '#/components/schemas/ComplaintStatusEnum'
+          readOnly: true
+        admin_investigation_notes:
+          type: string
+          readOnly: true
+        resolution_notes:
+          type: string
+          readOnly: true
+        reviewed_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        resolved_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - admin_investigation_notes
+      - complaint_code
+      - created_at
+      - description
+      - id
+      - problem_title
+      - resolution_notes
+      - resolved_at
+      - reviewed_at
+      - status
+      - target_organization_name
+      - target_type
+      - title
+      - updated_at
+    ComplaintCreate:
+      type: object
+      properties:
+        target_type:
+          $ref: '#/components/schemas/TargetTypeEnum'
+        problem:
+          type: integer
+          nullable: true
+        target_organization:
+          type: integer
+          nullable: true
+        title:
+          type: string
+          maxLength: 200
+        description:
+          type: string
+      required:
+      - description
+      - target_type
+      - title
+    ComplaintCreateRequest:
+      type: object
+      properties:
+        target_type:
+          $ref: '#/components/schemas/TargetTypeEnum'
+        problem:
+          type: integer
+          nullable: true
+        target_organization:
+          type: integer
+          nullable: true
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+        description:
+          type: string
+          minLength: 1
+      required:
+      - description
+      - target_type
+      - title
+    ComplaintStatusEnum:
+      enum:
+      - submitted
+      - under_review
+      - investigating
+      - resolved
+      - rejected
+      type: string
+      description: |-
+        * `submitted` - Submitted
+        * `under_review` - Under Review
+        * `investigating` - Investigating
+        * `resolved` - Resolved
+        * `rejected` - Rejected
+    ForgotPasswordRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          minLength: 1
+      required:
+      - email
+    LoginRequest:
+      type: object
+      properties:
+        panel:
+          $ref: '#/components/schemas/PanelEnum'
+        email:
+          type: string
+          format: email
+          minLength: 1
+        password:
+          type: string
+          writeOnly: true
+          minLength: 1
+      required:
+      - email
+      - panel
+      - password
+    OrganizationRegisterRequest:
+      type: object
+      properties:
+        organization_name:
+          type: string
+          minLength: 1
+          maxLength: 150
+        organization_type:
+          type: string
+          minLength: 1
+          maxLength: 30
+        email:
+          type: string
+          format: email
+          minLength: 1
+        phone:
+          type: string
+          minLength: 10
+          maxLength: 15
+        address:
+          type: string
+          minLength: 1
+        latitude:
+          type: number
+          format: double
+          nullable: true
+        longitude:
+          type: number
+          format: double
+          nullable: true
+        city:
+          type: string
+          minLength: 1
+          maxLength: 100
+        state:
+          type: string
+          minLength: 1
+          maxLength: 100
+        service_area:
+          type: string
+          minLength: 1
+          maxLength: 255
+        categories:
+          type: array
+          items:
+            type: string
+            minLength: 1
+        description:
+          type: string
+          minLength: 1
+        verification_document:
+          type: string
+          format: binary
+          nullable: true
+        password:
+          type: string
+          writeOnly: true
+          minLength: 1
+        confirm_password:
+          type: string
+          writeOnly: true
+          minLength: 1
+      required:
+      - address
+      - categories
+      - city
+      - confirm_password
+      - description
+      - email
+      - organization_name
+      - organization_type
+      - password
+      - phone
+      - service_area
+      - state
+    PanelEnum:
+      enum:
+      - citizen
+      - organization
+      type: string
+      description: |-
+        * `citizen` - citizen
+        * `organization` - organization
+    PatchedAdminCitizenStatusRequest:
+      type: object
+      properties:
+        is_active:
+          type: boolean
+        reason:
+          type: string
+          maxLength: 500
+    PriorityEnum:
+      enum:
+      - low
+      - medium
+      - high
+      - urgent
+      type: string
+      description: |-
+        * `low` - Low
+        * `medium` - Medium
+        * `high` - High
+        * `urgent` - Urgent
+    Problem:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        problem_code:
+          type: string
+          format: uuid
+          readOnly: true
+        title:
+          type: string
+          maxLength: 200
+        description:
+          type: string
+        category:
+          type: integer
+        category_details:
+          allOf:
+          - $ref: '#/components/schemas/ProblemCategory'
+          readOnly: true
+        reported_by:
+          type: string
+          readOnly: true
+        location:
+          type: string
+          maxLength: 255
+        latitude:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,7})?$
+          nullable: true
+        longitude:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,7})?$
+          nullable: true
+        priority:
+          $ref: '#/components/schemas/PriorityEnum'
+        status:
+          allOf:
+          - $ref: '#/components/schemas/Status598Enum'
+          readOnly: true
+        resolution_notes:
+          type: string
+          readOnly: true
+        resolved_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProblemAttachment'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - attachments
+      - category
+      - category_details
+      - created_at
+      - description
+      - id
+      - location
+      - problem_code
+      - reported_by
+      - resolution_notes
+      - resolved_at
+      - status
+      - title
+      - updated_at
+    ProblemAssignment:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        problem:
+          type: integer
+        organization:
+          type: integer
+        organization_details:
+          type: string
+          readOnly: true
+        assigned_by:
+          type: integer
+          readOnly: true
+        assigned_by_details:
+          type: string
+          readOnly: true
+        status:
+          $ref: '#/components/schemas/ProblemAssignmentStatusEnum'
+        assigned_at:
+          type: string
+          format: date-time
+          readOnly: true
+        accepted_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        completed_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        notes:
+          type: string
+      required:
+      - accepted_at
+      - assigned_at
+      - assigned_by
+      - assigned_by_details
+      - completed_at
+      - id
+      - organization
+      - organization_details
+      - problem
+    ProblemAssignmentStatusEnum:
+      enum:
+      - assigned
+      - accepted
+      - in_progress
+      - completed
+      - cancelled
+      type: string
+      description: |-
+        * `assigned` - Assigned
+        * `accepted` - Accepted
+        * `in_progress` - In Progress
+        * `completed` - Completed
+        * `cancelled` - Cancelled
+    ProblemAttachment:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        file:
+          type: string
+          format: uri
+        uploaded_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - file
+      - id
+      - uploaded_at
+    ProblemAttachmentCreateRequest:
+      type: object
+      properties:
+        problem:
+          type: integer
+        file:
+          type: string
+          format: binary
+      required:
+      - file
+      - problem
+    ProblemAttachmentRequest:
+      type: object
+      properties:
+        file:
+          type: string
+          format: binary
+      required:
+      - file
+    ProblemCategory:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 100
+        description:
+          type: string
+        is_active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - id
+      - name
+      - updated_at
+    ProblemCategoryRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+        description:
+          type: string
+        is_active:
+          type: boolean
+      required:
+      - name
+    ProblemCreateRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+        description:
+          type: string
+          minLength: 1
+        category:
+          type: integer
+        location:
+          type: string
+          minLength: 1
+          maxLength: 255
+        latitude:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,7})?$
+          nullable: true
+        longitude:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,7})?$
+          nullable: true
+        priority:
+          $ref: '#/components/schemas/PriorityEnum'
+      required:
+      - category
+      - description
+      - location
+      - title
+    ResetPasswordRequest:
+      type: object
+      properties:
+        reset_token:
+          type: string
+          minLength: 1
+        password:
+          type: string
+          writeOnly: true
+          minLength: 1
+        confirm_password:
+          type: string
+          writeOnly: true
+          minLength: 1
+      required:
+      - confirm_password
+      - password
+      - reset_token
+    Status598Enum:
+      enum:
+      - open
+      - under_review
+      - assigned
+      - in_progress
+      - resolved
+      - rejected
+      - closed
+      type: string
+      description: |-
+        * `open` - Open
+        * `under_review` - Under Review
+        * `assigned` - Assigned
+        * `in_progress` - In Progress
+        * `resolved` - Resolved
+        * `rejected` - Rejected
+        * `closed` - Closed
+    TargetTypeEnum:
+      enum:
+      - problem
+      - organization
+      - problem_handling
+      type: string
+      description: |-
+        * `problem` - Community Problem
+        * `organization` - Organization
+        * `problem_handling` - Handling of a Problem
+    VerifyResetOTPRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          minLength: 1
+        otp:
+          type: string
+          minLength: 6
+          maxLength: 6
+      required:
+      - email
+      - otp
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+tags:
+- name: Citizen
+  description: Citizen registration and email verification APIs.
+- name: Organization
+  description: Organization registration and verification APIs.
+- name: Authentication
+  description: Login and password recovery APIs.
+- name: Admin
+  description: Administrator authentication and organization management APIs.

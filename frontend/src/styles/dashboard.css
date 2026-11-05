@@ -1,0 +1,185 @@
+.dashboard {
+    min-height: 100vh;
+    display: flex;
+    background: #f5f7fb;
+}
+
+.dashboard aside {
+    width: 255px;
+    min-height: 100vh;
+    background: #111827;
+    padding: 25px 16px;
+    display: flex;
+    flex-direction: column;
+}
+
+.dashboard-logo {
+    margin: 0 12px 35px;
+    color: white;
+}
+
+.dashboard aside button {
+    border: 0;
+    background: transparent;
+    color: #94a3b8;
+    text-align: left;
+    padding: 13px 15px;
+    border-radius: 9px;
+    cursor: pointer;
+    margin-bottom: 5px;
+}
+
+.dashboard aside button:hover,
+.dashboard aside button.active {
+    background: #312e81;
+    color: white;
+}
+
+.dashboard aside .logout {
+    margin-top: auto;
+    color: #fca5a5;
+}
+
+.dashboard main {
+    flex: 1;
+    padding: 35px;
+}
+
+.dashboard main header {
+    margin-bottom: 30px;
+}
+
+.dashboard main header h1 {
+    margin: 0 0 7px;
+}
+
+.dashboard main header p {
+    color: #64748b;
+}
+
+.dashboard-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.stat-card {
+    background: white;
+    padding: 25px;
+    border-radius: 16px;
+    box-shadow: 0 8px 25px rgba(15, 23, 42, 0.05);
+}
+
+.stat-card span {
+    font-size: 28px;
+}
+
+.stat-card h2 {
+    font-size: 32px;
+    margin: 15px 0 4px;
+}
+
+.stat-card p {
+    color: #64748b;
+}
+
+.welcome-panel {
+    margin-top: 25px;
+    background: white;
+    padding: 30px;
+    border-radius: 18px;
+    box-shadow: 0 8px 25px rgba(15, 23, 42, 0.05);
+}
+
+.welcome-panel p {
+    color: #64748b;
+    line-height: 1.7;
+}
+
+.welcome-panel button {
+    border: 0;
+    background: #4f46e5;
+    color: white;
+    padding: 12px 18px;
+    border-radius: 9px;
+    font-weight: 700;
+}
+
+.organization-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.organization-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+}
+
+.organization-item h3 {
+    margin: 0 0 5px;
+}
+
+.organization-item p {
+    margin: 0;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.action-buttons button {
+    border: 0;
+    padding: 9px 15px;
+    border-radius: 7px;
+    cursor: pointer;
+}
+
+.approve {
+    background: #dcfce7 !important;
+    color: #15803d !important;
+}
+
+.reject {
+    background: #fee2e2 !important;
+    color: #dc2626 !important;
+}
+
+@media (max-width: 800px) {
+
+    .dashboard aside {
+        width: 70px;
+    }
+
+    .dashboard-logo {
+        font-size: 0;
+    }
+
+    .dashboard aside button {
+        font-size: 0;
+        text-align: center;
+    }
+
+    .dashboard aside button::first-letter {
+        font-size: 20px;
+    }
+
+    .dashboard-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard main {
+        padding: 20px;
+    }
+
+    .organization-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+}

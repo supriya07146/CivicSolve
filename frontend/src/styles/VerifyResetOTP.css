@@ -1,0 +1,444 @@
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
+
+/* =========================================================
+   CIVICSOLVE — VERIFY RESET OTP
+   All classes use the vo- prefix, so this file never clashes
+   with the other auth stylesheets.
+   ========================================================= */
+
+.vo-page {
+  --green-dark: #0a5c4a;
+  --green-deep: #06402f;
+  --teal: #0f9d84;
+  --teal-bright: #14d3ac;
+  --mint: #e9fbf6;
+  --sky: #38bdf8;
+  --text: #0f2236;
+  --line: #dbe8e5;
+
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 24px 20px 16px;
+  overflow: hidden;
+  font-family: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  background: linear-gradient(180deg, #d4f6ec 0%, #eafaf5 45%, #f6fbfa 100%);
+}
+.vo-page *, .vo-page *::before, .vo-page *::after { box-sizing: border-box; }
+
+.vo-page::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(15, 157, 132, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(15, 157, 132, 0.07) 1px, transparent 1px);
+  background-size: 46px 46px;
+  -webkit-mask-image: radial-gradient(ellipse at center, #000 30%, transparent 75%);
+  mask-image: radial-gradient(ellipse at center, #000 30%, transparent 75%);
+}
+.vo-page::after {
+  content: "";
+  position: absolute;
+  inset: -10%;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 12% 12%, rgba(20, 211, 172, 0.40), transparent 30%),
+    radial-gradient(circle at 90% 22%, rgba(56, 189, 248, 0.32), transparent 30%),
+    radial-gradient(circle at 70% 95%, rgba(10, 92, 74, 0.22), transparent 34%);
+  animation: voDrift 16s ease-in-out infinite alternate;
+}
+
+/* ---------- keyframes ---------- */
+@keyframes voDrift   { to { transform: translate(30px, -24px) scale(1.06); } }
+@keyframes voCardIn  { from { opacity: 0; transform: translateY(30px) scale(0.97); } to { opacity: 1; transform: none; } }
+@keyframes voFadeUp  { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@keyframes voFadeIn  { from { opacity: 0; } to { opacity: 1; } }
+@keyframes voSlideIn { from { opacity: 0; transform: translateX(-60px); } to { opacity: 1; transform: none; } }
+@keyframes voFloat   { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-9px); } }
+@keyframes voCloud   { from { transform: translateX(-20px); } to { transform: translateX(40px); } }
+@keyframes voTwinkle { 0%, 100% { opacity: 0.2; transform: scale(0.6) rotate(0); } 50% { opacity: 1; transform: scale(1.1) rotate(45deg); } }
+@keyframes voBar     { to { background-position: 200% 50%; } }
+@keyframes voShine   { to { transform: translateX(520%) skewX(-20deg); } }
+@keyframes voRise    { 0% { transform: translateY(0) scale(0.6); opacity: 0; } 15% { opacity: 0.7; } 100% { transform: translateY(-110vh) scale(1.1); opacity: 0; } }
+@keyframes voRing    { 0% { transform: scale(0.8); opacity: 0.7; } 100% { transform: scale(1.7); opacity: 0; } }
+@keyframes voBreathe { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+@keyframes voHead    { 0%, 100% { transform: rotate(-1deg); } 50% { transform: rotate(2.5deg); } }
+@keyframes voBlink   { 0%, 92%, 100% { transform: scaleY(1); } 96% { transform: scaleY(0.1); } }
+@keyframes voWave    { 0%, 100% { opacity: 0.15; } 50% { opacity: 1; } }
+@keyframes voGlow    { 0%, 100% { opacity: 1; } 50% { opacity: 0.55; } }
+@keyframes voFly     { 0% { transform: translate(0, 0) scale(1); opacity: 0; } 15% { opacity: 1; } 85% { opacity: 1; } 100% { transform: translate(250px, 70px) scale(0.35); opacity: 0; } }
+@keyframes voTyping  { 0%, 100% { transform: translateY(0); opacity: 0.5; } 50% { transform: translateY(-4px); opacity: 1; } }
+@keyframes voPop     { from { opacity: 0; transform: scale(0.2); } to { opacity: 1; transform: scale(1); } }
+@keyframes voShake   { 0%, 100% { transform: translateX(0); } 20% { transform: translateX(-8px); } 40% { transform: translateX(8px); } 60% { transform: translateX(-5px); } 80% { transform: translateX(5px); } }
+@keyframes voCaret   { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+@keyframes voCheck   { to { stroke-dashoffset: 0; } }
+
+/* ---------- layout ---------- */
+.vo-layout {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 450px);
+  align-items: center;
+  gap: 16px;
+}
+
+/* ---------- scene ---------- */
+.vo-scene { position: relative; height: 440px; animation: voFadeIn 0.8s ease both; }
+
+.vo-cloud-bg {
+  position: absolute;
+  left: 6%; right: 2%; top: 14%; bottom: 6%;
+  border-radius: 46% 54% 40% 60% / 55% 45% 55% 45%;
+  background: radial-gradient(circle at 50% 40%, rgba(255, 255, 255, 0.85), rgba(190, 240, 226, 0.7));
+}
+
+.vo-decor { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.vo-drift { animation: voCloud 14s ease-in-out infinite alternate; }
+.vo-drift-2 { animation-duration: 18s; animation-delay: -6s; }
+.vo-float { animation: voFloat 6s ease-in-out infinite; }
+.vo-float-2 { animation-duration: 7.5s; animation-delay: -2s; }
+.vo-star { transform-box: fill-box; transform-origin: center; animation: voTwinkle 3s ease-in-out infinite; }
+.vo-star-2 { animation-delay: -1.5s; }
+.vo-typing { animation: voTyping 1.2s ease-in-out infinite; }
+.vo-typing-2 { animation-delay: 0.2s; }
+.vo-typing-3 { animation-delay: 0.4s; }
+
+/* envelopes travel from the left into her phone */
+.vo-fly { animation: voFly 4.5s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+.vo-fly-2 { animation-delay: 2.2s; }
+
+.vo-ground {
+  position: absolute;
+  left: 4%; right: 4%; bottom: 14px;
+  height: 26px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(15, 157, 132, 0.30), transparent 70%);
+}
+
+/* 6 code chips above her — they light up as digits are typed */
+.vo-chips {
+  position: absolute;
+  top: 6px; left: 50%;
+  z-index: 3;
+  display: flex; gap: 8px;
+  transform: translateX(-50%);
+}
+.vo-chips span {
+  width: 34px; height: 40px;
+  display: flex; align-items: center; justify-content: center;
+  border: 2px dashed #8edcc8;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.85);
+  color: #fff;
+  font-size: 16px; font-weight: 800;
+  transition: background 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
+  animation: voFloat 4s ease-in-out infinite;
+}
+.vo-chips span:nth-child(2) { animation-delay: -0.5s; }
+.vo-chips span:nth-child(3) { animation-delay: -1s; }
+.vo-chips span:nth-child(4) { animation-delay: -1.5s; }
+.vo-chips span:nth-child(5) { animation-delay: -2s; }
+.vo-chips span:nth-child(6) { animation-delay: -2.5s; }
+.vo-chips span.lit {
+  border: 2px solid var(--teal);
+  background: linear-gradient(135deg, var(--green-dark), var(--teal-bright));
+  box-shadow: 0 6px 14px rgba(15, 157, 132, 0.35);
+}
+
+.vo-person-wrap {
+  position: absolute;
+  left: 50%; bottom: 22px;
+  width: 310px;
+  margin-left: -165px;
+  z-index: 2;
+  animation: voSlideIn 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+.vo-person-svg { display: block; width: 100%; height: auto; overflow: visible; }
+
+.vo-body, .vo-head { transform-box: view-box; }
+.vo-body { transform-origin: 160px 360px; animation: voBreathe 3.6s ease-in-out infinite; }
+.vo-head { transform-origin: 160px 250px; animation: voHead 5s ease-in-out infinite; }
+.vo-eye { transform-box: fill-box; transform-origin: center; animation: voBlink 4.2s infinite; }
+.vo-screen { animation: voGlow 2s ease-in-out infinite; }
+.vo-wave { animation: voWave 1.8s ease-in-out infinite; }
+.vo-wave-2 { animation-delay: 0.25s; }
+.vo-wave-3 { animation-delay: 0.5s; }
+
+/* reactions when all 6 digits are in */
+.vo-mouth-happy { opacity: 0; }
+.vo-mouth-wait, .vo-mouth-happy { transition: opacity 0.3s ease; }
+.vo-scene.is-complete .vo-mouth-wait { opacity: 0; }
+.vo-scene.is-complete .vo-mouth-happy { opacity: 1; }
+.vo-shield-check { stroke-dasharray: 40; stroke-dashoffset: 40; }
+.vo-scene.is-complete .vo-shield-check { animation: voCheck 0.5s ease forwards; }
+
+/* ---------- particles ---------- */
+.vo-particles { position: absolute; inset: 0; z-index: 1; overflow: hidden; pointer-events: none; }
+.vo-particle { position: absolute; bottom: -20px; width: 10px; height: 10px; border-radius: 50%; background: var(--teal-bright); opacity: 0; animation: voRise 14s linear infinite; }
+.vo-particle-1 { left: 6%;  animation-delay: 0s; }
+.vo-particle-2 { left: 17%; animation-delay: 3s;  width: 7px; height: 7px; background: var(--sky); }
+.vo-particle-3 { left: 29%; animation-delay: 6s;  width: 12px; height: 12px; }
+.vo-particle-4 { left: 41%; animation-delay: 1.5s; width: 6px; height: 6px; background: #22c55e; }
+.vo-particle-5 { left: 53%; animation-delay: 8s;  background: var(--sky); }
+.vo-particle-6 { left: 65%; animation-delay: 4s;  width: 8px; height: 8px; }
+.vo-particle-7 { left: 76%; animation-delay: 10s; width: 12px; height: 12px; background: #22c55e; }
+.vo-particle-8 { left: 87%; animation-delay: 2s;  width: 7px; height: 7px; background: var(--sky); }
+.vo-particle-9 { left: 95%; animation-delay: 7s; }
+
+/* ---------- card ---------- */
+.vo-card {
+  position: relative;
+  padding: 54px 30px 18px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  box-shadow: 0 24px 60px rgba(10, 60, 50, 0.16);
+  animation: voCardIn 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+.vo-card::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 5px;
+  border-radius: 24px 24px 0 0;
+  background: linear-gradient(90deg, var(--green-dark), var(--teal), var(--teal-bright), var(--sky), var(--green-dark));
+  background-size: 200% auto;
+  animation: voBar 6s linear infinite;
+}
+
+.vo-badge {
+  position: absolute;
+  top: -32px; left: 50%;
+  width: 66px; height: 66px;
+  margin-left: -33px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--green-dark), var(--teal) 60%, var(--teal-bright));
+  box-shadow: 0 10px 24px rgba(15, 157, 132, 0.45);
+  border: 4px solid #fff;
+}
+.vo-badge svg { width: 34px; height: 34px; }
+.vo-badge-ring {
+  position: absolute; inset: -4px;
+  border-radius: 50%;
+  border: 2px solid var(--teal-bright);
+  animation: voRing 2.2s ease-out infinite;
+}
+
+.vo-card h1 {
+  margin: 0 0 6px;
+  color: var(--green-dark);
+  font-size: clamp(22px, 4vw, 27px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  animation: voFadeUp 0.7s ease 0.3s both;
+}
+.vo-subtitle {
+  margin: 0 0 8px;
+  color: #3d6f8f;
+  font-size: 14px;
+  line-height: 1.5;
+  animation: voFadeUp 0.7s ease 0.4s both;
+}
+.vo-email-pill {
+  display: inline-block;
+  max-width: 100%;
+  margin-bottom: 14px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(20, 211, 172, 0.13);
+  color: var(--green-dark);
+  font-size: 13.5px;
+  font-weight: 800;
+  word-break: break-all;
+  animation: voFadeUp 0.7s ease 0.45s both;
+}
+
+.vo-steps {
+  display: flex; gap: 6px;
+  margin: 0 0 14px; padding: 0;
+  list-style: none;
+  animation: voFadeUp 0.7s ease 0.5s both;
+}
+.vo-steps li {
+  flex: 1;
+  padding: 6px 4px;
+  border-radius: 999px;
+  background: #eef6f4;
+  color: #6b8f87;
+  font-size: 11.5px;
+  font-weight: 700;
+}
+.vo-steps li.done { background: #d9f7ee; color: var(--green-dark); }
+.vo-steps li.active {
+  background: linear-gradient(135deg, var(--green-dark), var(--teal) 70%, var(--teal-bright));
+  color: #fff;
+  box-shadow: 0 6px 14px rgba(15, 157, 132, 0.3);
+}
+
+.vo-error {
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  border: 1px solid #fecaca;
+  border-radius: 10px;
+  background: #fff1f2;
+  color: #b91c1c;
+  font-size: 13px;
+  line-height: 1.5;
+  text-align: left;
+}
+
+.vo-card form { text-align: left; }
+.vo-card form > * { animation: voFadeUp 0.7s ease both; }
+.vo-card form > :nth-child(1) { animation-delay: 0.6s; }
+.vo-card form > :nth-child(2) { animation-delay: 0.7s; }
+
+.vo-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--green-dark);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+/* ---------- OTP boxes (one hidden input drives all six) ---------- */
+.vo-boxes {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 8px;
+  cursor: text;
+}
+.vo-box {
+  height: 54px;
+  display: flex; align-items: center; justify-content: center;
+  border: 1.5px solid var(--line);
+  border-radius: 12px;
+  background: #fbfefd;
+  color: var(--green-dark);
+  font-size: 24px;
+  font-weight: 800;
+  transition: border-color 0.25s ease, background 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+}
+.vo-box.filled {
+  border-color: var(--teal);
+  background: linear-gradient(135deg, #f0fdf9, #d9f7ee);
+  animation: voPop 0.25s cubic-bezier(0.2, 0.9, 0.3, 1.4) both;
+}
+.vo-boxes:focus-within .vo-box.current {
+  border-color: var(--teal-bright);
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(20, 211, 172, 0.2);
+  transform: translateY(-2px);
+}
+.vo-boxes:focus-within .vo-box.current::after {
+  content: "";
+  width: 2px; height: 26px;
+  background: var(--teal);
+  animation: voCaret 1s steps(1) infinite;
+}
+.vo-boxes.has-error .vo-box { border-color: #fca5a5; background: #fff7f7; }
+.vo-boxes.has-error { animation: voShake 0.4s ease; }
+
+.vo-hidden-input {
+  position: absolute;
+  inset: 0;
+  width: 100%; height: 100%;
+  opacity: 0;
+  border: none;
+  font-size: 16px;
+  cursor: text;
+}
+
+.vo-submit {
+  position: relative;
+  width: 100%;
+  height: 48px;
+  margin-top: 16px;
+  border: none;
+  border-radius: 12px;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--green-deep) 0%, var(--green-dark) 35%, var(--teal) 75%, var(--teal-bright) 100%);
+  color: #fff;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 10px 26px rgba(10, 92, 74, 0.35);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, opacity 0.25s ease;
+}
+.vo-submit::after {
+  content: "";
+  position: absolute;
+  top: 0; left: -60%;
+  width: 30%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+  transform: skewX(-20deg);
+  animation: voShine 3.4s ease-in-out infinite;
+}
+.vo-submit:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 0 0 1px rgba(20, 211, 172, 0.3), 0 12px 36px rgba(20, 211, 172, 0.3); }
+.vo-submit:disabled { opacity: 0.55; cursor: not-allowed; box-shadow: none; }
+.vo-submit:disabled::after { display: none; }
+.vo-submit:focus-visible, .vo-back:focus-visible { outline: 3px solid var(--teal-bright); outline-offset: 2px; }
+
+.vo-back {
+  display: block;
+  margin: 12px auto 0;
+  padding: 7px 14px;
+  border: none;
+  border-radius: 8px;
+  background: none;
+  color: #3d6f8f;
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: color 0.2s ease, transform 0.25s ease, background 0.2s ease;
+  animation: voFadeIn 0.8s ease 1s both;
+}
+.vo-back:hover { color: var(--teal); background: rgba(20, 211, 172, 0.1); transform: translateX(-4px); }
+
+.vo-footer {
+  position: relative; z-index: 2;
+  margin: 10px 0 0;
+  text-align: center;
+  color: #2f7a6c;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* ---------- responsive ---------- */
+@media (max-width: 960px) {
+  .vo-layout { grid-template-columns: 1fr; max-width: 480px; gap: 0; }
+  .vo-scene { height: 290px; order: -1; }
+  .vo-decor { display: none; }
+  .vo-person-wrap { width: 210px; margin-left: -112px; bottom: 6px; }
+  .vo-chips span { width: 28px; height: 34px; }
+  .vo-card { margin-top: 24px; }
+}
+@media (max-width: 480px) {
+  .vo-page { padding: 14px; }
+  .vo-card { padding: 52px 18px 16px; border-radius: 20px; }
+  .vo-scene { height: 250px; }
+  .vo-person-wrap { width: 180px; margin-left: -96px; }
+  .vo-box { height: 48px; font-size: 21px; }
+  .vo-boxes { gap: 6px; }
+}
+
+/* ---------- reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .vo-page, .vo-page *, .vo-page *::before, .vo-page *::after { animation: none !important; transition: none !important; }
+  .vo-shield-check { stroke-dashoffset: 0; }
+}

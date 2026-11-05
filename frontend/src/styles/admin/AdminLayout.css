@@ -1,0 +1,165 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Lora:wght@600;700&display=swap");
+
+/* =========================================================
+   CivicSolve admin theme tokens (shared by all admin CSS)
+   ========================================================= */
+.ad-layout {
+    --ad-bg: #effaf8;
+    --ad-ink: #0d1b2a;
+    --ad-ink-soft: #5b6b7b;
+    --ad-line: #e3eeed;
+    --ad-card: #ffffff;
+
+    --ad-navy-1: #08202c;
+    --ad-navy-2: #0b3140;
+    --ad-navy-3: #0f4a52;
+
+    --ad-teal: #12b5a0;
+    --ad-teal-dark: #0a8f80;
+    --ad-teal-soft: #e0f6f2;
+    --ad-amber: #f59e0b;
+    --ad-amber-soft: #fff4dc;
+    --ad-indigo: #6366f1;
+    --ad-indigo-soft: #ececff;
+    --ad-purple: #8b5cf6;
+    --ad-purple-soft: #f0eafe;
+    --ad-red: #ef4444;
+    --ad-slate-soft: #eaf0f5;
+
+    --ad-radius: 18px;
+    --ad-shadow: 0 1px 2px rgba(13, 27, 42, 0.04), 0 10px 30px rgba(13, 27, 42, 0.06);
+
+    /* shared side gap: header, page body and footer all use this */
+    --ad-gutter: clamp(20px, 2.2vw, 30px);   /* 20px on phones -> 30px on wide screens */
+    --ad-max: none;                          /* full width, so the side gap never grows past the gutter */
+
+    position: relative;
+    min-height: 100vh;
+    width: 100%;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    background: var(--ad-bg);
+    color: var(--ad-ink);
+    font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-size: 15px;
+    -webkit-font-smoothing: antialiased;
+
+    /* FIX for the extra blank space + second scrollbar:
+       "overflow-x: hidden" silently turns this box into its own scroll area
+       (overflow-y becomes auto), so anything poking out below the footer adds
+       empty scroll space. "clip" cuts the overflow off without making a scroller.
+       The first line is only a fallback for very old browsers. */
+    overflow: hidden;
+    overflow: clip;
+}
+
+.ad-layout *,
+.ad-layout *::before,
+.ad-layout *::after {
+    box-sizing: border-box;
+}
+
+.ad-layout button {
+    font-family: inherit;
+    cursor: pointer;
+}
+
+.ad-layout :focus-visible {
+    outline: 2px solid var(--ad-teal);
+    outline-offset: 2px;
+}
+
+.ad-content {
+    position: relative;
+    flex: 1 0 auto;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+}
+
+/* soft drifting glow
+   (kept fully inside the viewport edges so it can never add scroll space) */
+.ad-content::before {
+    content: "";
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    width: min(600px, 45vw);
+    height: min(600px, 45vh);
+    max-width: 100%;
+    max-height: 100%;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(18,181,160,0.12), transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+    transform: translate(10%, 10%);
+    animation: ad-drift 16s ease-in-out infinite alternate;
+}
+@keyframes ad-drift {
+    from { transform: translate(30%, 30%); }
+    to   { transform: translate(10%, 12%); }
+}
+
+/* ---------- footer ---------- */
+.ad-footer {
+    flex-shrink: 0;
+    width: 100%;
+    max-width: var(--ad-max);
+    margin: 0 auto;
+    padding: 18px var(--ad-gutter) 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--ad-ink-soft);
+    animation: ad-fade-in 1s ease-out 1s backwards;
+}
+@keyframes ad-fade-in { from { opacity: 0; } to { opacity: 1; } }
+
+.ad-footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 22px;
+}
+
+.ad-footer-links button {
+    position: relative;
+    padding: 0;
+    border: 0;
+    background: none;
+    font-size: 13px;
+    color: var(--ad-teal-dark);
+    transition: color 0.2s;
+}
+.ad-footer-links button:hover { color: var(--ad-ink); }
+.ad-footer-links button::after {
+    content: "";
+    position: absolute;
+    left: 0; right: 0; bottom: -2px;
+    height: 1.5px;
+    background: var(--ad-teal);
+    transform: scaleX(0);
+    transition: transform 0.25s;
+}
+.ad-footer-links button:hover::after { transform: scaleX(1); }
+
+@media (max-width: 600px) {
+    .ad-footer {
+        flex-direction: column;
+        align-items: flex-start;
+        padding-top: 22px;
+        padding-bottom: 26px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ad-layout *,
+    .ad-layout *::before,
+    .ad-layout *::after {
+        animation: none !important;
+        transition: none !important;
+    }
+}

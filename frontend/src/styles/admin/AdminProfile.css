@@ -1,0 +1,815 @@
+
+/* =========================================================
+   CIVICSOLVE - ADMIN PROFILE
+   Isolated styles for the Admin Profile module.
+   ========================================================= */
+
+.civ-admin-profile-page {
+    --civ-admin-profile-teal: var(--ad-teal, #12b5a0);
+    --civ-admin-profile-teal-dark: var(--ad-teal-dark, #0a8f86);
+    --civ-admin-profile-teal-soft: var(--ad-teal-soft, #dff5f1);
+    --civ-admin-profile-amber: var(--ad-amber, #f59e0b);
+    --civ-admin-profile-amber-soft: var(--ad-amber-soft, #fef3dc);
+    --civ-admin-profile-indigo: var(--ad-indigo, #6366f1);
+    --civ-admin-profile-red: var(--ad-red, #e53e3e);
+    --civ-admin-profile-ink: var(--ad-ink, #0d1b2a);
+    --civ-admin-profile-ink-soft: var(--ad-ink-soft, #5b7083);
+    --civ-admin-profile-line: var(--ad-line, #e3eeec);
+    --civ-admin-profile-card: var(--ad-card, #ffffff);
+    --civ-admin-profile-radius: var(--ad-radius, 16px);
+    --civ-admin-profile-shadow:
+        var(--ad-shadow, 0 10px 30px rgba(13, 27, 42, 0.06));
+
+    color: var(--civ-admin-profile-ink);
+    min-width: 0;
+    padding-bottom: 0;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: clip;
+    box-sizing: border-box;
+}
+
+.civ-admin-profile-page *,
+.civ-admin-profile-page *::before,
+.civ-admin-profile-page *::after {
+    box-sizing: border-box;
+}
+
+.civ-admin-profile-container {
+    width: 100%;
+    max-width: var(--ad-max, none);
+    min-width: 0;
+    margin: 0 auto;
+    padding: 0 var(--ad-gutter, clamp(20px, 2.2vw, 30px));
+}
+
+.civ-admin-profile-page h1,
+.civ-admin-profile-page h2,
+.civ-admin-profile-page h3,
+.civ-admin-profile-page p {
+    margin: 0;
+}
+
+.civ-admin-profile-page button,
+.civ-admin-profile-page input,
+.civ-admin-profile-page textarea {
+    font-family: inherit;
+}
+
+/* ---------- uniquely named animations ---------- */
+
+@keyframes civ-admin-profile-up {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@keyframes civ-admin-profile-float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(10px);
+    }
+}
+
+@keyframes civ-admin-profile-border-flow {
+    from {
+        background-position: 0% 50%;
+    }
+
+    to {
+        background-position: 300% 50%;
+    }
+}
+
+@keyframes civ-admin-profile-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ---------- breadcrumb ---------- */
+
+.civ-admin-profile-breadcrumb {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding-top: 22px;
+    font-size: 12.5px;
+    color: var(--civ-admin-profile-ink-soft);
+}
+
+.civ-admin-profile-breadcrumb i {
+    font-style: normal;
+}
+
+.civ-admin-profile-breadcrumb strong {
+    color: var(--civ-admin-profile-teal-dark);
+    font-weight: 600;
+}
+
+/* ---------- feedback messages ---------- */
+
+.civ-admin-profile-alert {
+    display: flex;
+    align-items: flex-start;
+    gap: 11px;
+    margin-top: 18px;
+    padding: 13px 16px;
+    border: 1px solid;
+    border-radius: 12px;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.civ-admin-profile-alert > span {
+    display: grid;
+    place-items: center;
+    flex: 0 0 20px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.civ-admin-profile-alert > div {
+    flex: 1;
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.civ-admin-profile-alert button {
+    flex: 0 0 auto;
+    padding: 0 3px;
+    border: 0;
+    background: none;
+    color: inherit;
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.civ-admin-profile-alert-error {
+    border-color: #f0c7c7;
+    background: #fff4f4;
+    color: #a02c2c;
+}
+
+.civ-admin-profile-alert-error > span {
+    background: #fde0e0;
+}
+
+.civ-admin-profile-alert-success {
+    border-color: #bce5cf;
+    background: #effaf3;
+    color: #176b45;
+}
+
+.civ-admin-profile-alert-success > span {
+    background: #d5f2e3;
+}
+
+/* ---------- loading state ---------- */
+
+.civ-admin-profile-loading {
+    display: flex;
+    min-height: 320px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    color: var(--civ-admin-profile-ink-soft);
+    font-size: 14px;
+}
+
+.civ-admin-profile-spinner,
+.civ-admin-profile-btn-spinner {
+    display: inline-block;
+    border: 3px solid var(--civ-admin-profile-teal-soft);
+    border-top-color: var(--civ-admin-profile-teal);
+    border-radius: 50%;
+    animation: civ-admin-profile-spin 0.75s linear infinite;
+}
+
+.civ-admin-profile-spinner {
+    width: 34px;
+    height: 34px;
+}
+
+.civ-admin-profile-btn-spinner {
+    width: 15px;
+    height: 15px;
+    border-width: 2px;
+    border-color: rgba(255, 255, 255, 0.35);
+    border-top-color: #fff;
+}
+
+/* ---------- main layout ---------- */
+
+.civ-admin-profile-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 380px;
+    gap: 24px;
+    align-items: start;
+    min-width: 0;
+    margin-top: 20px;
+}
+
+.civ-admin-profile-main,
+.civ-admin-profile-side {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    min-width: 0;
+}
+
+.civ-admin-profile-side {
+    position: sticky;
+    top: 16px;
+}
+
+/* ---------- cards ---------- */
+
+.civ-admin-profile-card {
+    position: relative;
+    overflow: hidden;
+    min-width: 0;
+    padding: 28px 30px;
+    border: 0;
+    border-left: 3px solid var(--civ-admin-profile-teal);
+    border-radius: var(--civ-admin-profile-radius);
+    background: var(--civ-admin-profile-card);
+    box-shadow: var(--civ-admin-profile-shadow);
+    animation:
+        civ-admin-profile-up
+        0.6s
+        cubic-bezier(0.2, 0.7, 0.2, 1)
+        backwards;
+}
+
+.civ-admin-profile-card::after {
+    content: "";
+    position: absolute;
+    right: -40px;
+    top: -40px;
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    background: var(--civ-admin-profile-teal-soft);
+    opacity: 0.55;
+    pointer-events: none;
+}
+
+.civ-admin-profile-card > * {
+    position: relative;
+    z-index: 1;
+}
+
+.civ-admin-profile-card-teal {
+    border-left-color: var(--civ-admin-profile-teal);
+}
+
+.civ-admin-profile-card-amber {
+    border-left-color: var(--civ-admin-profile-amber);
+    animation-delay: 0.1s;
+}
+
+.civ-admin-profile-card-amber::after {
+    background: var(--civ-admin-profile-amber-soft);
+}
+
+.civ-admin-profile-card-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 22px;
+}
+
+.civ-admin-profile-card-head h2 {
+    font-size: 19px;
+    font-weight: 700;
+}
+
+.civ-admin-profile-chip {
+    flex: 0 0 auto;
+    padding: 4px 12px;
+    border-radius: 999px;
+    background: var(--civ-admin-profile-teal-soft);
+    color: var(--civ-admin-profile-teal-dark);
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+/* ---------- account form fields ---------- */
+
+.civ-admin-profile-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    min-width: 0;
+}
+
+.civ-admin-profile-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+    padding: 12px 14px;
+    border: 1px solid var(--civ-admin-profile-line);
+    border-radius: 12px;
+    background: #f6faf9;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.civ-admin-profile-field:focus-within {
+    border-color: var(--civ-admin-profile-teal);
+    box-shadow: 0 0 0 3px rgba(18, 181, 160, 0.15);
+}
+
+.civ-admin-profile-field-full {
+    grid-column: 1 / -1;
+}
+
+.civ-admin-profile-field label {
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--civ-admin-profile-ink-soft);
+}
+
+.civ-admin-profile-field input,
+.civ-admin-profile-field textarea {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: none;
+    background: transparent;
+    color: var(--civ-admin-profile-ink);
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.6;
+    box-shadow: none;
+}
+
+.civ-admin-profile-field textarea {
+    min-height: 90px;
+    resize: vertical;
+    font-weight: 500;
+}
+
+.civ-admin-profile-field input::placeholder,
+.civ-admin-profile-field textarea::placeholder {
+    color: #9aaab3;
+    font-weight: 400;
+}
+
+.civ-admin-profile-field small {
+    font-size: 11px;
+    line-height: 1.5;
+    color: var(--civ-admin-profile-ink-soft);
+}
+
+.civ-admin-profile-field .civ-admin-profile-error-text {
+    color: var(--civ-admin-profile-red);
+}
+
+.civ-admin-profile-field-locked {
+    background: #f1f5f6;
+}
+
+.civ-admin-profile-field-locked input:disabled {
+    color: var(--civ-admin-profile-ink-soft);
+    -webkit-text-fill-color: var(--civ-admin-profile-ink-soft);
+    cursor: not-allowed;
+    opacity: 1;
+}
+
+/* ---------- form footers and buttons ---------- */
+
+.civ-admin-profile-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--civ-admin-profile-line);
+}
+
+.civ-admin-profile-footer p {
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--civ-admin-profile-ink-soft);
+}
+
+.civ-admin-profile-footer p span {
+    color: var(--civ-admin-profile-red);
+}
+
+.civ-admin-profile-page .civ-admin-profile-primary-btn,
+.civ-admin-profile-page .civ-admin-profile-dark-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    min-height: 42px;
+    padding: 12px 24px;
+    border: 0;
+    border-radius: 10px;
+    color: #fff;
+    font-size: 13.5px;
+    font-weight: 600;
+    line-height: 1.4;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.civ-admin-profile-page .civ-admin-profile-primary-btn {
+    background: var(--civ-admin-profile-teal);
+    box-shadow: 0 8px 20px rgba(18, 181, 160, 0.3);
+}
+
+.civ-admin-profile-page .civ-admin-profile-primary-btn:hover:not(:disabled) {
+    background: #17c8b1;
+    transform: translateY(-2px);
+}
+
+.civ-admin-profile-page .civ-admin-profile-dark-btn {
+    background: #0c2a38;
+    box-shadow: 0 8px 20px rgba(8, 32, 44, 0.25);
+}
+
+.civ-admin-profile-page .civ-admin-profile-dark-btn:hover:not(:disabled) {
+    background: #12404f;
+    transform: translateY(-2px);
+}
+
+.civ-admin-profile-page .civ-admin-profile-primary-btn:active,
+.civ-admin-profile-page .civ-admin-profile-dark-btn:active {
+    transform: scale(0.97);
+}
+
+.civ-admin-profile-page .civ-admin-profile-primary-btn:disabled,
+.civ-admin-profile-page .civ-admin-profile-dark-btn:disabled {
+    opacity: 0.6;
+    box-shadow: none;
+    cursor: not-allowed;
+}
+
+/* ---------- password controls ---------- */
+
+.civ-admin-profile-check {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    margin-top: 18px;
+    font-size: 12.5px;
+    color: var(--civ-admin-profile-ink-soft);
+    cursor: pointer;
+}
+
+.civ-admin-profile-page .civ-admin-profile-check input {
+    width: 15px;
+    height: 15px;
+    margin: 0;
+    accent-color: var(--civ-admin-profile-teal);
+    cursor: pointer;
+}
+
+.civ-admin-profile-note {
+    margin-top: 18px;
+    padding: 14px 16px;
+    border-left: 3px solid var(--civ-admin-profile-amber);
+    border-radius: 10px;
+    background: #fff8ea;
+}
+
+.civ-admin-profile-note strong {
+    display: block;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #8a5300;
+}
+
+.civ-admin-profile-note p {
+    margin-top: 4px;
+    font-size: 12px;
+    line-height: 1.65;
+    color: var(--civ-admin-profile-ink-soft);
+}
+
+/* ---------- profile summary card ---------- */
+
+.civ-admin-profile-profile {
+    position: relative;
+    overflow: hidden;
+    min-width: 0;
+    padding: 30px;
+    border-radius: var(--civ-admin-profile-radius);
+    background: linear-gradient(
+        150deg,
+        #0a2a38 0%,
+        #0c3a45 60%,
+        #0f4a52 100%
+    );
+    color: #fff;
+    box-shadow: 0 18px 40px rgba(8, 32, 44, 0.3);
+    animation:
+        civ-admin-profile-up
+        0.6s
+        cubic-bezier(0.2, 0.7, 0.2, 1)
+        0.1s
+        backwards;
+}
+
+.civ-admin-profile-profile::before {
+    content: "";
+    position: absolute;
+    right: -50px;
+    top: -50px;
+    width: 170px;
+    height: 170px;
+    border-radius: 50%;
+    background: rgba(18, 181, 160, 0.22);
+    animation: civ-admin-profile-float 8s ease-in-out infinite;
+    pointer-events: none;
+}
+
+.civ-admin-profile-profile::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1.5px;
+    background: linear-gradient(
+        120deg,
+        rgba(18, 181, 160, 0),
+        rgba(18, 181, 160, 0.9),
+        rgba(99, 102, 241, 0.6),
+        rgba(18, 181, 160, 0)
+    );
+    background-size: 300% 300%;
+    -webkit-mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: civ-admin-profile-border-flow 6s linear infinite;
+    pointer-events: none;
+}
+
+.civ-admin-profile-profile > * {
+    position: relative;
+    z-index: 1;
+}
+
+.civ-admin-profile-avatar {
+    display: grid;
+    place-items: center;
+    width: 84px;
+    height: 84px;
+    overflow: hidden;
+    border: 3px solid rgba(255, 255, 255, 0.25);
+    border-radius: 50%;
+    background: var(--civ-admin-profile-teal);
+    color: #fff;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.civ-admin-profile-avatar img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.civ-admin-profile-profile h2 {
+    margin-top: 16px;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 24px;
+    line-height: 1.35;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+.civ-admin-profile-role {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: 10px;
+    padding: 4px 12px;
+    border: 1px solid rgba(18, 181, 160, 0.7);
+    border-radius: 999px;
+    color: #4fe0cc;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.civ-admin-profile-role i {
+    flex: 0 0 6px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #4fe0cc;
+}
+
+.civ-admin-profile-lines {
+    margin: 18px 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.civ-admin-profile-lines li {
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+    margin-bottom: 7px;
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.85);
+    overflow-wrap: anywhere;
+}
+
+.civ-admin-profile-lines li i {
+    flex: 0 0 6px;
+    width: 6px;
+    height: 6px;
+    margin-top: 6px;
+    border-radius: 50%;
+    background: var(--civ-admin-profile-teal);
+}
+
+.civ-admin-profile-email {
+    margin-top: 12px;
+    font-size: 12px;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.75);
+    overflow-wrap: anywhere;
+}
+
+.civ-admin-profile-file-input {
+    display: none;
+}
+
+.civ-admin-profile-page .civ-admin-profile-photo-btn {
+    display: block;
+    width: 100%;
+    margin-top: 20px;
+    padding: 11px 14px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+}
+
+.civ-admin-profile-page .civ-admin-profile-photo-btn:hover {
+    background: rgba(18, 181, 160, 0.3);
+    border-color: var(--civ-admin-profile-teal);
+}
+
+.civ-admin-profile-hint {
+    margin-top: 12px;
+    font-size: 11.5px;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.75);
+}
+
+.civ-admin-profile-selected {
+    margin-top: 10px;
+    font-size: 11.5px;
+    line-height: 1.6;
+    color: #4fe0cc;
+    overflow-wrap: anywhere;
+}
+
+/* ---------- account information note ---------- */
+
+.civ-admin-profile-info {
+    padding: 16px 20px;
+    border-left: 3px solid var(--civ-admin-profile-teal);
+    border-radius: var(--civ-admin-profile-radius);
+    background: #eaf8f6;
+    animation:
+        civ-admin-profile-up
+        0.6s
+        cubic-bezier(0.2, 0.7, 0.2, 1)
+        0.2s
+        backwards;
+}
+
+.civ-admin-profile-info strong {
+    display: block;
+    font-size: 12.5px;
+    font-weight: 700;
+}
+
+.civ-admin-profile-info p {
+    margin-top: 4px;
+    font-size: 12px;
+    line-height: 1.65;
+    color: var(--civ-admin-profile-ink-soft);
+}
+
+/* ---------- responsive layout ---------- */
+
+@media (min-width: 1500px) {
+    .civ-admin-profile-layout {
+        grid-template-columns: minmax(0, 1fr) 420px;
+    }
+}
+
+@media (max-width: 1280px) {
+    .civ-admin-profile-layout {
+        grid-template-columns: minmax(0, 1fr) 340px;
+    }
+}
+
+@media (max-width: 1100px) {
+    .civ-admin-profile-layout {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .civ-admin-profile-side {
+        position: static;
+        order: -1;
+    }
+}
+
+@media (max-width: 640px) {
+    .civ-admin-profile-container {
+        padding-right: 16px;
+        padding-left: 16px;
+    }
+
+    .civ-admin-profile-layout,
+    .civ-admin-profile-main,
+    .civ-admin-profile-side {
+        gap: 16px;
+    }
+
+    .civ-admin-profile-layout {
+        margin-top: 14px;
+    }
+
+    .civ-admin-profile-card {
+        padding: 20px 16px;
+    }
+
+    .civ-admin-profile-profile {
+        padding: 24px 18px;
+    }
+
+    .civ-admin-profile-grid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 12px;
+    }
+
+    .civ-admin-profile-field-full {
+        grid-column: auto;
+    }
+
+    .civ-admin-profile-card-head {
+        flex-wrap: wrap;
+    }
+
+    .civ-admin-profile-chip {
+        white-space: normal;
+    }
+
+    .civ-admin-profile-footer {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .civ-admin-profile-page .civ-admin-profile-primary-btn,
+    .civ-admin-profile-page .civ-admin-profile-dark-btn {
+        width: 100%;
+    }
+}
+
+.civ-admin-profile-page .civ-admin-profile-profile h2 {
+    color: #fff !important;
+}

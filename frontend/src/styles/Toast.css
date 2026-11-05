@@ -1,0 +1,584 @@
+/* =====================================================
+   CIVICSOLVE GLOBAL TOAST NOTIFICATIONS
+   Edit the palette below to match your theme.
+   ===================================================== */
+
+:root {
+  --cs-toast-ink: #0f2a43;
+  --cs-toast-muted: #5f7285;
+  --cs-toast-surface: #ffffff;
+
+  --cs-toast-success: #0e9f6e;
+  --cs-toast-success-soft: #e0f6ec;
+  --cs-toast-warning: #e08a00;
+  --cs-toast-warning-soft: #fff0d0;
+  --cs-toast-error: #d92d4b;
+  --cs-toast-error-soft: #fde4e9;
+  --cs-toast-info: #1f6feb;
+  --cs-toast-info-soft: #e3edfe;
+  --cs-toast-logout: #0b6b4a;       /* pilot green */
+  --cs-toast-logout-soft: #dcf1e7;
+}
+
+/* ---------- stack ---------- */
+
+.cs-toast-stack {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 99999;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+  width: min(400px, calc(100vw - 32px));
+  pointer-events: none;
+}
+
+/* ---------- toast card ---------- */
+
+.cs-toast {
+  --toast-accent: var(--cs-toast-success);
+  --toast-soft: var(--cs-toast-success-soft);
+
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+  padding: 14px 12px 18px 12px;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--toast-accent) 18%, transparent);
+  border-radius: 16px;
+  background:
+    linear-gradient(
+      110deg,
+      color-mix(in srgb, var(--toast-accent) 11%, transparent) 0%,
+      transparent 60%
+    ),
+    var(--cs-toast-surface);
+  color: var(--cs-toast-ink);
+  box-shadow:
+    0 16px 36px color-mix(in srgb, var(--toast-accent) 18%, rgba(15, 42, 67, 0.12)),
+    0 3px 8px rgba(15, 42, 67, 0.06);
+  pointer-events: auto;
+  will-change: transform, opacity;
+  animation: cs-toast-enter 760ms cubic-bezier(0.2, 0.9, 0.25, 1) both;
+  transition: transform 240ms ease, box-shadow 240ms ease;
+}
+
+.cs-toast:hover {
+  transform: translateY(-3px) scale(1.012);
+  box-shadow:
+    0 22px 44px color-mix(in srgb, var(--toast-accent) 26%, rgba(15, 42, 67, 0.12)),
+    0 4px 10px rgba(15, 42, 67, 0.07);
+}
+
+/* growing accent bar on the left */
+.cs-toast::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 5px;
+  background: linear-gradient(
+    180deg,
+    var(--toast-accent),
+    color-mix(in srgb, var(--toast-accent) 50%, #ffffff)
+  );
+  transform-origin: top;
+  animation: cs-toast-accent 600ms 150ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+/* light sweep */
+.cs-toast::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.75) 50%,
+    transparent 70%
+  );
+  transform: translateX(-120%);
+  animation: cs-toast-sheen 1000ms 250ms ease-out forwards;
+  pointer-events: none;
+}
+
+.cs-toast--success { --toast-accent: var(--cs-toast-success); --toast-soft: var(--cs-toast-success-soft); }
+.cs-toast--warning { --toast-accent: var(--cs-toast-warning); --toast-soft: var(--cs-toast-warning-soft); }
+.cs-toast--error   { --toast-accent: var(--cs-toast-error);   --toast-soft: var(--cs-toast-error-soft); }
+.cs-toast--info    { --toast-accent: var(--cs-toast-info);    --toast-soft: var(--cs-toast-info-soft); }
+.cs-toast--logout  { --toast-accent: var(--cs-toast-logout);  --toast-soft: var(--cs-toast-logout-soft); }
+
+/* error toasts shake once after landing */
+.cs-toast--error {
+  animation:
+    cs-toast-enter 760ms cubic-bezier(0.2, 0.9, 0.25, 1) both,
+    cs-toast-shake 520ms 700ms ease-in-out;
+}
+
+/* leaving: slide out, then collapse so the stack closes smoothly */
+.cs-toast--leaving,
+.cs-toast--error.cs-toast--leaving {
+  pointer-events: none;
+  animation: cs-toast-exit 380ms cubic-bezier(0.5, 0, 0.75, 0.4) forwards;
+}
+
+/* ---------- floating background bubbles ---------- */
+
+.cs-toast-bubbles {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.cs-toast-bubbles i {
+  position: absolute;
+  bottom: -20px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--toast-accent) 14%, transparent);
+  animation: cs-toast-bubble 5s ease-in infinite;
+}
+
+.cs-toast-bubbles i:nth-child(1) { left: 22%; width: 16px; height: 16px; animation-delay: 0s; }
+.cs-toast-bubbles i:nth-child(2) { left: 52%; width: 10px; height: 10px; animation-delay: 1.6s; }
+.cs-toast-bubbles i:nth-child(3) { left: 78%; width: 20px; height: 20px; animation-delay: 3s; }
+
+/* ---------- illustration ---------- */
+
+.cs-art {
+  position: relative;
+  z-index: 1;
+  flex: 0 0 60px;
+  width: 60px;
+  height: 60px;
+  animation: cs-art-pop 700ms 150ms cubic-bezier(0.34, 1.7, 0.5, 1) both;
+}
+
+.cs-art-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.cs-art-svg * {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.cs-art-bg {
+  fill: var(--toast-soft);
+}
+
+.cs-art-ring {
+  fill: none;
+  stroke: var(--toast-accent);
+  stroke-width: 2;
+  opacity: 0;
+  animation: cs-art-ring 1600ms 450ms ease-out 2;
+}
+
+.cs-art-disc {
+  fill: var(--toast-accent);
+  animation:
+    cs-art-disc-in 520ms 250ms cubic-bezier(0.34, 1.7, 0.5, 1) both,
+    cs-art-breathe 2800ms 1100ms ease-in-out infinite;
+}
+
+.cs-art-tri {
+  stroke: var(--toast-accent);
+  stroke-width: 6;
+  stroke-linejoin: round;
+}
+
+.cs-art-mark {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 3.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 40;
+  stroke-dashoffset: 40;
+  animation: cs-art-draw 480ms 550ms cubic-bezier(0.5, 0, 0.2, 1) forwards;
+}
+
+.cs-art-dot {
+  fill: #fff;
+  animation: cs-art-dot-in 300ms 800ms cubic-bezier(0.34, 1.9, 0.5, 1) both;
+}
+
+/* success: confetti burst */
+.cs-confetti {
+  opacity: 0;
+  animation: cs-confetti 1100ms calc(500ms + var(--i) * 40ms) cubic-bezier(0.1, 0.7, 0.3, 1) both;
+}
+.cs-confetti--a { fill: var(--cs-toast-warning); }
+.cs-confetti--b { fill: var(--cs-toast-info); }
+.cs-confetti--c { fill: var(--toast-accent); }
+.cs-confetti--d { fill: var(--cs-toast-error); }
+
+/* warning: rocking triangle + blinking exclamation */
+.cs-art-rock {
+  transform-origin: 50% 85%;
+  animation: cs-art-rock 1400ms 1000ms ease-in-out 3;
+}
+.cs-art-bang {
+  stroke-dasharray: 12;
+  stroke-dashoffset: 12;
+}
+
+/* error: shaking disc + sparks */
+.cs-art-shake {
+  animation: cs-art-shake 600ms 800ms ease-in-out;
+}
+.cs-art-spark {
+  fill: none;
+  stroke: var(--toast-accent);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-dasharray: 6;
+  opacity: 0;
+  animation: cs-art-spark 900ms calc(700ms + var(--i) * 70ms) ease-out both;
+}
+
+/* info: floating bubble + twinkles */
+.cs-art-float {
+  animation: cs-art-float 2600ms 900ms ease-in-out infinite;
+}
+.cs-art-twinkle {
+  fill: none;
+  stroke: var(--toast-accent);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  animation: cs-art-twinkle 1800ms calc(600ms + var(--i) * 600ms) ease-in-out infinite;
+}
+
+/* logout: opening door + exiting arrow */
+.cs-art-door {
+  fill: #fff;
+  fill-opacity: 0.92;
+  transform-origin: left center;
+  animation: cs-art-door 1800ms 600ms cubic-bezier(0.5, 0, 0.2, 1) infinite;
+}
+.cs-art-knob {
+  fill: var(--toast-accent);
+  animation: cs-art-dot-in 300ms 600ms both;
+}
+.cs-art-arrow path {
+  fill: none;
+  stroke: var(--toast-accent);
+  stroke-width: 3.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.cs-art-arrow {
+  animation: cs-art-arrow 1800ms 600ms ease-in-out infinite;
+}
+
+/* ---------- content ---------- */
+
+.cs-toast-content {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  min-width: 0;
+  animation: cs-toast-text 520ms 280ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.cs-toast-content strong {
+  display: block;
+  margin: 0;
+  color: var(--cs-toast-ink);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.cs-toast-content p {
+  margin: 3px 0 0;
+  color: var(--cs-toast-muted);
+  font-size: 12px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+/* ---------- close button ---------- */
+
+.cs-toast-close {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  flex: 0 0 26px;
+  width: 26px;
+  height: 26px;
+  place-items: center;
+  align-self: flex-start;
+  margin: -2px -2px 0 0;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #9aa7b4;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  transition: color 180ms ease, background 180ms ease, transform 260ms ease;
+}
+
+.cs-toast-close:hover {
+  background: var(--toast-soft);
+  color: var(--toast-accent);
+  transform: rotate(90deg) scale(1.1);
+}
+
+.cs-toast-close:focus-visible {
+  outline: 2px solid var(--toast-accent);
+  outline-offset: 2px;
+}
+
+/* ---------- progress bar ---------- */
+
+.cs-toast-progress {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 5px;
+  background:
+    repeating-linear-gradient(
+      -45deg,
+      rgba(255, 255, 255, 0.28) 0 8px,
+      transparent 8px 16px
+    ),
+    linear-gradient(
+      90deg,
+      var(--toast-accent),
+      color-mix(in srgb, var(--toast-accent) 55%, #ffffff)
+    );
+  background-size: 22px 22px, 100% 100%;
+  transform-origin: left;
+  animation:
+    cs-toast-progress linear forwards,
+    cs-toast-stripes 900ms linear infinite;
+}
+
+.cs-toast--paused .cs-toast-progress {
+  animation-play-state: paused, paused;
+}
+
+/* ---------- keyframes ---------- */
+
+@keyframes cs-toast-enter {
+  0%   { opacity: 0; transform: translate3d(70px, -14px, 0) scale(0.9) rotate(2deg); }
+  55%  { opacity: 1; transform: translate3d(-8px, 2px, 0) scale(1.02) rotate(-0.6deg); }
+  78%  { transform: translate3d(3px, 0, 0) scale(0.995) rotate(0.2deg); }
+  100% { opacity: 1; transform: translate3d(0, 0, 0) scale(1) rotate(0); }
+}
+
+@keyframes cs-toast-exit {
+  0%   { opacity: 1; transform: translate3d(0, 0, 0) scale(1); max-height: 160px; }
+  55%  { opacity: 0; transform: translate3d(70px, 0, 0) scale(0.94); max-height: 160px; }
+  100% {
+    opacity: 0;
+    transform: translate3d(70px, 0, 0) scale(0.94);
+    max-height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    margin-bottom: -12px;
+    border-width: 0;
+  }
+}
+
+@keyframes cs-toast-accent {
+  from { transform: scaleY(0); }
+  to   { transform: scaleY(1); }
+}
+
+@keyframes cs-toast-sheen {
+  to { transform: translateX(120%); }
+}
+
+@keyframes cs-toast-text {
+  from { opacity: 0; transform: translateX(16px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes cs-toast-shake {
+  0%, 100% { transform: translateX(0); }
+  15% { transform: translateX(-7px); }
+  35% { transform: translateX(6px); }
+  55% { transform: translateX(-4px); }
+  75% { transform: translateX(3px); }
+}
+
+@keyframes cs-toast-bubble {
+  0%   { opacity: 0; transform: translateY(0) scale(0.6); }
+  20%  { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-80px) scale(1.2); }
+}
+
+@keyframes cs-toast-progress {
+  from { transform: scaleX(1); }
+  to   { transform: scaleX(0); }
+}
+
+@keyframes cs-toast-stripes {
+  from { background-position: 0 0, 0 0; }
+  to   { background-position: 22px 0, 0 0; }
+}
+
+@keyframes cs-art-pop {
+  0%   { opacity: 0; transform: scale(0.2) rotate(-40deg); }
+  100% { opacity: 1; transform: scale(1) rotate(0); }
+}
+
+@keyframes cs-art-disc-in {
+  0%   { transform: scale(0); }
+  100% { transform: scale(1); }
+}
+
+@keyframes cs-art-breathe {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.06); }
+}
+
+@keyframes cs-art-ring {
+  0%   { opacity: 0.6; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.65); }
+}
+
+@keyframes cs-art-draw {
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes cs-art-dot-in {
+  0%   { opacity: 0; transform: scale(0); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes cs-confetti {
+  0%   { opacity: 1; transform: translate(0, 0) scale(0.4); }
+  70%  { opacity: 1; }
+  100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(1) rotate(200deg); }
+}
+
+@keyframes cs-art-rock {
+  0%, 100% { transform: rotate(0); }
+  25% { transform: rotate(-7deg); }
+  75% { transform: rotate(7deg); }
+}
+
+@keyframes cs-art-shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-3px); }
+  40% { transform: translateX(3px); }
+  60% { transform: translateX(-2px); }
+  80% { transform: translateX(2px); }
+}
+
+@keyframes cs-art-spark {
+  0%   { opacity: 0; stroke-dashoffset: 6; }
+  30%  { opacity: 1; stroke-dashoffset: 0; }
+  100% { opacity: 0; stroke-dashoffset: -6; }
+}
+
+@keyframes cs-art-float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-3px); }
+}
+
+@keyframes cs-art-twinkle {
+  0%, 100% { opacity: 0.2; transform: scale(0.5) rotate(0); }
+  50%      { opacity: 1; transform: scale(1.1) rotate(45deg); }
+}
+
+@keyframes cs-art-door {
+  0%, 15%  { transform: scaleX(1); }
+  45%, 75% { transform: scaleX(0.3); }
+  100%     { transform: scaleX(1); }
+}
+
+@keyframes cs-art-arrow {
+  0%, 15%  { opacity: 0; transform: translateX(-8px); }
+  40%      { opacity: 1; transform: translateX(0); }
+  75%      { opacity: 1; transform: translateX(6px); }
+  100%     { opacity: 0; transform: translateX(10px); }
+}
+
+/* ---------- responsive ---------- */
+
+@media (max-width: 600px) {
+  .cs-toast-stack {
+    top: 12px;
+    right: 12px;
+    left: 12px;
+    width: auto;
+    max-width: calc(100% - 24px);
+    gap: 9px;
+  }
+
+  .cs-toast {
+    padding: 12px 10px 17px 10px;
+    animation-name: cs-toast-enter-mobile;
+  }
+
+  .cs-toast--error {
+    animation:
+      cs-toast-enter-mobile 760ms cubic-bezier(0.2, 0.9, 0.25, 1) both,
+      cs-toast-shake 520ms 700ms ease-in-out;
+  }
+
+  .cs-art {
+    flex-basis: 52px;
+    width: 52px;
+    height: 52px;
+  }
+}
+
+@keyframes cs-toast-enter-mobile {
+  0%   { opacity: 0; transform: translate3d(0, -40px, 0) scale(0.92); }
+  55%  { opacity: 1; transform: translate3d(0, 5px, 0) scale(1.01); }
+  100% { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+}
+
+/* ---------- accessibility ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .cs-toast,
+  .cs-toast::before,
+  .cs-toast::after,
+  .cs-toast-bubbles i,
+  .cs-art,
+  .cs-art-svg *,
+  .cs-toast-content {
+    animation: none !important;
+  }
+
+  .cs-art-mark,
+  .cs-art-bang {
+    stroke-dashoffset: 0;
+  }
+
+  .cs-art-ring,
+  .cs-confetti,
+  .cs-art-spark,
+  .cs-toast::after {
+    display: none;
+  }
+
+  .cs-art-arrow { opacity: 1; }
+
+  .cs-toast--leaving {
+    opacity: 0;
+    transition: opacity 150ms ease;
+  }
+
+  .cs-toast:hover { transform: none; }
+}

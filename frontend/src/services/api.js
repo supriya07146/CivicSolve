@@ -1,15 +1,28 @@
+
 // ======================================================
 // CivicSolve API Service
 // ======================================================
 
-const API_BASE_URL = "http://127.0.0.1:8000/api/auth";
-const ADMIN_API_BASE_URL = "http://127.0.0.1:8000/api/admin";
+// Central API configuration
+// Local development uses localhost.
+// Deployment uses REACT_APP_API_URL from the environment.
+
+const API_ROOT = (
+  process.env.REACT_APP_API_URL ||
+  "http://127.0.0.1:8000/api"
+).replace(/\/+$/, "");
+
+const API_BASE_URL = `${API_ROOT}/auth`;
+const ADMIN_API_BASE_URL = `${API_ROOT}/admin`;
+const USER_DASHBOARD_BASE_URL = `${API_ROOT}/user/dashboard`;
+const NOTIFICATION_BASE_URL = `${API_ROOT}/notifications`;
+const PROBLEMS_API_BASE_URL = `${API_ROOT}/problems`;
+const ORGANIZATION_API_BASE_URL = `${API_ROOT}/organization`;
 
 // ======================================================
 // SHARED REQUEST FUNCTION
 // Authentication, Citizen, and Organization APIs
 // ======================================================
-
 
 async function request(endpoint, options = {}) {
   const token = localStorage.getItem("access_token");
@@ -18,7 +31,6 @@ async function request(endpoint, options = {}) {
     typeof FormData !== "undefined" &&
     options.body instanceof FormData;
 
-  // Login must work even when an old access token has expired.
   const isLoginRequest = [
     "/login/",
     "/admin/login/",
@@ -31,7 +43,6 @@ async function request(endpoint, options = {}) {
     ...(options.headers || {}),
   };
 
-  // Attach the saved token only to non-login requests.
   if (token && !isLoginRequest) {
     headers.Authorization = `Bearer ${token}`;
   }
@@ -55,15 +66,14 @@ async function request(endpoint, options = {}) {
         : Array.isArray(detail)
           ? detail.join(", ")
           : data.message ||
-          data.error ||
-          "Request failed";
+            data.error ||
+            "Request failed";
 
     throw new Error(message);
   }
 
   return data;
 }
-
 
 // ======================================================
 // ADMIN REQUEST FUNCTION
@@ -237,8 +247,6 @@ export const adminLogin = (data) =>
 // ADMIN - CITIZEN MANAGEMENT
 // ======================================================
 
-// GET CITIZENS
-
 export const getAdminCitizens = (params = {}) => {
   const query = new URLSearchParams();
 
@@ -259,12 +267,8 @@ export const getAdminCitizens = (params = {}) => {
   return adminRequest(`/users/${queryString}`);
 };
 
-// GET A CITIZEN PROFILE
-
 export const getAdminCitizen = (id) =>
   adminRequest(`/users/${id}/`);
-
-// GET A CITIZEN'S PROBLEMS
 
 export const getAdminCitizenProblems = (
   id,
@@ -291,8 +295,6 @@ export const getAdminCitizenProblems = (
   );
 };
 
-// ACTIVATE OR DEACTIVATE CITIZEN
-
 export const updateCitizenStatus = (id, data) =>
   adminRequest(`/users/${id}/status/`, {
     method: "PATCH",
@@ -303,21 +305,14 @@ export const updateCitizenStatus = (id, data) =>
 // ADMIN - ORGANIZATION MANAGEMENT
 // ======================================================
 
-// GET ORGANIZATIONS
-
 export const getAdminOrganizations = async ({
   status = "",
   search = "",
 } = {}) => {
   const params = new URLSearchParams();
 
-  if (status) {
-    params.append("status", status);
-  }
-
-  if (search) {
-    params.append("search", search);
-  }
+  if (status) params.append("status", status);
+  if (search) params.append("search", search);
 
   const query = params.toString();
 
@@ -326,36 +321,23 @@ export const getAdminOrganizations = async ({
   );
 };
 
-// GET ONE ORGANIZATION
-
 export const getAdminOrganization = (id) =>
   adminRequest(`/organizations/${id}/`);
 
-// APPROVE ORGANIZATION
-
 export const approveAdminOrganization = (id) =>
-  adminRequest(
-    `/organizations/${id}/approve/`,
-    { method: "PATCH" }
-  );
-
-// REJECT ORGANIZATION
+  adminRequest(`/organizations/${id}/approve/`, {
+    method: "PATCH",
+  });
 
 export const rejectAdminOrganization = (id) =>
-  adminRequest(
-    `/organizations/${id}/reject/`,
-    { method: "PATCH" }
-  );
-
-// SUSPEND ORGANIZATION
+  adminRequest(`/organizations/${id}/reject/`, {
+    method: "PATCH",
+  });
 
 export const suspendAdminOrganization = (id) =>
-  adminRequest(
-    `/organizations/${id}/suspend/`,
-    { method: "PATCH" }
-  );
-
-// CREATE ORGANIZATION
+  adminRequest(`/organizations/${id}/suspend/`, {
+    method: "PATCH",
+  });
 
 export const createAdminOrganization = (formData) =>
   adminRequest("/organizations/", {
@@ -366,8 +348,6 @@ export const createAdminOrganization = (formData) =>
 // ======================================================
 // ADMIN - PROBLEM MANAGEMENT
 // ======================================================
-
-// GET PROBLEMS WITH FILTERS
 
 export const getAdminProblems = (params = {}) => {
   const query = new URLSearchParams();
@@ -389,42 +369,38 @@ export const getAdminProblems = (params = {}) => {
   return adminRequest(`/problems/${queryString}`);
 };
 
-// GET ONE PROBLEM
-
 export const getAdminProblem = (id) =>
   adminRequest(`/problems/${id}/`);
 
-// ==========================================
+// ======================================================
 // ADMIN DUPLICATE PROBLEM SUGGESTIONS
-// ==========================================
+// ======================================================
 
 export const getDuplicateProblemSuggestions = (params = {}) => {
-    const query = new URLSearchParams(params).toString();
+  const query = new URLSearchParams(params).toString();
 
-    return problemRequest(
-        `/admin/duplicate-suggestions/${query ? `?${query}` : ""}`
-    );
+  return problemRequest(
+    `/admin/duplicate-suggestions/${query ? `?${query}` : ""}`
+  );
 };
 
 export const reviewDuplicateProblemSuggestion = (
-    suggestionId,
-    reviewStatus
-) => {
-    return problemRequest(
-        `/admin/duplicate-suggestions/${suggestionId}/review/`,
-        {
-            method: "PATCH",
-            body: JSON.stringify({
-                review_status: reviewStatus,
-            }),
-        }
-    );
-};
+  suggestionId,
+  reviewStatus
+) =>
+  problemRequest(
+    `/admin/duplicate-suggestions/${suggestionId}/review/`,
+    {
+      method: "PATCH",
+      body: JSON.stringify({
+        review_status: reviewStatus,
+      }),
+    }
+  );
+
 // ======================================================
 // ADMIN - PROBLEM ASSIGNMENTS
 // ======================================================
-
-// GET ASSIGNMENTS
 
 export const getAdminAssignments = (params = {}) => {
   const query = new URLSearchParams();
@@ -446,12 +422,8 @@ export const getAdminAssignments = (params = {}) => {
   return adminRequest(`/assignments/${suffix}`);
 };
 
-// GET ONE ASSIGNMENT
-
 export const getAdminAssignment = (id) =>
   adminRequest(`/assignments/${id}/`);
-
-// CREATE ASSIGNMENT
 
 export const createAdminAssignment = (data) =>
   adminRequest("/assignments/", {
@@ -462,8 +434,6 @@ export const createAdminAssignment = (data) =>
 // ======================================================
 // ADMIN - CATEGORY MANAGEMENT
 // ======================================================
-
-// GET CATEGORIES
 
 export const getAdminCategories = (params = {}) => {
   const query = new URLSearchParams();
@@ -485,12 +455,8 @@ export const getAdminCategories = (params = {}) => {
   return adminRequest(`/categories/${suffix}`);
 };
 
-// GET ONE CATEGORY
-
 export const getAdminCategory = (id) =>
   adminRequest(`/categories/${id}/`);
-
-// CREATE CATEGORY
 
 export const createAdminCategory = (data) =>
   adminRequest("/categories/", {
@@ -498,15 +464,11 @@ export const createAdminCategory = (data) =>
     body: JSON.stringify(data),
   });
 
-// UPDATE CATEGORY
-
 export const updateAdminCategory = (id, data) =>
   adminRequest(`/categories/${id}/`, {
     method: "PATCH",
     body: JSON.stringify(data),
   });
-
-// ACTIVATE OR DEACTIVATE CATEGORY
 
 export const updateAdminCategoryStatus = (
   id,
@@ -520,8 +482,6 @@ export const updateAdminCategoryStatus = (
 // ======================================================
 // ADMIN - SOLUTION MANAGEMENT
 // ======================================================
-
-// GET SOLUTIONS
 
 export const getAdminSolutions = (params = {}) => {
   const query = new URLSearchParams();
@@ -543,20 +503,14 @@ export const getAdminSolutions = (params = {}) => {
   return adminRequest(`/solutions/${suffix}`);
 };
 
-// CREATE SOLUTION
-
 export const createAdminSolution = (data) =>
   adminRequest("/solutions/", {
     method: "POST",
     body: JSON.stringify(data),
   });
 
-// GET ONE SOLUTION
-
 export const getAdminSolution = (id) =>
   adminRequest(`/solutions/${id}/`);
-
-// REVIEW SOLUTION
 
 export const reviewAdminSolution = (id, data) =>
   adminRequest(`/solutions/${id}/review/`, {
@@ -567,8 +521,6 @@ export const reviewAdminSolution = (id, data) =>
 // ======================================================
 // ADMIN - COMPLAINT MANAGEMENT
 // ======================================================
-
-// GET COMPLAINTS
 
 export const getAdminComplaints = (params = {}) => {
   const query = new URLSearchParams();
@@ -590,12 +542,8 @@ export const getAdminComplaints = (params = {}) => {
   return adminRequest(`/complaints/${suffix}`);
 };
 
-// GET ONE COMPLAINT
-
 export const getAdminComplaint = (complaintCode) =>
   adminRequest(`/complaints/${complaintCode}/`);
-
-// REVIEW COMPLAINT
 
 export const reviewAdminComplaint = (
   complaintCode,
@@ -613,22 +561,14 @@ export const reviewAdminComplaint = (
 // ADMIN - ANALYTICS
 // ======================================================
 
-// GET ANALYTICS
-
 export const getAdminAnalytics = () =>
   adminRequest("/analytics/");
-
-// GET OVERDUE PROBLEMS
 
 export const getAdminOverdueProblems = () =>
   adminRequest("/analytics/overdue/");
 
-// GET ESCALATED PROBLEMS
-
 export const getAdminEscalatedProblems = () =>
   adminRequest("/analytics/escalated/");
-
-// UPDATE PROBLEM ESCALATION
 
 export const updateAdminProblemEscalation = (
   problemCode,
@@ -644,8 +584,6 @@ export const updateAdminProblemEscalation = (
     }
   );
 
-// GET AI-POWERED ADMIN ANALYTICS INSIGHTS
-
 export const getAdminAIInsights = () =>
   adminRequest("/analytics/ai-insights/");
 
@@ -653,14 +591,10 @@ export const getAdminAIInsights = () =>
 // ADMIN - PROFILE MANAGEMENT
 // ======================================================
 
-// GET ADMIN PROFILE
-
 export const getAdminProfile = () =>
   adminRequest("/profile/", {
     method: "GET",
   });
-
-// UPDATE ADMIN PROFILE
 
 export const updateAdminProfile = (formData) =>
   adminRequest("/profile/", {
@@ -680,7 +614,6 @@ export const changeAdminPassword = (data) =>
 
 // ======================================================
 // LEGACY ALIASES
-// Backward compatibility with existing imports
 // ======================================================
 
 export const getPendingOrganizations = () =>
@@ -695,17 +628,9 @@ export const rejectOrganization =
 export const suspendOrganization =
   suspendAdminOrganization;
 
-
-
-/* ======================================================
-   CITIZEN DASHBOARD
-   ====================================================== */
-
-const USER_DASHBOARD_BASE_URL =
-  "http://127.0.0.1:8000/api/user/dashboard";
-
-const NOTIFICATION_BASE_URL =
-  "http://127.0.0.1:8000/api/notifications";
+// ======================================================
+// CITIZEN DASHBOARD
+// ======================================================
 
 async function citizenDashboardRequest(url, options = {}) {
   const token = localStorage.getItem("access_token");
@@ -735,44 +660,37 @@ async function citizenDashboardRequest(url, options = {}) {
   return data;
 }
 
-// Dashboard statistics
 export const getCitizenDashboardSummary = () =>
   citizenDashboardRequest(
     `${USER_DASHBOARD_BASE_URL}/summary/`
   );
 
-// Recent citizen reports
 export const getCitizenRecentProblems = (limit = 5) =>
   citizenDashboardRequest(
     `${USER_DASHBOARD_BASE_URL}/recent-problems/?limit=${limit}`
   );
 
-// Citizen notifications
 export const getCitizenNotifications = (limit = 5) =>
   citizenDashboardRequest(
     `${NOTIFICATION_BASE_URL}/?limit=${limit}`
   );
 
-// Unread notification count
 export const getCitizenUnreadNotificationCount = () =>
   citizenDashboardRequest(
     `${NOTIFICATION_BASE_URL}/unread-count/`
   );
 
-// Mark one notification as read
 export const markCitizenNotificationRead = (id) =>
   citizenDashboardRequest(
     `${NOTIFICATION_BASE_URL}/${id}/read/`,
     { method: "PATCH" }
   );
 
-// Mark all notifications as read
 export const markAllCitizenNotificationsRead = () =>
   citizenDashboardRequest(
     `${NOTIFICATION_BASE_URL}/read-all/`,
     { method: "POST" }
   );
-
 
 export const deleteCitizenNotification = (id) =>
   citizenDashboardRequest(
@@ -780,14 +698,9 @@ export const deleteCitizenNotification = (id) =>
     { method: "DELETE" }
   );
 
-
-/* ======================================================
-   CITIZEN - REPORT PROBLEM & DRAFTS
-   Uses the existing problems API endpoints.
-   ====================================================== */
-
-const PROBLEMS_API_BASE_URL =
-  "http://127.0.0.1:8000/api/problems";
+// ======================================================
+// CITIZEN - REPORT PROBLEM & DRAFTS
+// ======================================================
 
 async function problemRequest(endpoint, options = {}) {
   const token = localStorage.getItem("access_token");
@@ -822,6 +735,7 @@ async function problemRequest(endpoint, options = {}) {
 
   if (!response.ok) {
     let message = "";
+
     if (typeof data.detail === "string") {
       message = data.detail;
     } else if (Array.isArray(data.detail)) {
@@ -832,11 +746,17 @@ async function problemRequest(endpoint, options = {}) {
       message = data.error;
     } else if (typeof data === "object" && data !== null) {
       const errorList = [];
+
       for (const [field, errs] of Object.entries(data)) {
         if (field === "detail") continue;
-        const text = Array.isArray(errs) ? errs.join(", ") : String(errs);
+
+        const text = Array.isArray(errs)
+          ? errs.join(", ")
+          : String(errs);
+
         errorList.push(`${field}: ${text}`);
       }
+
       if (errorList.length > 0) {
         message = errorList.join(" | ");
       }
@@ -856,12 +776,10 @@ async function problemRequest(endpoint, options = {}) {
 export const getProblemCategories = () =>
   problemRequest("/categories/");
 
+// ======================================================
+// CITIZEN - AI SMART PROBLEM REPORTING
+// ======================================================
 
-/* ======================================================
-   CITIZEN - AI SMART PROBLEM REPORTING
-   ====================================================== */
-
-// Generate AI suggestions using the local Ollama-powered backend
 export const generateAIProblemSuggestions = (description) =>
   problemRequest("/ai-suggestions/", {
     method: "POST",
@@ -870,11 +788,10 @@ export const generateAIProblemSuggestions = (description) =>
     }),
   });
 
-/* ======================================================
-   CITIZEN - CIVICSOLVE AI ASSISTANT
-   ====================================================== */
+// ======================================================
+// CITIZEN - CIVICSOLVE AI ASSISTANT
+// ======================================================
 
-// Ask the CivicSolve AI Assistant a question
 export const askCivicSolveAssistant = (message) =>
   problemRequest("/assistant/", {
     method: "POST",
@@ -882,7 +799,6 @@ export const askCivicSolveAssistant = (message) =>
       message: message.trim(),
     }),
   });
-
 
 // Create an official problem directly
 export const createCitizenProblem = (data) =>
@@ -902,12 +818,10 @@ export const uploadProblemAttachment = (problemId, file) => {
   });
 };
 
+// ======================================================
+// CITIZEN - MY PROBLEMS
+// ======================================================
 
-/* ======================================================
-   CITIZEN - MY PROBLEMS
-   ====================================================== */
-
-// List citizen reports with search, filters and pagination
 export const getMyProblems = (params = {}) => {
   const query = new URLSearchParams();
 
@@ -928,40 +842,32 @@ export const getMyProblems = (params = {}) => {
   return problemRequest(`/my/${suffix}`);
 };
 
-// Get the details of one citizen-owned report
 export const getMyProblemDetails = (problemId) =>
   problemRequest(`/${encodeURIComponent(problemId)}/`);
 
-
-// List saved drafts
 export const getMyProblemDrafts = () =>
   problemRequest("/drafts/");
 
-// Save a new draft
 export const createProblemDraft = (data) =>
   problemRequest("/drafts/", {
     method: "POST",
     body: JSON.stringify(data),
   });
 
-// Retrieve one draft
 export const getProblemDraft = (draftId) =>
   problemRequest(`/drafts/${draftId}/`);
 
-// Update an existing draft
 export const updateProblemDraft = (draftId, data) =>
   problemRequest(`/drafts/${draftId}/`, {
     method: "PATCH",
     body: JSON.stringify(data),
   });
 
-// Delete a draft
 export const deleteProblemDraft = (draftId) =>
   problemRequest(`/drafts/${draftId}/`, {
     method: "DELETE",
   });
 
-// Upload evidence to a saved draft
 export const uploadProblemDraftAttachment = (
   draftId,
   file
@@ -978,19 +884,15 @@ export const uploadProblemDraftAttachment = (
   );
 };
 
-// Submit a saved draft as an official problem
 export const submitProblemDraft = (draftId) =>
   problemRequest(`/drafts/${draftId}/submit/`, {
     method: "POST",
   });
 
+// ======================================================
+// CITIZEN - BROWSE COMMUNITY PROBLEMS
+// ======================================================
 
-/* ======================================================
-   CITIZEN - BROWSE COMMUNITY PROBLEMS
-   ====================================================== */
-
-// Browse community problems with search, filters,
-// sorting and pagination.
 export const getBrowseProblems = (params = {}) => {
   const query = new URLSearchParams();
 
@@ -1011,17 +913,15 @@ export const getBrowseProblems = (params = {}) => {
   return problemRequest(`/browse/${suffix}`);
 };
 
-/* ======================================================
-   CITIZEN - PROBLEM DISCUSSION
-   ====================================================== */
+// ======================================================
+// CITIZEN - PROBLEM DISCUSSION
+// ======================================================
 
-// Get discussion messages for a community problem
 export const getProblemDiscussions = (problemId) =>
   problemRequest(
     `/${encodeURIComponent(problemId)}/discussions/`
   );
 
-// Create a discussion message or reply
 export const createProblemDiscussion = (
   problemId,
   { message, parent = null }
@@ -1060,25 +960,21 @@ export function submitCitizenResolutionReview(
   );
 }
 
+// ======================================================
+// CITIZEN - PROFILE, IMAGE UPLOAD & PASSWORD
+// ======================================================
 
-/* ======================================================
-   CITIZEN - PROFILE, IMAGE UPLOAD & PASSWORD
-   ====================================================== */
-
-// GET citizen profile
 export const getCitizenProfile = () =>
   request("/profile/", {
     method: "GET",
   });
 
-// UPDATE profile fields and preferences (JSON)
 export const updateCitizenProfile = (data) =>
   request("/profile/", {
     method: "PATCH",
     body: JSON.stringify(data),
   });
 
-// UPLOAD or replace profile image (multipart/form-data)
 export const uploadCitizenProfileImage = (file) => {
   const formData = new FormData();
   formData.append("profile_image", file);
@@ -1089,30 +985,22 @@ export const uploadCitizenProfileImage = (file) => {
   });
 };
 
-// REMOVE profile image
 export const deleteCitizenProfileImage = () =>
   request("/profile/image/", {
     method: "DELETE",
   });
 
-// CHANGE password
 export const changeCitizenPassword = (data) =>
   request("/profile/change-password/", {
     method: "POST",
     body: JSON.stringify(data),
   });
 
-
-/* ======================================================
-   ORGANIZATION - AVAILABLE PROBLEMS
-   ====================================================== */
-
-const ORGANIZATION_API_BASE_URL =
-  "http://127.0.0.1:8000/api/organization";
+// ======================================================
+// ORGANIZATION - AVAILABLE PROBLEMS
+// ======================================================
 
 let organizationSessionExpiryHandled = false;
-
-// Shared organization API request helper
 
 async function organizationRequest(endpoint, options = {}) {
   const token = localStorage.getItem("access_token");
@@ -1142,7 +1030,6 @@ async function organizationRequest(endpoint, options = {}) {
 
   const data = await response.json().catch(() => ({}));
 
-  // Handle an expired or invalid organization session once.
   if (response.status === 401) {
     if (!organizationSessionExpiryHandled) {
       organizationSessionExpiryHandled = true;
@@ -1182,14 +1069,12 @@ async function organizationRequest(endpoint, options = {}) {
     throw new Error(message);
   }
 
-  // Allow a future expired session to be handled again.
   organizationSessionExpiryHandled = false;
 
   return data;
 }
 
-
-// GET available problems with search, filters and pagination
+// GET available problems
 export const getOrganizationAvailableProblems = (params = {}) => {
   const query = new URLSearchParams();
 
@@ -1213,14 +1098,12 @@ export const getOrganizationAvailableProblems = (params = {}) => {
 };
 
 // GET organization dashboard summary
-// Keep this export if your dashboard uses the same service file.
 export const getOrganizationDashboard = () =>
   organizationRequest("/dashboard/");
 
-
-/* ======================================================
-   ORGANIZATION - PROBLEM DETAILS
-   ====================================================== */
+// ======================================================
+// ORGANIZATION - PROBLEM DETAILS
+// ======================================================
 
 export const getOrganizationProblemDetails = (problemId) => {
   if (
@@ -1236,12 +1119,9 @@ export const getOrganizationProblemDetails = (problemId) => {
   );
 };
 
-
-/* ======================================================
-   ORGANIZATION - ACCEPT / CANCEL ASSIGNMENT
-   ====================================================== */
-
-// These endpoint paths must match your Django URL configuration.
+// ======================================================
+// ORGANIZATION - ACCEPT / CANCEL ASSIGNMENT
+// ======================================================
 
 export const acceptOrganizationAssignment = (
   assignmentId,
@@ -1257,7 +1137,6 @@ export const acceptOrganizationAssignment = (
     }
   );
 
-
 export const cancelOrganizationAssignment = (
   assignmentId,
   reason
@@ -1270,16 +1149,13 @@ export const cancelOrganizationAssignment = (
     }
   );
 
+// ======================================================
+// ORGANIZATION - SOLUTIONS
+// ======================================================
 
-/* ======================================================
-   ORGANIZATION - SOLUTIONS
-   ====================================================== */
-
-// GET all solutions submitted by the organization
 export const getOrganizationSolutions = () =>
   organizationRequest("/solutions/");
 
-// SUBMIT a solution for an accepted assignment
 export const submitOrganizationSolution = (data) =>
   organizationRequest("/solutions/", {
     method: "POST",
@@ -1291,13 +1167,11 @@ export const submitOrganizationSolution = (data) =>
     }),
   });
 
-// GET one solution with evidence and review information
 export const getOrganizationSolutionDetails = (solutionId) =>
   organizationRequest(
     `/solutions/${encodeURIComponent(solutionId)}/`
   );
 
-// UPLOAD before/after evidence image
 export const uploadOrganizationSolutionEvidence = (
   solutionId,
   { evidence_type, file, caption = "" }
@@ -1319,17 +1193,13 @@ export const uploadOrganizationSolutionEvidence = (
   );
 };
 
+// ======================================================
+// ORGANIZATION - PROFILE
+// ======================================================
 
-
-/* ======================================================
-   ORGANIZATION - PROFILE
-   ====================================================== */
-
-// GET the authenticated organization's profile
 export const getOrganizationProfile = () =>
   organizationRequest("/profile/");
 
-// UPDATE permitted organization profile fields
 export const updateOrganizationProfile = (data) =>
   organizationRequest("/profile/", {
     method: "PATCH",
@@ -1351,12 +1221,10 @@ export const deleteOrganizationProfileImage = () =>
     method: "DELETE",
   });
 
+// ======================================================
+// ORGANIZATION - ACTIVE PROBLEMS
+// ======================================================
 
-/* ======================================================
-   ORGANIZATION - ACTIVE PROBLEMS
-   ====================================================== */
-
-// GET assigned, accepted, and in-progress problems
 export const getOrganizationActiveProblems = (params = {}) => {
   const query = new URLSearchParams();
 
@@ -1379,11 +1247,10 @@ export const getOrganizationActiveProblems = (params = {}) => {
   );
 };
 
-/* ======================================================
-   ORGANIZATION - RESOLVED PROBLEMS
-   ====================================================== */
+// ======================================================
+// ORGANIZATION - RESOLVED PROBLEMS
+// ======================================================
 
-// GET completed assignments and resolution history
 export const getOrganizationResolvedProblems = (params = {}) => {
   const query = new URLSearchParams();
 
@@ -1406,16 +1273,13 @@ export const getOrganizationResolvedProblems = (params = {}) => {
   );
 };
 
+// ======================================================
+// ORGANIZATION - UPDATE PROGRESS
+// ======================================================
 
-/* ======================================================
-   ORGANIZATION - UPDATE PROGRESS
-   ====================================================== */
-
-// GET active assignments with their latest progress
 export const getOrganizationProgressAssignments = () =>
   organizationRequest("/progress/");
 
-// SUBMIT progress percentage, notes and optional photo
 export const submitOrganizationProgress = (
   assignmentId,
   { progress_percentage, update_notes, evidence }
@@ -1443,7 +1307,6 @@ export const submitOrganizationProgress = (
   );
 };
 
-// GET progress history for one assignment
 export const getOrganizationProgressHistory = (
   assignmentId
 ) =>
@@ -1453,35 +1316,39 @@ export const getOrganizationProgressHistory = (
     )}/history/`
   );
 
+// ======================================================
+// ORGANIZATION - NOTIFICATIONS
+// ======================================================
 
-/* ======================================================
-   ORGANIZATION - NOTIFICATIONS
-   ====================================================== */
-
-// GET list of notifications for the authenticated organization
 export const getOrganizationNotifications = (params = {}) => {
   const query = new URLSearchParams();
+
   Object.entries(params).forEach(([key, value]) => {
-    if (value !== undefined && value !== null && value !== "") {
+    if (
+      value !== undefined &&
+      value !== null &&
+      value !== ""
+    ) {
       query.append(key, value);
     }
   });
-  const suffix = query.toString() ? `?${query.toString()}` : "?limit=100";
+
+  const suffix = query.toString()
+    ? `?${query.toString()}`
+    : "?limit=100";
+
   return organizationRequest(`/notifications/${suffix}`);
 };
 
-// GET unread notification count
 export const getOrganizationUnreadNotificationCount = () =>
   organizationRequest("/notifications/unread-count/");
 
-// PATCH mark a single notification as read
 export const markOrganizationNotificationRead = (notificationId) =>
   organizationRequest(
     `/notifications/${encodeURIComponent(notificationId)}/read/`,
     { method: "PATCH" }
   );
 
-// POST mark all notifications as read
 export const markAllOrganizationNotificationsRead = () =>
   organizationRequest("/notifications/read-all/", {
     method: "POST",

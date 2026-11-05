@@ -1,10 +1,12 @@
+
 from pathlib import Path
 from datetime import timedelta
 import os
 
-BASE_DIR = Path(__file__).resolve().parent.parent
-
 from dotenv import load_dotenv
+import dj_database_url
+
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 load_dotenv(BASE_DIR / ".env")
 load_dotenv()
@@ -12,25 +14,42 @@ load_dotenv()
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4.1-mini")
 
+
 # ============================================================
 # SECURITY
 # ============================================================
 
-SECRET_KEY = os.getenv(
-    "DJANGO_SECRET_KEY",
-    "q5l3w3i9tpzav(^one!ivzb=k^j^kie5fg+tt()^#d^z25oq_9"
-)
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 
-DEBUG = True
+if not SECRET_KEY:
+    raise RuntimeError("DJANGO_SECRET_KEY must be set.")
+
+DEBUG = os.getenv("DEBUG", "True").lower() == "true"
 
 ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
     "[::1]",
     "testserver",
-    "0.0.0.0",
-    "*",
 ]
+
+render_host = os.getenv("RENDER_EXTERNAL_HOSTNAME")
+
+if render_host:
+    ALLOWED_HOSTS.append(render_host)
+
+ALLOWED_HOSTS += [
+    host.strip()
+    for host in os.getenv("ALLOWED_HOSTS", "").split(",")
+    if host.strip()
+]
+
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
 
 
 # ============================================================
@@ -76,6 +95,7 @@ AUTH_USER_MODEL = "accounts.User"
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
 
     "corsheaders.middleware.CorsMiddleware",
 
@@ -132,8 +152,22 @@ TEMPLATES = [
 # DATABASE
 # ============================================================
 
-# If POSTGRES_DB is explicitly set in .env, use PostgreSQL
-if os.getenv("POSTGRES_DB"):
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+if DATABASE_URL:
+
+    # Render PostgreSQL database
+    DATABASES = {
+        "default": dj_database_url.parse(
+            DATABASE_URL,
+            conn_max_age=600,
+            ssl_require=not DEBUG,
+        )
+    }
+
+elif os.getenv("POSTGRES_DB"):
+
+    # Existing local PostgreSQL configuration
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
@@ -144,8 +178,10 @@ if os.getenv("POSTGRES_DB"):
             "PORT": os.getenv("POSTGRES_PORT", "5432"),
         }
     }
+
 else:
-    # Safely fallback to local SQLite for local development/testing
+
+    # Local SQLite fallback
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.sqlite3",
@@ -199,7 +235,19 @@ USE_TZ = True
 # STATIC FILES
 # ============================================================
 
-STATIC_URL = "static/"
+STATIC_URL = "/static/"
+
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
 
 
 # ============================================================
@@ -238,7 +286,7 @@ REST_FRAMEWORK = {
         "user": "120/minute",
     },
 
-     "DEFAULT_SCHEMA_CLASS":
+    "DEFAULT_SCHEMA_CLASS":
         "drf_spectacular.openapi.AutoSchema",
 }
 
@@ -267,7 +315,7 @@ SIMPLE_JWT = {
 
 
 # ============================================================
-# CORS
+# CORS / CSRF
 # ============================================================
 
 CORS_ALLOWED_ORIGINS = [
@@ -279,12 +327,19 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:5173",
 ]
 
+FRONTEND_URL = os.getenv("FRONTEND_URL", "").rstrip("/")
+
+if FRONTEND_URL:
+    CORS_ALLOWED_ORIGINS.append(FRONTEND_URL)
+
 CORS_ALLOW_CREDENTIALS = True
 
+CSRF_TRUSTED_ORIGINS = []
 
-# ============================================================
-# EMAIL
-# ============================================================
+if FRONTEND_URL:
+    CSRF_TRUSTED_ORIGINS.append(FRONTEND_URL)
+
+
 # ============================================================
 # EMAIL CONFIGURATION — GMAIL SMTP
 # ============================================================
@@ -298,9 +353,15 @@ EMAIL_USE_SSL = False
 EMAIL_TIMEOUT = 20
 
 EMAIL_HOST_USER = (os.getenv("EMAIL_HOST_USER") or "").strip()
+
 EMAIL_HOST_PASSWORD = (os.getenv("EMAIL_HOST_PASSWORD") or "").strip()
 
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER or os.getenv("DEFAULT_FROM_EMAIL") or "noreply@civicsolve.com"
+DEFAULT_FROM_EMAIL = (
+    EMAIL_HOST_USER
+    or os.getenv("DEFAULT_FROM_EMAIL")
+    or "noreply@civicsolve.com"
+)
+
 
 # ============================================================
 # DEFAULT PRIMARY KEY
@@ -308,14 +369,22 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER or os.getenv("DEFAULT_FROM_EMAIL") or "nore
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+
+# ============================================================
+# API DOCUMENTATION
+# ============================================================
+
 SPECTACULAR_SETTINGS = {
+
     "TITLE": "CivicSolve API",
+
     "DESCRIPTION": (
         "CivicSolve Community Problem and Solution Platform API. "
         "This API provides citizen registration, organization registration, "
         "OTP verification, authentication, password recovery, and "
         "organization administration."
     ),
+
     "VERSION": "1.0.0",
 
     "SERVE_INCLUDE_SCHEMA": False,
@@ -351,23 +420,29 @@ SPECTACULAR_SETTINGS = {
                 "type": "http",
                 "scheme": "bearer",
                 "bearerFormat": "JWT",
-          }
-       }
+            }
+        }
     },
 
     "COMPONENT_SPLIT_REQUEST": True,
 }
 
-# CivicSolve Analytics: configurable problem deadlines in hours
+
+# ============================================================
+# CIVICSOLVE ANALYTICS
+# ============================================================
+
 CIVICSOLVE_PRIORITY_DEADLINES_HOURS = {
-    "low": 168,       # 7 days
-    "medium": 72,     # 3 days
-    "high": 24,       # 1 day
-    "urgent": 4,      # 4 hours
+    "low": 168,
+    "medium": 72,
+    "high": 24,
+    "urgent": 4,
 }
 
-MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR / "media"
+
+# ============================================================
+# CIVICSOLVE AI CONFIGURATION
+# ============================================================
 
 OLLAMA_BASE_URL = os.getenv(
     "OLLAMA_BASE_URL",

@@ -1,4 +1,5 @@
-import React, { useCallback, useEffect, useState } from "react";
+
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getOrganizationResolvedProblems } from "../../services/api";
 import "../../styles/organization/ResolvedProblems.css";
@@ -31,11 +32,12 @@ const prettyStatus = (value) =>
         .replaceAll("_", " ")
         .replace(/\b\w/g, (char) => char.toUpperCase());
 
-/* status colour: verified -> purple, awaiting/pending -> amber, else green */
 function statusTone(value) {
     const v = String(value || "").toLowerCase();
+
     if (v.includes("verif")) return "verified";
     if (v.includes("await") || v.includes("pending")) return "waiting";
+
     return "done";
 }
 
@@ -49,7 +51,6 @@ function csvCell(value) {
     return `"${String(value ?? "").replace(/"/g, '""')}"`;
 }
 
-/* numbers count up once when they change */
 function CountUp({ value }) {
     const [shown, setShown] = useState(0);
 
@@ -70,20 +71,24 @@ function CountUp({ value }) {
 
         const tick = (now) => {
             const p = Math.min(1, (now - start) / duration);
-            setShown(Math.round(value * (1 - Math.pow(1 - p, 3))));
-            if (p < 1) frame = requestAnimationFrame(tick);
+
+            setShown(
+                Math.round(value * (1 - Math.pow(1 - p, 3)))
+            );
+
+            if (p < 1) {
+                frame = requestAnimationFrame(tick);
+            }
         };
 
         frame = requestAnimationFrame(tick);
+
         return () => cancelAnimationFrame(frame);
     }, [value]);
 
     return <>{shown}</>;
 }
 
-/* hero illustration: an "impact network". A check badge sits at the
-   centre of a slowly turning orbit; fixed community points around it
-   light up one by one as the work reaches them. */
 function ResolvedArt() {
     const nodes = [
         [46, 34],
@@ -96,7 +101,6 @@ function ResolvedArt() {
         <svg className="rp-art" viewBox="0 0 320 130" aria-hidden="true">
             <rect className="rp-art-frame" x="1" y="1" width="318" height="128" rx="14" />
 
-            {/* links from the centre to each community point */}
             {nodes.map(([x, y], i) => (
                 <line
                     key={`l-${i}`}
@@ -108,14 +112,10 @@ function ResolvedArt() {
                 />
             ))}
 
-            {/* turning orbits */}
             <circle className="rp-art-orbit" cx="160" cy="65" r="44" />
             <circle className="rp-art-orbit rp-art-orbit--rev" cx="160" cy="65" r="32" />
-
-            {/* pulse */}
             <circle className="rp-art-pulse" cx="160" cy="65" r="24" />
 
-            {/* community points */}
             {nodes.map(([x, y], i) => (
                 <g
                     key={`n-${i}`}
@@ -128,7 +128,6 @@ function ResolvedArt() {
                 </g>
             ))}
 
-            {/* centre badge */}
             <g transform="translate(160 65)">
                 <circle className="rp-art-core" r="22" />
                 <path
@@ -138,7 +137,6 @@ function ResolvedArt() {
                 />
             </g>
 
-            {/* sparkles */}
             {[
                 [112, 18, 0],
                 [212, 114, 1.1],
@@ -156,8 +154,6 @@ function ResolvedArt() {
     );
 }
 
-/* "latest completed work" scene: a street at dusk where the repaired
-   lamp switches on and a check badge confirms the work. */
 function LampScene() {
     return (
         <svg className="rp-scene" viewBox="0 0 320 210" aria-hidden="true">
@@ -166,6 +162,7 @@ function LampScene() {
                     <stop offset="0" stopColor="#06182a" />
                     <stop offset="1" stopColor="#15485a" />
                 </linearGradient>
+
                 <linearGradient id="rp-cone" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="0" stopColor="#ffd98a" stopOpacity="0.75" />
                     <stop offset="1" stopColor="#ffd98a" stopOpacity="0" />
@@ -174,7 +171,6 @@ function LampScene() {
 
             <rect width="320" height="210" fill="url(#rp-sky)" />
 
-            {/* stars */}
             <g className="rp-scene-stars">
                 <circle cx="40" cy="28" r="1.4" />
                 <circle cx="96" cy="16" r="1.1" />
@@ -183,13 +179,13 @@ function LampScene() {
                 <circle cx="150" cy="44" r="1" />
             </g>
 
-            {/* skyline */}
             <g className="rp-scene-city">
                 <rect x="14" y="104" width="46" height="70" rx="3" />
                 <rect x="66" y="84" width="38" height="90" rx="3" />
                 <rect x="206" y="94" width="44" height="80" rx="3" />
                 <rect x="256" y="76" width="50" height="98" rx="3" />
             </g>
+
             <g className="rp-scene-windows">
                 <rect className="rp-win" x="24" y="118" width="6" height="8" />
                 <rect className="rp-win rp-win--b" x="40" y="132" width="6" height="8" />
@@ -200,17 +196,14 @@ function LampScene() {
                 <rect className="rp-win" x="286" y="112" width="6" height="8" />
             </g>
 
-            {/* road */}
             <rect x="0" y="170" width="320" height="40" fill="#0b2433" />
             <line className="rp-scene-lane" x1="0" y1="190" x2="320" y2="190" />
 
-            {/* lamp */}
             <polygon className="rp-scene-light" points="150,70 108,172 192,172" fill="url(#rp-cone)" />
             <rect x="148" y="74" width="4" height="98" rx="2" fill="#2c4a5c" />
             <path d="M150 76 Q150 64 164 64" fill="none" stroke="#2c4a5c" strokeWidth="4" strokeLinecap="round" />
             <rect className="rp-scene-lamp" x="158" y="62" width="14" height="6" rx="3" />
 
-            {/* check badge */}
             <g transform="translate(262 40)">
                 <circle className="rp-scene-badge-ring" r="19" />
                 <circle r="15" fill="#0f9d84" />
@@ -227,6 +220,9 @@ function LampScene() {
 function ResolvedProblems() {
     const navigate = useNavigate();
 
+    const requestId = useRef(0);
+    const mounted = useRef(true);
+
     const [problems, setProblems] = useState([]);
     const [latest, setLatest] = useState(null);
     const [count, setCount] = useState(0);
@@ -242,7 +238,18 @@ function ResolvedProblems() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
+    useEffect(() => {
+        mounted.current = true;
+
+        return () => {
+            mounted.current = false;
+            requestId.current += 1;
+        };
+    }, []);
+
     const loadProblems = useCallback(async () => {
+        const currentRequest = ++requestId.current;
+
         setLoading(true);
         setError("");
 
@@ -257,20 +264,46 @@ function ResolvedProblems() {
                 page_size: PAGE_SIZE,
             });
 
-            setProblems(
-                Array.isArray(response.results) ? response.results : []
+            if (!mounted.current || currentRequest !== requestId.current) {
+                return;
+            }
+
+            const results = Array.isArray(response?.results)
+                ? response.results
+                : [];
+
+            const resultCount = Math.max(0, Number(response?.count) || 0);
+            const pages = Math.max(
+                1,
+                Number(response?.total_pages) ||
+                Math.ceil(resultCount / PAGE_SIZE)
             );
-            setLatest(response.latest_completed || null);
-            setCount(Number(response.count) || 0);
-            setTotalPages(Math.max(1, Number(response.total_pages) || 1));
+
+            setProblems(results);
+            setLatest(response?.latest_completed || null);
+            setCount(resultCount);
+            setTotalPages(pages);
+
+            // Keep the selected page valid if the result count changes.
+            if (page > pages) {
+                setPage(pages);
+            }
         } catch (err) {
+            if (!mounted.current || currentRequest !== requestId.current) {
+                return;
+            }
+
             setProblems([]);
             setLatest(null);
             setCount(0);
             setTotalPages(1);
-            setError(err.message || "Unable to load resolved problems.");
+            setError(
+                err?.message || "Unable to load resolved problems."
+            );
         } finally {
-            setLoading(false);
+            if (mounted.current && currentRequest === requestId.current) {
+                setLoading(false);
+            }
         }
     }, [search, category, priority, dateFrom, dateTo, page]);
 
@@ -287,8 +320,9 @@ function ResolvedProblems() {
         setPage(1);
     };
 
-    const hasFilters =
-        search || category || priority || dateFrom || dateTo;
+    const hasFilters = Boolean(
+        search || category || priority || dateFrom || dateTo
+    );
 
     const viewDetails = (problem) => {
         if (!problem?.problem_id) return;
@@ -300,10 +334,12 @@ function ResolvedProblems() {
         );
     };
 
-    /* ---- summary numbers (this page of results) ---- */
     const highPriority = problems.filter((p) =>
-        ["high", "urgent"].includes(String(p.priority || "").toLowerCase())
+        ["high", "urgent"].includes(
+            String(p.priority || "").toLowerCase()
+        )
     ).length;
+
     const categoriesCovered = new Set(
         problems.map((p) => p.category).filter(Boolean)
     ).size;
@@ -311,13 +347,16 @@ function ResolvedProblems() {
     const from = count === 0 ? 0 : (page - 1) * PAGE_SIZE + 1;
     const to = Math.min(page * PAGE_SIZE, count);
 
-    const windowStart = Math.max(1, Math.min(page - 2, totalPages - 4));
+    const windowStart = Math.max(
+        1,
+        Math.min(page - 2, totalPages - 4)
+    );
+
     const pageNumbers = Array.from(
         { length: Math.min(5, totalPages) },
         (_, i) => windowStart + i
     );
 
-    /* client-side CSV of the rows currently loaded */
     const exportHistory = () => {
         if (!problems.length) return;
 
@@ -345,21 +384,31 @@ function ResolvedProblems() {
 
         const csv = [header, ...rows]
             .map((row) => row.map(csvCell).join(","))
-            .join("\n");
+            .join("\r\n");
 
-        const url = URL.createObjectURL(
-            new Blob([csv], { type: "text/csv;charset=utf-8;" })
+        // UTF-8 BOM helps spreadsheet applications display text correctly.
+        const blob = new Blob(
+            ["\uFEFF", csv],
+            { type: "text/csv;charset=utf-8;" }
         );
+
+        const url = URL.createObjectURL(blob);
         const link = document.createElement("a");
+
         link.href = url;
         link.download = "completion-history.csv";
+        link.style.display = "none";
+
+        document.body.appendChild(link);
         link.click();
-        URL.revokeObjectURL(url);
+        document.body.removeChild(link);
+
+        // Delay cleanup so the browser can begin the download.
+        window.setTimeout(() => URL.revokeObjectURL(url), 1000);
     };
 
     return (
         <main className="rp-page">
-            {/* ===== Hero ===== */}
             <header className="rp-hero">
                 <span className="rp-orb rp-orb--1" aria-hidden="true" />
                 <span className="rp-orb rp-orb--2" aria-hidden="true" />
@@ -369,7 +418,9 @@ function ResolvedProblems() {
                     <span className="rp-eyebrow">
                         ORGANIZATION WORKSPACE / COMPLETION HISTORY
                     </span>
+
                     <h1>Resolved Problems</h1>
+
                     <p>
                         Review completed assignments, track your impact, and
                         revisit the resolution details of community problems.
@@ -380,7 +431,7 @@ function ResolvedProblems() {
                             type="button"
                             className="rp-export-btn"
                             onClick={exportHistory}
-                            disabled={!problems.length}
+                            disabled={!problems.length || loading}
                         >
                             Export completion history
                         </button>
@@ -398,7 +449,6 @@ function ResolvedProblems() {
             </header>
 
             <div className="rp-body">
-                {/* ===== Summary cards ===== */}
                 <section className="rp-stats" aria-label="Completion summary">
                     <article className="rp-stat rp-stat--teal">
                         <span className="rp-stat-label">Resolved problems</span>
@@ -425,10 +475,10 @@ function ResolvedProblems() {
                     </article>
                 </section>
 
-                {/* ===== Filters ===== */}
                 <section className="rp-filters">
                     <div className="rp-search">
                         <span aria-hidden="true">⌕</span>
+
                         <input
                             type="search"
                             placeholder="Search title, description, location or ID..."
@@ -470,6 +520,7 @@ function ResolvedProblems() {
 
                     <label className="rp-date-filter">
                         <span>From</span>
+
                         <input
                             type="date"
                             value={dateFrom}
@@ -484,6 +535,7 @@ function ResolvedProblems() {
 
                     <label className="rp-date-filter">
                         <span>To</span>
+
                         <input
                             type="date"
                             value={dateTo}
@@ -506,11 +558,11 @@ function ResolvedProblems() {
                     </button>
                 </section>
 
-                {/* ===== Completion history ===== */}
                 <section className="rp-history">
                     <div className="rp-history-head">
                         <div>
                             <h2>Completion history</h2>
+
                             <p>
                                 {loading
                                     ? "Loading completion history..."
@@ -533,10 +585,17 @@ function ResolvedProblems() {
                     {error && (
                         <div className="rp-error" role="alert">
                             <div>
-                                <strong>Unable to load completion history</strong>
+                                <strong>
+                                    Unable to load completion history
+                                </strong>
                                 <p>{error}</p>
                             </div>
-                            <button type="button" onClick={loadProblems}>
+
+                            <button
+                                type="button"
+                                onClick={loadProblems}
+                                disabled={loading}
+                            >
                                 Try again
                             </button>
                         </div>
@@ -545,20 +604,29 @@ function ResolvedProblems() {
                     {loading ? (
                         <div className="rp-skeleton" aria-busy="true">
                             {[0, 1, 2, 3].map((i) => (
-                                <div className="rp-skeleton-row" key={i} />
+                                <div
+                                    className="rp-skeleton-row"
+                                    key={i}
+                                />
                             ))}
                         </div>
                     ) : error ? null : problems.length === 0 ? (
                         <div className="rp-empty">
                             <div className="rp-empty-icon">✓</div>
+
                             <h3>No completed assignments found</h3>
+
                             <p>
                                 Completed work will appear here so your
                                 organization can review its history and
                                 community impact.
                             </p>
+
                             {hasFilters && (
-                                <button type="button" onClick={resetFilters}>
+                                <button
+                                    type="button"
+                                    onClick={resetFilters}
+                                >
                                     Clear filters
                                 </button>
                             )}
@@ -567,10 +635,14 @@ function ResolvedProblems() {
                         <>
                             <div className="rp-table" role="table">
                                 <div className="rp-thead" role="row">
-                                    <span role="columnheader">Problem / Location</span>
+                                    <span role="columnheader">
+                                        Problem / Location
+                                    </span>
                                     <span role="columnheader">Completed</span>
                                     <span role="columnheader">Status</span>
-                                    <span role="columnheader">Resolution summary</span>
+                                    <span role="columnheader">
+                                        Resolution summary
+                                    </span>
                                     <span role="columnheader">Details</span>
                                 </div>
 
@@ -578,51 +650,90 @@ function ResolvedProblems() {
                                     const priorityKey = String(
                                         problem.priority || "low"
                                     ).toLowerCase();
+
                                     const note =
-                                        problem.resolution_notes || problem.notes;
+                                        problem.resolution_notes ||
+                                        problem.notes;
 
                                     return (
                                         <div
                                             className="rp-row"
                                             role="row"
-                                            key={problem.assignment_id}
+                                            key={
+                                                problem.assignment_id ??
+                                                problem.problem_id ??
+                                                index
+                                            }
                                             style={{ "--i": index }}
                                         >
-                                            <div className="rp-cell rp-cell--main" role="cell">
+                                            <div
+                                                className="rp-cell rp-cell--main"
+                                                role="cell"
+                                            >
                                                 <strong>
                                                     {codeOf(problem)} ·{" "}
-                                                    {problem.title || "Untitled problem"}
+                                                    {problem.title ||
+                                                        "Untitled problem"}
                                                 </strong>
+
                                                 <small>
-                                                    {problem.location || "Location not specified"}
+                                                    {problem.location ||
+                                                        "Location not specified"}
                                                     {" · "}
-                                                    <span className={`rp-priority rp-priority-${priorityKey}`}>
-                                                        {problem.priority || "Low"} priority
+                                                    <span
+                                                        className={`rp-priority rp-priority-${priorityKey}`}
+                                                    >
+                                                        {problem.priority || "Low"}{" "}
+                                                        priority
                                                     </span>
                                                 </small>
                                             </div>
 
-                                            <div className="rp-cell" role="cell" data-label="Completed">
+                                            <div
+                                                className="rp-cell"
+                                                role="cell"
+                                                data-label="Completed"
+                                            >
                                                 <strong>
                                                     {formatDate(
                                                         problem.completed_at ||
                                                         problem.resolved_at
                                                     )}
                                                 </strong>
-                                                <small>Assignment #{problem.assignment_id}</small>
+
+                                                <small>
+                                                    Assignment #
+                                                    {problem.assignment_id ?? "N/A"}
+                                                </small>
                                             </div>
 
-                                            <div className="rp-cell" role="cell" data-label="Status">
-                                                <span className={`rp-status rp-status--${statusTone(problem.problem_status)}`}>
+                                            <div
+                                                className="rp-cell"
+                                                role="cell"
+                                                data-label="Status"
+                                            >
+                                                <span
+                                                    className={`rp-status rp-status--${statusTone(problem.problem_status)}`}
+                                                >
                                                     <i aria-hidden="true">✓</i>
-                                                    {prettyStatus(problem.problem_status)}
+                                                    {prettyStatus(
+                                                        problem.problem_status
+                                                    )}
                                                 </span>
-                                                <small>{problem.category || "General"}</small>
+
+                                                <small>
+                                                    {problem.category || "General"}
+                                                </small>
                                             </div>
 
-                                            <div className="rp-cell" role="cell" data-label="Resolution summary">
+                                            <div
+                                                className="rp-cell"
+                                                role="cell"
+                                                data-label="Resolution summary"
+                                            >
                                                 <p className="rp-note">
-                                                    {note || "No resolution notes recorded."}
+                                                    {note ||
+                                                        "No resolution notes recorded."}
                                                 </p>
                                             </div>
 
@@ -630,9 +741,15 @@ function ResolvedProblems() {
                                                 <button
                                                     type="button"
                                                     className="rp-view"
-                                                    onClick={() => viewDetails(problem)}
+                                                    onClick={() =>
+                                                        viewDetails(problem)
+                                                    }
+                                                    disabled={!problem.problem_id}
                                                 >
-                                                    View <span aria-hidden="true">→</span>
+                                                    View{" "}
+                                                    <span aria-hidden="true">
+                                                        →
+                                                    </span>
                                                 </button>
                                             </div>
                                         </div>
@@ -649,7 +766,9 @@ function ResolvedProblems() {
                                     <button
                                         type="button"
                                         onClick={() =>
-                                            setPage((current) => Math.max(1, current - 1))
+                                            setPage((current) =>
+                                                Math.max(1, current - 1)
+                                            )
                                         }
                                         disabled={page <= 1 || loading}
                                     >
@@ -660,8 +779,12 @@ function ResolvedProblems() {
                                         <button
                                             type="button"
                                             key={n}
-                                            className={n === page ? "is-current" : ""}
-                                            aria-current={n === page ? "page" : undefined}
+                                            className={
+                                                n === page ? "is-current" : ""
+                                            }
+                                            aria-current={
+                                                n === page ? "page" : undefined
+                                            }
                                             onClick={() => setPage(n)}
                                             disabled={loading}
                                         >
@@ -673,10 +796,15 @@ function ResolvedProblems() {
                                         type="button"
                                         onClick={() =>
                                             setPage((current) =>
-                                                Math.min(totalPages, current + 1)
+                                                Math.min(
+                                                    totalPages,
+                                                    current + 1
+                                                )
                                             )
                                         }
-                                        disabled={page >= totalPages || loading}
+                                        disabled={
+                                            page >= totalPages || loading
+                                        }
                                     >
                                         Next →
                                     </button>
@@ -686,7 +814,6 @@ function ResolvedProblems() {
                     )}
                 </section>
 
-                {/* ===== Latest work + accountable outcomes ===== */}
                 {!loading && !error && latest && (
                     <div className="rp-lower">
                         <section className="rp-latest">
@@ -695,18 +822,28 @@ function ResolvedProblems() {
                             <div className="rp-latest-grid">
                                 <figure className="rp-latest-art">
                                     <LampScene />
+
                                     <figcaption>
-                                        Completed {formatDate(latest.completed_at)}
+                                        Completed{" "}
+                                        {formatDate(latest.completed_at)}
                                     </figcaption>
                                 </figure>
 
                                 <div className="rp-latest-detail">
                                     <div className="rp-latest-tags">
-                                        <span className="rp-chip">{codeOf(latest)}</span>
-                                        <span>{latest.category || "General"}</span>
+                                        <span className="rp-chip">
+                                            {codeOf(latest)}
+                                        </span>
+
+                                        <span>
+                                            {latest.category || "General"}
+                                        </span>
                                     </div>
 
-                                    <h3>{latest.title || "Completed community problem"}</h3>
+                                    <h3>
+                                        {latest.title ||
+                                            "Completed community problem"}
+                                    </h3>
 
                                     <p>
                                         {latest.resolution_notes ||
@@ -717,8 +854,12 @@ function ResolvedProblems() {
                                     <div className="rp-latest-meta">
                                         <div>
                                             <span>Completed</span>
+
                                             <strong>
-                                                {formatDate(latest.completed_at, true)}
+                                                {formatDate(
+                                                    latest.completed_at,
+                                                    true
+                                                )}
                                             </strong>
                                         </div>
                                     </div>
@@ -727,15 +868,20 @@ function ResolvedProblems() {
                                         type="button"
                                         className="rp-latest-button"
                                         onClick={() => viewDetails(latest)}
+                                        disabled={!latest.problem_id}
                                     >
-                                        View resolution record <span>→</span>
+                                        View resolution record{" "}
+                                        <span>→</span>
                                     </button>
                                 </div>
                             </div>
                         </section>
 
                         <aside className="rp-outcomes">
-                            <span className="rp-outcomes-orb" aria-hidden="true" />
+                            <span
+                                className="rp-outcomes-orb"
+                                aria-hidden="true"
+                            />
 
                             <div className="rp-outcomes-head">
                                 <span className="rp-outcomes-icon">✓</span>
@@ -751,15 +897,23 @@ function ResolvedProblems() {
 
                             <ol className="rp-steps">
                                 <li>
-                                    <span className="rp-step-dot rp-step-dot--teal">1</span>
+                                    <span className="rp-step-dot rp-step-dot--teal">
+                                        1
+                                    </span>
                                     Team marks as Resolved
                                 </li>
+
                                 <li>
-                                    <span className="rp-step-dot rp-step-dot--amber">2</span>
+                                    <span className="rp-step-dot rp-step-dot--amber">
+                                        2
+                                    </span>
                                     Reporter is notified
                                 </li>
+
                                 <li>
-                                    <span className="rp-step-dot rp-step-dot--violet">3</span>
+                                    <span className="rp-step-dot rp-step-dot--violet">
+                                        3
+                                    </span>
                                     Community confirms &amp; closes
                                 </li>
                             </ol>
@@ -776,7 +930,10 @@ function ResolvedProblems() {
                     <span>
                         Summary cards count the rows on the current page.
                     </span>
-                    <span>CivicSolve · Community • Action • Impact</span>
+
+                    <span>
+                        CivicSolve · Community • Action • Impact
+                    </span>
                 </footer>
             </div>
         </main>

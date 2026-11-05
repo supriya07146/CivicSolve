@@ -94,10 +94,11 @@ AUTH_USER_MODEL = "accounts.User"
 # ============================================================
 
 MIDDLEWARE = [
-    "django.middleware.security.SecurityMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware",
-
     "corsheaders.middleware.CorsMiddleware",
+    
+    "django.middleware.security.SecurityMiddleware",
+
+    "whitenoise.middleware.WhiteNoiseMiddleware",
 
     "django.contrib.sessions.middleware.SessionMiddleware",
 
@@ -318,6 +319,7 @@ SIMPLE_JWT = {
 # CORS / CSRF
 # ============================================================
 
+
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
@@ -325,20 +327,24 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:3001",
     "http://localhost:5173",
     "http://127.0.0.1:5173",
+
+    # Production frontend
+    "https://civic-solve-eo5ltzq81-supriya07146s-projects.vercel.app",
 ]
 
 FRONTEND_URL = os.getenv("FRONTEND_URL", "").rstrip("/")
 
-if FRONTEND_URL:
+if FRONTEND_URL and FRONTEND_URL not in CORS_ALLOWED_ORIGINS:
     CORS_ALLOWED_ORIGINS.append(FRONTEND_URL)
 
 CORS_ALLOW_CREDENTIALS = True
 
-CSRF_TRUSTED_ORIGINS = []
+CSRF_TRUSTED_ORIGINS = [
+    "https://civic-solve-eo5ltzq81-supriya07146s-projects.vercel.app",
+]
 
-if FRONTEND_URL:
+if FRONTEND_URL and FRONTEND_URL not in CSRF_TRUSTED_ORIGINS:
     CSRF_TRUSTED_ORIGINS.append(FRONTEND_URL)
-
 
 # ============================================================
 # EMAIL CONFIGURATION — GMAIL SMTP

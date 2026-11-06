@@ -459,3 +459,25 @@ OLLAMA_MODEL = os.getenv(
     "OLLAMA_MODEL",
     "qwen2.5:1.5b"
 )
+
+# ============================================================
+# PRODUCTION ERROR LOGGING
+# ============================================================
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "level": "ERROR",
+        },
+    },
+    "loggers": {
+        "django.request": {
+            "handlers": ["console"],
+            "level": "ERROR",
+            "propagate": False,
+        },
+    },
+}

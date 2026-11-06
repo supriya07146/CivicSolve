@@ -23,6 +23,8 @@ import {
     clearCitizenSession,
 } from "./utils/citizenSession";
 
+import { API_ROOT } from "../services/api";
+
 import logo from "../assets/logo-mark-white.png";
 import "../styles/user/CitizenLayout.css";
 import { useToast } from "./toast/ToastContext";
@@ -36,7 +38,7 @@ const NAV_LINKS = [
     { to: "/user/problem-discussion", label: "Problem Discussion" },
 ];
 
-const CITIZEN_API_ORIGIN = "http://127.0.0.1:8000";
+const CITIZEN_API_ORIGIN = new URL(API_ROOT).origin;
 
 function getInitials(name) {
     const parts = String(name).trim().split(/\s+/).filter(Boolean);

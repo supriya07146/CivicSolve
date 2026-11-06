@@ -7,6 +7,7 @@ import {
     PlantIllustration,
     SceneExtras,
 } from "../components/OrganizationScene";
+import { API_ROOT } from "../services/api";
 
 function OrganizationRegistration() {
     const navigate = useNavigate();
@@ -347,7 +348,7 @@ function OrganizationRegistration() {
             );
 
             const response = await fetch(
-                "http://127.0.0.1:8000/api/auth/organization/register/",
+                `${API_ROOT}/auth/organization/register/`,
                 {
                     method: "POST",
                     body: formDataToSend,

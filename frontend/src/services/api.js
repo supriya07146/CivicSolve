@@ -7,7 +7,7 @@
 // Local development uses localhost.
 // Deployment uses REACT_APP_API_URL from the environment.
 
-const API_ROOT = (
+export const API_ROOT = (
   process.env.REACT_APP_API_URL ||
   "http://127.0.0.1:8000/api"
 ).replace(/\/+$/, "");

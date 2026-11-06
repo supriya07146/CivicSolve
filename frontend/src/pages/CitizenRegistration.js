@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import "../styles/citizenRegistration.css";
 import LocationPicker from "../components/LocationPicker";
 import CitizenIllustration from "../components/CitizenIllustration";
+import { API_ROOT } from "../services/api";
 
 function CitizenRegistration() {
     const navigate = useNavigate();
@@ -191,7 +192,7 @@ function CitizenRegistration() {
 
         try {
             const response = await fetch(
-                "http://127.0.0.1:8000/api/auth/citizen/register/",
+                `${API_ROOT}/auth/citizen/register/`,
                 {
                     method: "POST",
                     headers: {

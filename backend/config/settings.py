@@ -347,27 +347,15 @@ if FRONTEND_URL and FRONTEND_URL not in CSRF_TRUSTED_ORIGINS:
     CSRF_TRUSTED_ORIGINS.append(FRONTEND_URL)
 
 # ============================================================
-# EMAIL CONFIGURATION — GMAIL SMTP
+# EMAIL CONFIGURATION — RESEND API
 # ============================================================
 
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+RESEND_API_KEY = os.getenv("RESEND_API_KEY", "").strip()
 
-EMAIL_HOST = "smtp.gmail.com"
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_USE_SSL = False
-EMAIL_TIMEOUT = 20
-
-EMAIL_HOST_USER = (os.getenv("EMAIL_HOST_USER") or "").strip()
-
-EMAIL_HOST_PASSWORD = (os.getenv("EMAIL_HOST_PASSWORD") or "").strip()
-
-DEFAULT_FROM_EMAIL = (
-    EMAIL_HOST_USER
-    or os.getenv("DEFAULT_FROM_EMAIL")
-    or "noreply@civicsolve.com"
-)
-
+DEFAULT_FROM_EMAIL = os.getenv(
+    "DEFAULT_FROM_EMAIL",
+    "onboarding@resend.dev"
+).strip()
 
 # ============================================================
 # DEFAULT PRIMARY KEY

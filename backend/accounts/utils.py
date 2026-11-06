@@ -1,5 +1,6 @@
 import hashlib
 import secrets
+import requests
 
 from datetime import timedelta
 
@@ -59,23 +60,43 @@ def send_email(
     text_content,
     html_content
 ):
+    """
+    Send CivicSolve emails using the Resend API.
+    """
 
-    email = EmailMultiAlternatives(
-        subject=subject,
-        body=text_content,
-        from_email=settings.DEFAULT_FROM_EMAIL,
-        to=[recipient],
+    api_key = settings.RESEND_API_KEY
+
+    if not api_key:
+        raise RuntimeError(
+            "RESEND_API_KEY is not configured."
+        )
+
+    payload = {
+        "from": settings.DEFAULT_FROM_EMAIL,
+        "to": [recipient],
+        "subject": subject,
+        "text": text_content,
+        "html": html_content,
+    }
+
+    response = requests.post(
+        "https://api.resend.com/emails",
+        headers={
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json",
+            "User-Agent": "CivicSolve/1.0",
+        },
+        json=payload,
+        timeout=30,
     )
 
-    email.attach_alternative(
-        html_content,
-        "text/html"
-    )
+    if not response.ok:
+        raise RuntimeError(
+            f"Resend email failed: "
+            f"{response.status_code} - {response.text}"
+        )
 
-    email.send(
-        fail_silently=False
-    )
-
+    return response.json()
 
 def send_registration_otp(
     email,

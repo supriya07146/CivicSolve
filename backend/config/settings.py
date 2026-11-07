@@ -31,6 +31,8 @@ ALLOWED_HOSTS = [
     "127.0.0.1",
     "[::1]",
     "testserver",
+    "civicsolve-backend-4uoc.onrender.com",
+    ".onrender.com",
 ]
 
 render_host = os.getenv("RENDER_EXTERNAL_HOSTNAME")

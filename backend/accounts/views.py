@@ -215,12 +215,16 @@ class CitizenRegisterView(APIView):
                target_url="/admin/users",
             )
 
-            send_registration_otp(
-                user.email,
-                user.full_name,
-                otp,
-                "Citizen"
-            )
+            try:
+                send_registration_otp(
+                    user.email,
+                    user.full_name,
+                    otp,
+                    "Citizen"
+                )
+            except Exception as email_err:
+                import logging
+                logging.getLogger(__name__).error(f"Failed to send registration OTP: {email_err}")
 
         return Response(
             {

@@ -220,7 +220,7 @@ function CitizenRegistration() {
                 }
             );
 
-            const data = await response.json();
+            const data = await response.json().catch(() => ({}));
 
             if (!response.ok) {
                 const backendErrors = {};
@@ -271,7 +271,7 @@ function CitizenRegistration() {
                         submit:
                             data.detail ||
                             data.message ||
-                            "Registration failed. Please try again.",
+                            `Registration failed (${response.status}: ${response.statusText || "Server error"}). Please try again.`,
                     });
                 }
 

@@ -11,8 +11,6 @@ import {
 } from "../../services/api";
 
 import "../../styles/user/UserDashboard.css";
-
-import "../../styles/user/UserDashboard.css";
 import { HeroScene, HeroFlora } from "../../components/HeroScene";
 
 

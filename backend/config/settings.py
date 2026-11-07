@@ -329,7 +329,12 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:5173",
 
     # Production frontend
+    "https://civicsolve-nu.vercel.app",
     "https://civic-solve-eo5ltzq81-supriya07146s-projects.vercel.app",
+]
+
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r"^https:\/\/.*\.vercel\.app$",
 ]
 
 FRONTEND_URL = os.getenv("FRONTEND_URL", "").rstrip("/")
@@ -340,6 +345,9 @@ if FRONTEND_URL and FRONTEND_URL not in CORS_ALLOWED_ORIGINS:
 CORS_ALLOW_CREDENTIALS = True
 
 CSRF_TRUSTED_ORIGINS = [
+    "https://*.vercel.app",
+    "https://*.onrender.com",
+    "https://civicsolve-nu.vercel.app",
     "https://civic-solve-eo5ltzq81-supriya07146s-projects.vercel.app",
 ]
 

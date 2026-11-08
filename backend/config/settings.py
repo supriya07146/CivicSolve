@@ -357,14 +357,16 @@ if FRONTEND_URL and FRONTEND_URL not in CSRF_TRUSTED_ORIGINS:
     CSRF_TRUSTED_ORIGINS.append(FRONTEND_URL)
 
 # ============================================================
-# EMAIL CONFIGURATION — RESEND API
+# EMAIL CONFIGURATION (Brevo API)
 # ============================================================
 
-RESEND_API_KEY = os.getenv("RESEND_API_KEY", "").strip()
+BREVO_API_KEY = os.getenv("BREVO_API_KEY", "").strip()
+
+EMAIL_BACKEND = "accounts.brevo_backend.BrevoEmailBackend"
 
 DEFAULT_FROM_EMAIL = os.getenv(
     "DEFAULT_FROM_EMAIL",
-    "onboarding@resend.dev"
+    "CivicSolve <your-verified-sender@gmail.com>"
 ).strip()
 
 # ============================================================

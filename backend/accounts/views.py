@@ -1,3 +1,5 @@
+import logging
+
 from django.contrib.auth.hashers import check_password
 from django.db import transaction
 from django.db.models import Q
@@ -70,6 +72,19 @@ from .utils import (
 )
 
 from organizations.models import Organization
+
+logger = logging.getLogger(__name__)
+
+
+def try_send(send_func, *args):
+    """Run an email function. Returns True if sent, False if it failed."""
+    try:
+        send_func(*args)
+        return True
+    except Exception:
+        logger.exception("Email sending failed")
+        return False
+
 
 class IsCivicAdmin(IsAuthenticated):
 
@@ -180,8 +195,8 @@ class CitizenRegisterView(APIView):
                 full_name=data["full_name"],
                 phone=data["phone"],
                 location=data.get("location",""),
-                latitude=data.get("latitude"),
-                longitude=data.get("longitude"),
+                latitude=latitude,
+                longitude=longitude,
                 role="citizen",
                 email_verified=False,
                 is_active=False
@@ -215,25 +230,29 @@ class CitizenRegisterView(APIView):
                target_url="/admin/users",
             )
 
-            try:
-                send_registration_otp(
-                    user.email,
-                    user.full_name,
-                    otp,
-                    "Citizen"
-                )
-            except Exception as email_err:
-                import logging
-                logging.getLogger(__name__).error(f"Failed to send registration OTP: {email_err}")
+        # Email is sent after the transaction so a mail failure
+        # never rolls back the registration.
+        email_sent = try_send(
+            send_registration_otp,
+            user.email,
+            user.full_name,
+            otp,
+            "Citizen"
+        )
 
         return Response(
             {
                 "success": True,
-                "message":
+                "message": (
                     "Registration successful. "
-                    "A verification OTP has been sent to your email.",
+                    "A verification OTP has been sent to your email."
+                    if email_sent else
+                    "Registration successful, but we could not send "
+                    "the OTP email. Please use Resend OTP."
+                ),
                 "email": user.email,
-                "account_type": "citizen"
+                "account_type": "citizen",
+                "email_sent": email_sent,
             },
             status=status.HTTP_201_CREATED
         )
@@ -381,11 +400,14 @@ class CitizenVerifyOTPView(APIView):
     target_url="/login",
     )
 
-            send_welcome_email(
-                user.email,
-                user.full_name,
-                "Citizen"
-            )
+        # Welcome email is sent after the transaction so a mail failure
+        # never undoes a successful verification.
+        try_send(
+            send_welcome_email,
+            user.email,
+            user.full_name,
+            "Citizen"
+        )
 
         return Response(
             {
@@ -465,12 +487,23 @@ class CitizenResendOTPView(APIView):
             expires_at=otp_expiry()
         )
 
-        send_registration_otp(
+        if not try_send(
+            send_registration_otp,
             user.email,
             user.full_name,
             otp,
             "Citizen"
-        )
+        ):
+
+            return Response(
+                {
+                    "success": False,
+                    "message":
+                        "Could not send the email. "
+                        "Please try again in a minute."
+                },
+                status=status.HTTP_503_SERVICE_UNAVAILABLE
+            )
 
         return Response(
             {
@@ -572,22 +605,30 @@ class OrganizationRegisterView(APIView):
     target_url="/admin/organizations",
      )
 
-            send_registration_otp(
-                organization.email,
-                organization.organization_name,
-                otp,
-                "Organization"
-            )
+        # Email is sent after the transaction so a mail failure
+        # never rolls back the registration.
+        email_sent = try_send(
+            send_registration_otp,
+            organization.email,
+            organization.organization_name,
+            otp,
+            "Organization"
+        )
 
         return Response(
             {
                 "success": True,
-                "message":
+                "message": (
                     "Organization registration successful. "
-                    "A verification OTP has been sent to your email.",
+                    "A verification OTP has been sent to your email."
+                    if email_sent else
+                    "Organization registration successful, but we could "
+                    "not send the OTP email. Please use Resend OTP."
+                ),
                 "email": organization.email,
                 "account_type": "organization",
-                "status": organization.status
+                "status": organization.status,
+                "email_sent": email_sent,
             },
             status=status.HTTP_201_CREATED
         )
@@ -794,12 +835,23 @@ class OrganizationResendOTPView(APIView):
             expires_at=otp_expiry()
         )
 
-        send_registration_otp(
+        if not try_send(
+            send_registration_otp,
             organization.email,
             organization.organization_name,
             otp,
             "Organization"
-        )
+        ):
+
+            return Response(
+                {
+                    "success": False,
+                    "message":
+                        "Could not send the email. "
+                        "Please try again in a minute."
+                },
+                status=status.HTTP_503_SERVICE_UNAVAILABLE
+            )
 
         return Response(
             {
@@ -1118,21 +1170,21 @@ class ForgotPasswordView(APIView):
             expires_at=otp_expiry()
         )
 
-        if user:
+        # Failures are only logged, so the response stays generic
+        # and does not reveal which emails exist.
+        recipient = user or organization
+        name = (
+            user.full_name
+            if user
+            else organization.organization_name
+        )
 
-            send_password_reset_otp(
-                user.email,
-                user.full_name,
-                otp
-            )
-
-        else:
-
-            send_password_reset_otp(
-                organization.email,
-                organization.organization_name,
-                otp
-            )
+        try_send(
+            send_password_reset_otp,
+            recipient.email,
+            name,
+            otp
+        )
 
         return generic_response
 
@@ -1204,10 +1256,14 @@ class VerifyResetOTPView(APIView):
         if user:
             otp_record = otp_query.filter(
                 user=user
+            ).order_by(
+                "-created_at"
             ).first()
         else:
             otp_record = otp_query.filter(
                 organization=organization
+            ).order_by(
+                "-created_at"
             ).first()
 
         if not otp_record:
@@ -1403,26 +1459,6 @@ class ResetPasswordView(APIView):
                 "Your password has been changed successfully. "
                 "You can now login with your new password."
         })
-
-# ============================================================
-# ADMIN LOGIN
-# ============================================================
-@extend_schema(
-    tags=["Admin"],
-    summary="Admin login",
-    description=(
-        "Authenticates an administrator and returns JWT access "
-        "and refresh tokens."
-    ),
-    responses={
-        200: OpenApiResponse(
-            description="Admin login successful."
-        ),
-        400: OpenApiResponse(
-            description="Invalid admin credentials."
-        ),
-    },
-)
 
 # ============================================================
 # ADMIN - USER MANAGEMENT
@@ -1660,6 +1696,9 @@ class AdminCitizenListView(APIView):
             status=status.HTTP_200_OK
         )
 
+# ============================================================
+# ADMIN LOGIN
+# ============================================================
 class AdminLoginView(APIView):
 
     permission_classes = [AllowAny]
@@ -1929,10 +1968,13 @@ class ApproveOrganizationView(APIView):
                 ]
             )
 
-            send_organization_approval_email(
-                organization.email,
-                organization.organization_name
-            )
+        # Approval email is sent after the transaction so a mail failure
+        # never undoes the approval.
+        try_send(
+            send_organization_approval_email,
+            organization.email,
+            organization.organization_name
+        )
 
         return Response(
             {

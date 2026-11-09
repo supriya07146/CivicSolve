@@ -268,6 +268,9 @@ export default function OrganizationLayout() {
     const confirmLogout = () => {
         setShowLogoutConfirm(false);
         setMenu(null);
+        ["access_token", "refresh_token", "account_type"].forEach(
+            (key) => localStorage.removeItem(key)
+        );
 
         showToast(
             "success",
@@ -276,10 +279,6 @@ export default function OrganizationLayout() {
         );
 
         setTimeout(() => {
-            ["access_token", "refresh_token", "account_type"].forEach(
-                (key) => localStorage.removeItem(key)
-            );
-
             navigate("/login", { replace: true });
         }, TOAST_DURATION);
     };

@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404
+from django.core.files import File
 from drf_spectacular.utils import extend_schema
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
@@ -57,6 +58,7 @@ from .serializers import (
 
 
 from django.db import transaction
+from pathlib import PurePosixPath
 from rest_framework.parsers import JSONParser
 
 from .models import ProblemDraft, DraftAttachment
@@ -1543,6 +1545,15 @@ class DraftAttachmentUploadView(APIView):
 
 
 
+def copy_draft_attachment_file(file_field):
+    filename = PurePosixPath(file_field.name).name
+    with file_field.open("rb") as source_file:
+        return file_field.storage.save(
+            f"problem_attachments/{filename}",
+            File(source_file),
+        )
+
+
 class ProblemDraftSubmitView(APIView):
     permission_classes = [IsCitizen]
 
@@ -1578,15 +1589,23 @@ class ProblemDraftSubmitView(APIView):
                 reported_by=request.user
             )
 
-            # Reuse existing stored files.
-            for draft_attachment in draft.attachments.all():
+            # Move draft evidence into the served problem-attachments path.
+            for draft_attachment in list(draft.attachments.all()):
+                source_name = draft_attachment.file.name
+                source_storage = draft_attachment.file.storage
+                published_name = copy_draft_attachment_file(
+                    draft_attachment.file,
+                )
                 ProblemAttachment.objects.create(
                     problem=problem,
-                    file=draft_attachment.file.name,
+                    file=published_name,
                 )
+                transaction.on_commit(
+                    lambda storage=source_storage, name=source_name:
+                        storage.delete(name)
+                )
+                draft_attachment.delete()
 
-            # Delete draft records only.
-            draft.attachments.all().delete()
             draft.delete()
 
         # Run AI detection AFTER the transaction commits.
@@ -1642,7 +1661,10 @@ class ProblemDraftSubmitView(APIView):
                 "message": (
                     "Draft submitted successfully as a community problem."
                 ),
-                "problem": ProblemSerializer(problem).data,
+                "problem": ProblemSerializer(
+                    problem,
+                    context={"request": request},
+                ).data,
             },
             status=status.HTTP_201_CREATED,
         )

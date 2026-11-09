@@ -1,8 +1,12 @@
 import json
+from io import BytesIO
+from tempfile import TemporaryDirectory
 from unittest.mock import Mock, patch
 
 from django.test import TestCase
 from django.test import override_settings
+from django.core.files.base import ContentFile
+from django.core.files.storage import FileSystemStorage
 from rest_framework.test import APIRequestFactory
 
 from .gemini_client import GeminiAPIError, generate_gemini_text
@@ -10,6 +14,7 @@ from .ai_service import generate_problem_suggestions
 from .duplicate_detection import _request_ai_comparison
 from .ollama_client import get_ollama_headers
 from .serializers import ProblemAttachmentSerializer
+from .views import copy_draft_attachment_file
 from adminpanel.analytics_ai import generate_admin_insights
 
 
@@ -187,3 +192,24 @@ class ProblemAttachmentSerializerTests(TestCase):
 			serializer.get_file(attachment),
 			"https://backend.example.com/media/problem_attachments/photo.jpg",
 		)
+
+	def test_draft_evidence_is_copied_into_published_storage_path(self):
+		with TemporaryDirectory() as media_root:
+			storage = FileSystemStorage(location=media_root)
+			source_name = storage.save(
+				"problem_drafts/evidence.jpg",
+				ContentFile(b"image bytes"),
+			)
+			file_field = Mock()
+			file_field.name = source_name
+			file_field.storage = storage
+			file_field.open.side_effect = lambda mode: storage.open(
+				source_name,
+				mode,
+			)
+
+			published_name = copy_draft_attachment_file(file_field)
+
+			self.assertTrue(published_name.startswith("problem_attachments/"))
+			with storage.open(published_name, "rb") as published_file:
+				self.assertEqual(published_file.read(), b"image bytes")

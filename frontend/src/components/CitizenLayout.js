@@ -134,6 +134,7 @@ function CitizenLayout() {
         loggingOutRef.current = true;
 
         setShowLogoutConfirm(false);
+        clearCitizenSession();
 
         showToast(
             "logout",
@@ -143,7 +144,6 @@ function CitizenLayout() {
             {
                 pauseOnHover: false,
                 onClose: () => {
-                    clearCitizenSession();
                     navigate("/", { replace: true });
                 },
             }

@@ -1,10 +1,14 @@
+import json
 from unittest.mock import Mock, patch
 
 from django.test import TestCase
 from django.test import override_settings
+from rest_framework.test import APIRequestFactory
 
 from .gemini_client import GeminiAPIError, generate_gemini_text
+from .ai_service import generate_problem_suggestions
 from .ollama_client import get_ollama_headers
+from .serializers import ProblemAttachmentSerializer
 
 
 class OllamaHeadersTests(TestCase):
@@ -60,6 +64,31 @@ class GeminiClientTests(TestCase):
 			generate_gemini_text("Be helpful.", "Hello")
 
 
+class ProblemSuggestionTests(TestCase):
+	@patch("problems.ai_service.generate_gemini_text")
+	def test_suggestions_use_gemini_json_response(self, generate_text):
+		generate_text.return_value = json.dumps({
+			"title": "Broken streetlight",
+			"description": "A streetlight is not working.",
+			"category": "Lighting",
+			"priority": "medium",
+			"reason": "A single broken light is a routine issue.",
+			"missing_details": [],
+			"clarification_questions": [],
+		})
+
+		result = generate_problem_suggestions(
+			"A streetlight is not working.",
+			["Lighting"],
+		)
+
+		self.assertEqual(result["category"], "Lighting")
+		self.assertEqual(
+			generate_text.call_args.kwargs["response_mime_type"],
+			"application/json",
+		)
+
+
 class CivicAssistantContextTests(TestCase):
 	@patch("problems.civic_assistant.Complaint.objects.filter")
 	@patch("problems.civic_assistant.Problem.objects.filter")
@@ -103,3 +132,23 @@ class CivicAssistantContextTests(TestCase):
 		self.assertNotIn("location", problem_context)
 		self.assertNotIn("resolution_notes", problem_context)
 		self.assertNotIn("title", complaint_context)
+
+
+class ProblemAttachmentSerializerTests(TestCase):
+	@override_settings(ALLOWED_HOSTS=["backend.example.com"])
+	def test_builds_absolute_backend_url_for_attachment(self):
+		request = APIRequestFactory().get(
+			"/api/problems/my/",
+			HTTP_HOST="backend.example.com",
+			secure=True,
+		)
+		serializer = ProblemAttachmentSerializer(
+			context={"request": request},
+		)
+		attachment = Mock()
+		attachment.file.url = "/media/problem_attachments/photo.jpg"
+
+		self.assertEqual(
+			serializer.get_file(attachment),
+			"https://backend.example.com/media/problem_attachments/photo.jpg",
+		)

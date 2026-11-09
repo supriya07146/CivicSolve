@@ -1,23 +1,19 @@
 
 import json
 import logging
-from urllib.error import HTTPError, URLError
-from urllib.request import Request, urlopen
 
-from django.conf import settings
-
-from .ollama_client import get_ollama_headers
+from .gemini_client import GeminiAPIError, generate_gemini_text
 
 logger = logging.getLogger(__name__)
 
 
 class AIServiceError(Exception):
-    """Raised when local AI suggestions cannot be generated."""
+    """Raised when AI suggestions cannot be generated."""
 
 
 def generate_problem_suggestions(description, category_names):
     """
-    Generate AI-powered problem reporting suggestions using local Ollama.
+    Generate AI-powered problem reporting suggestions using Gemini.
     This function does not create or update database records.
     """
 
@@ -26,18 +22,6 @@ def generate_problem_suggestions(description, category_names):
 
     if not category_names:
         raise AIServiceError("No problem categories are available.")
-
-    base_url = getattr(
-        settings,
-        "OLLAMA_BASE_URL",
-        "http://localhost:11434"
-    ).rstrip("/")
-
-    model = getattr(
-        settings,
-        "OLLAMA_MODEL",
-        "qwen2.5:1.5b"
-    )
 
     schema = {
         "type": "object",
@@ -96,48 +80,21 @@ Rules:
 10. Identify useful missing information.
 11. Ask relevant clarification questions when needed.
 12. Return only valid structured JSON matching the schema.
+
+Output schema:
+{json.dumps(schema)}
 """
 
-    payload = {
-        "model": model,
-        "stream": False,
-        "format": schema,
-        "messages": [
-            {
-                "role": "system",
-                "content": system_prompt
-            },
-            {
-                "role": "user",
-                "content": description.strip()
-            }
-        ],
-        "options": {
-            "temperature": 0.2
-        }
-    }
-
-    request = Request(
-        url=f"{base_url}/api/chat",
-        data=json.dumps(payload).encode("utf-8"),
-        headers=get_ollama_headers(),
-        method="POST"
-    )
-
     try:
-        with urlopen(request, timeout=120) as response:
-            response_data = json.loads(
-                response.read().decode("utf-8")
-            )
-
-        content = response_data.get(
-            "message", {}
-        ).get("content", "")
+        content = generate_gemini_text(
+            system_instruction=system_prompt,
+            prompt=description.strip(),
+            temperature=0.2,
+            response_mime_type="application/json",
+        )
 
         if not content:
-            raise AIServiceError(
-                "The local AI returned an empty response."
-            )
+            raise AIServiceError("The AI returned an empty response.")
 
         result = json.loads(content)
 
@@ -185,22 +142,10 @@ Rules:
 
         return result
 
-    except HTTPError as exc:
-        logger.exception("Ollama HTTP request failed.")
+    except (json.JSONDecodeError, GeminiAPIError) as exc:
+        logger.exception("Gemini failed to generate valid suggestions.")
         raise AIServiceError(
-            "Unable to communicate with the local AI model."
-        ) from exc
-
-    except URLError as exc:
-        logger.exception("Ollama connection failed.")
-        raise AIServiceError(
-            "Local AI is unavailable. Please make sure Ollama is running."
-        ) from exc
-
-    except (json.JSONDecodeError, TimeoutError) as exc:
-        logger.exception("Ollama returned an invalid response or timed out.")
-        raise AIServiceError(
-            "The local AI could not generate a valid response."
+            "The AI could not generate a valid response."
         ) from exc
 
     except AIServiceError:

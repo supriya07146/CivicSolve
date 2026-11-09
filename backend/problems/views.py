@@ -256,7 +256,10 @@ class ProblemCreateView(APIView):
         except Exception:
             pass
 
-        response_serializer = ProblemSerializer(problem)
+        response_serializer = ProblemSerializer(
+            problem,
+            context={"request": request},
+        )
 
         return Response(
             {
@@ -931,7 +934,8 @@ class ProblemAttachmentUploadView(APIView):
                 ),
                 "attachment": (
                     ProblemAttachmentSerializer(
-                        attachment
+                        attachment,
+                        context={"request": request},
                     ).data
                 ),
             },

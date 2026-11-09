@@ -11,7 +11,12 @@ class GeminiAPIError(Exception):
     """Raised when Gemini cannot generate a response."""
 
 
-def generate_gemini_text(system_instruction, prompt, temperature=0.1):
+def generate_gemini_text(
+    system_instruction,
+    prompt,
+    temperature=0.1,
+    response_mime_type=None,
+):
     api_key = getattr(settings, "GEMINI_API_KEY", "")
     model = getattr(settings, "GEMINI_MODEL", "gemini-2.5-flash-lite")
 
@@ -22,6 +27,10 @@ def generate_gemini_text(system_instruction, prompt, temperature=0.1):
         "https://generativelanguage.googleapis.com/v1beta/models/"
         f"{model}:generateContent"
     )
+    generation_config = {"temperature": temperature}
+    if response_mime_type:
+        generation_config["responseMimeType"] = response_mime_type
+
     payload = {
         "systemInstruction": {
             "parts": [{"text": system_instruction}],
@@ -30,7 +39,7 @@ def generate_gemini_text(system_instruction, prompt, temperature=0.1):
             "role": "user",
             "parts": [{"text": prompt}],
         }],
-        "generationConfig": {"temperature": temperature},
+        "generationConfig": generation_config,
     }
 
     try:

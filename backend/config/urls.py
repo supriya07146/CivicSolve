@@ -2,6 +2,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
+from django.views.static import serve
 
 from drf_spectacular.views import (
     SpectacularAPIView,
@@ -128,3 +129,11 @@ if settings.DEBUG:
         settings.MEDIA_URL,
         document_root=settings.MEDIA_ROOT
     )
+else:
+    urlpatterns += [
+        path(
+            "media/problem_attachments/<path:path>",
+            serve,
+            {"document_root": settings.MEDIA_ROOT / "problem_attachments"},
+        ),
+    ]

@@ -18,7 +18,7 @@ def generate_gemini_text(
     response_mime_type=None,
 ):
     api_key = getattr(settings, "GEMINI_API_KEY", "")
-    model = getattr(settings, "GEMINI_MODEL", "gemini-2.5-flash-lite")
+    model = getattr(settings, "GEMINI_MODEL", "gemini-3.5-flash-lite")
 
     if not api_key:
         logger.error("Gemini API key is missing; configure GEMINI_API_KEY.")

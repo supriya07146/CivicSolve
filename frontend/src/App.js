@@ -73,7 +73,6 @@ import { ToastProvider } from "./components/toast/ToastContext";
 import { AuthProvider } from "./context/AuthContext";
 import AccessDenied from "./pages/AccessDenied";
 import NotFound from "./pages/NotFound";
-import "./styles/PortalDarkTheme.css";
 
 
 function App() {

@@ -6,6 +6,8 @@ from urllib.request import Request, urlopen
 
 from django.conf import settings
 
+from .ollama_client import get_ollama_headers
+
 logger = logging.getLogger(__name__)
 
 
@@ -118,9 +120,7 @@ Rules:
     request = Request(
         url=f"{base_url}/api/chat",
         data=json.dumps(payload).encode("utf-8"),
-        headers={
-            "Content-Type": "application/json"
-        },
+        headers=get_ollama_headers(),
         method="POST"
     )
 

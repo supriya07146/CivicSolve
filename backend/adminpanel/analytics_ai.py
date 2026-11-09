@@ -4,10 +4,12 @@ import json
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
-from problems.civic_assistant import (
-    OLLAMA_BASE_URL,
-    OLLAMA_MODEL,
-)
+from django.conf import settings
+
+OLLAMA_BASE_URL = settings.OLLAMA_BASE_URL.rstrip("/")
+OLLAMA_MODEL = settings.OLLAMA_MODEL
+
+from problems.ollama_client import get_ollama_headers
 
 
 class AdminInsightsAIError(Exception):
@@ -71,7 +73,7 @@ STRICT RULES:
     request = Request(
         f"{OLLAMA_BASE_URL}/api/chat",
         data=json.dumps(payload).encode("utf-8"),
-        headers={"Content-Type": "application/json"},
+        headers=get_ollama_headers(),
         method="POST",
     )
 

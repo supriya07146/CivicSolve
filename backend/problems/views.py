@@ -2233,7 +2233,7 @@ class CivicSolveAssistantView(APIView):
                 description="Invalid question."
             ),
             503: OpenApiResponse(
-                description="Local AI service unavailable."
+                description="AI service unavailable."
             ),
         },
     )

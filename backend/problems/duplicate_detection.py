@@ -10,6 +10,7 @@ from django.utils import timezone
 from datetime import timedelta
 
 from .models import Problem, DuplicateProblemSuggestion
+from .ollama_client import get_ollama_headers
 
 
 logger = logging.getLogger(__name__)
@@ -163,9 +164,7 @@ Only include reasonably strong possible matches.
     request = Request(
         f"{OLLAMA_BASE_URL}/api/chat",
         data=json.dumps(payload).encode("utf-8"),
-        headers={
-            "Content-Type": "application/json",
-        },
+        headers=get_ollama_headers(),
         method="POST",
     )
 

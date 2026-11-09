@@ -1023,3 +1023,227 @@
     transition: none;
   }
 }
+
+/* =========================================================
+   SIDEBAR ENHANCEMENT — dark animated cards, white text
+   (CSS only; main column and header untouched)
+   ========================================================= */
+
+@keyframes pdsShade {
+  0%, 100% { background-position: 0% 50%; }
+  50%      { background-position: 100% 50%; }
+}
+@keyframes pdsBubble {
+  0%   { transform: translateY(0) scale(1); opacity: 0; }
+  15%  { opacity: 0.6; }
+  100% { transform: translateY(-110px) scale(1.25); opacity: 0; }
+}
+@keyframes pdsDrift {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%      { transform: translate(-16px, 14px) scale(1.12); }
+}
+@keyframes pdsBar {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+.pd-side > .pd-card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #143b4e;
+  color: #ffffff;
+  background: linear-gradient(135deg, #082638 0%, #0b3446 55%, #0a4250 100%);
+  background-size: 200% 200%;
+  box-shadow: 0 14px 32px rgba(9, 38, 56, 0.2);
+  animation:
+    pd-enter 0.55s cubic-bezier(0.2, 0.7, 0.25, 1) both,
+    pdsShade 14s ease-in-out infinite;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.pd-side > .pd-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* top accent bar */
+.pd-side > .pd-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  height: 3px;
+  background: linear-gradient(90deg, #14d3ac, #7ff5e4, #7ac7f0, #14d3ac);
+  background-size: 250% 100%;
+  transform-origin: left;
+  animation: pdsBar 0.8s 0.3s ease both, pdsShade 8s ease-in-out infinite;
+}
+
+/* drifting glow + rising bubbles */
+.pd-side > .pd-card::after {
+  content: "";
+  position: absolute;
+  top: -50px;
+  right: -35px;
+  z-index: 0;
+  width: 170px;
+  height: 170px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, rgba(127, 245, 228, 0.2), transparent 70%);
+  pointer-events: none;
+  animation: pdsDrift 11s ease-in-out infinite;
+}
+
+.pd-side > .pd-card:hover {
+  transform: translateY(-3px);
+  border-color: #1f6a78;
+  box-shadow: 0 22px 42px rgba(9, 38, 56, 0.3);
+}
+
+/* bubbles on the quick-actions card (bottom) */
+.pd-quick > .pd-card-heading::before,
+.pd-quick > .pd-card-heading::after,
+.pd-followup > .pd-card-heading::before,
+.pd-followup > .pd-card-heading::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(circle at 35% 35%, rgba(127, 245, 228, 0.35), rgba(127, 245, 228, 0.04) 70%);
+  animation: pdsBubble 7s ease-in infinite;
+}
+.pd-quick > .pd-card-heading,
+.pd-followup > .pd-card-heading { position: relative; }
+.pd-quick > .pd-card-heading::before,
+.pd-followup > .pd-card-heading::before { right: 30%; width: 14px; height: 14px; }
+.pd-quick > .pd-card-heading::after,
+.pd-followup > .pd-card-heading::after  { right: 12%; width: 9px; height: 9px; animation-delay: -3.5s; }
+
+/* ---------- text: everything white ---------- */
+.pd-side > .pd-card .pd-card-heading h3 { color: #ffffff; }
+.pd-side > .pd-card .pd-card-heading p  { color: #a9cbd3; }
+
+.pd-side > .pd-card .pd-heading-icon--teal,
+.pd-side > .pd-card .pd-heading-icon--amber {
+  color: #7ff5e4;
+  border: 1px solid rgba(127, 245, 228, 0.3);
+  background: rgba(127, 245, 228, 0.12);
+}
+.pd-side > .pd-card .pd-heading-icon--amber { color: #ffd78a; border-color: rgba(255, 215, 138, 0.35); background: rgba(255, 200, 100, 0.14); }
+
+/* ---------- lifecycle timeline ---------- */
+.pd-side .pd-step::before { background: rgba(127, 245, 228, 0.4); }
+.pd-side .pd-step.is-pending::before {
+  background: repeating-linear-gradient(rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.3) 4px, transparent 4px, transparent 8px);
+}
+.pd-side .pd-step.is-current::before {
+  background: linear-gradient(rgba(127, 245, 228, 0.5), rgba(255, 255, 255, 0.12));
+}
+.pd-side .pd-step-dot {
+  color: #062d2a;
+  background: #2fe0bd;
+  box-shadow: 0 0 0 3px rgba(47, 224, 189, 0.15);
+}
+.pd-side .pd-step.is-pending .pd-step-dot {
+  border-color: rgba(255, 255, 255, 0.4);
+  background: transparent;
+  box-shadow: none;
+}
+.pd-side .pd-step.is-current .pd-step-dot { animation: pd-step-pulse-dark 2.4s ease-in-out infinite; }
+@keyframes pd-step-pulse-dark {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(47, 224, 189, 0.55); }
+  60%      { box-shadow: 0 0 0 8px rgba(47, 224, 189, 0); }
+}
+.pd-side .pd-step-copy strong { color: #ffffff; }
+.pd-side .pd-step.is-pending .pd-step-copy strong { color: rgba(255, 255, 255, 0.6); }
+.pd-side .pd-step-copy small,
+.pd-side .pd-step-copy > span { color: #a9cbd3; }
+
+/* ---------- follow-up ---------- */
+.pd-side .pd-followup { border-color: #143b4e; }
+.pd-side .pd-followup-badge.is-required {
+  color: #ffe3a6;
+  border: 1px solid rgba(255, 215, 138, 0.4);
+  background: rgba(255, 200, 100, 0.16);
+}
+.pd-side .pd-followup-badge.is-clear {
+  color: #8ff5d6;
+  border: 1px solid rgba(127, 245, 228, 0.35);
+  background: rgba(20, 211, 172, 0.14);
+}
+.pd-side .pd-followup > p { color: #ffffff; }
+.pd-side .pd-followup-note {
+  color: #ffe9bd;
+  border-left-color: #f2b94f;
+  background: rgba(255, 200, 100, 0.12);
+}
+.pd-side .pd-text-action {
+  color: #7ff5e4;
+  border-top-color: rgba(255, 255, 255, 0.14);
+}
+.pd-side .pd-text-action:hover { color: #ffffff; }
+.pd-side .pd-text-action--accept {
+  color: #ffffff !important;
+  border-top: 0;
+  background: linear-gradient(135deg, #12b89c, #0a8f7b);
+  box-shadow: 0 8px 18px rgba(18, 184, 156, 0.3);
+}
+
+/* ---------- quick actions ---------- */
+.pd-side .pd-quick-action {
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.06);
+}
+.pd-side .pd-quick-action > span {
+  color: #7ff5e4;
+  background: rgba(127, 245, 228, 0.14);
+}
+.pd-side .pd-quick-action:hover:not(:disabled) {
+  border-color: rgba(127, 245, 228, 0.5);
+  background: rgba(127, 245, 228, 0.14);
+}
+.pd-side .pd-quick-action--primary {
+  color: #062d2a;
+  border-color: transparent;
+  background: linear-gradient(135deg, #2fe0bd, #12b89c);
+  box-shadow: 0 8px 20px rgba(18, 184, 156, 0.3);
+}
+.pd-side .pd-quick-action--primary > span { color: #ffffff; background: rgba(6, 45, 42, 0.45); }
+.pd-side .pd-quick-action--primary:hover:not(:disabled) {
+  background: linear-gradient(135deg, #3ceac6, #17c3a6);
+}
+.pd-side .pd-quick-action--accept { color: #ffffff; }
+
+/* ---------- empty state inside dark card ---------- */
+.pd-side .pd-empty {
+  border-color: rgba(127, 245, 228, 0.3);
+  background: rgba(255, 255, 255, 0.05);
+}
+.pd-side .pd-empty strong { color: #ffffff; }
+.pd-side .pd-empty p { color: #a9cbd3; }
+
+/* ---------- responsive ---------- */
+@media (max-width: 760px) {
+  .pd-side > .pd-card { box-shadow: 0 10px 24px rgba(9, 38, 56, 0.18); }
+}
+
+/* ---------- reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .pd-side > .pd-card,
+  .pd-side > .pd-card::before,
+  .pd-side > .pd-card::after,
+  .pd-quick > .pd-card-heading::before,
+  .pd-quick > .pd-card-heading::after,
+  .pd-followup > .pd-card-heading::before,
+  .pd-followup > .pd-card-heading::after { animation: none !important; }
+}
+
+
+/* let the layout's shaded + bubble background show through this page */
+.pd-page {
+  background: transparent;
+}

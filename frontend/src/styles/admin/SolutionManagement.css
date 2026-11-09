@@ -8,21 +8,21 @@
     width: 100%;
     max-width: 100%;
     overflow-x: clip;
-    --sol-teal: var(--ad-teal, #12b5a0);
-    --sol-teal-dark: var(--ad-teal-dark, #0a8f86);
-    --sol-teal-soft: var(--ad-teal-soft, #dff5f1);
-    --sol-amber: var(--ad-amber, #f59e0b);
-    --sol-amber-soft: var(--ad-amber-soft, #fef3dc);
-    --sol-indigo: var(--ad-indigo, #6366f1);
-    --sol-indigo-soft: var(--ad-indigo-soft, #e9eafe);
-    --sol-purple-soft: var(--ad-purple-soft, #efe9ff);
-    --sol-red: var(--ad-red, #e53e3e);
-    --sol-ink: var(--ad-ink, #0d1b2a);
-    --sol-ink-soft: var(--ad-ink-soft, #5b7083);
-    --sol-line: var(--ad-line, #e3eeec);
-    --sol-card: var(--ad-card, #ffffff);
+    --sol-teal: #13877f;
+    --sol-teal-dark: #116a68;
+    --sol-teal-soft: #e5f1ef;
+    --sol-amber: #c27b12;
+    --sol-amber-soft: #fbf1df;
+    --sol-indigo: #5759c6;
+    --sol-indigo-soft: #ececf8;
+    --sol-purple-soft: #edeaf7;
+    --sol-red: #c83d42;
+    --sol-ink: #172b3a;
+    --sol-ink-soft: #566b78;
+    --sol-line: #d9e2e6;
+    --sol-card: #ffffff;
     --sol-radius: var(--ad-radius, 16px);
-    --sol-shadow: var(--ad-shadow, 0 10px 30px rgba(13, 27, 42, 0.06));
+    --sol-shadow: 0 10px 28px rgba(13, 27, 42, 0.08);
 
     color: var(--sol-ink);
     min-width: 0;
@@ -843,6 +843,30 @@
     .sol-banner-inner { align-items: flex-start; }
     .sol-banner p { font-size: 13px; }
     .sol-bottom { gap: 16px; }
+}
+
+.sol-card,
+.sol-stat,
+.sol-review {
+    transition: box-shadow 0.22s ease, transform 0.22s ease, border-color 0.22s ease;
+}
+
+.sol-card:hover,
+.sol-stat:hover,
+.sol-review:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 32px rgba(13, 27, 42, 0.12);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .solution-page *,
+    .solution-page *::before,
+    .solution-page *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+    }
 }
 
 .solution-page .sol-review h2,

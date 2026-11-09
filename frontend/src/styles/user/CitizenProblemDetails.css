@@ -1959,3 +1959,303 @@
     height: 125px;
   }
 }
+
+
+/* =========================================================
+   BODY ENHANCEMENT — richer cards, bubbles, shading, motion
+   (CSS only; header/hero untouched)
+   ========================================================= */
+
+@keyframes cpdBubbleUp {
+  0%   { transform: translateY(0) scale(1); opacity: 0; }
+  15%  { opacity: 0.55; }
+  100% { transform: translateY(-120px) scale(1.25); opacity: 0; }
+}
+@keyframes cpdShade {
+  0%, 100% { background-position: 0% 50%; }
+  50%      { background-position: 100% 50%; }
+}
+@keyframes cpdGlowDrift {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%      { transform: translate(-18px, 14px) scale(1.12); }
+}
+@keyframes cpdBarGrow {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+/* page background: soft moving colour shading */
+.cpd-page {
+  background:
+    radial-gradient(900px 420px at 8% 20%, rgba(20, 211, 172, 0.07), transparent 70%),
+    radial-gradient(800px 380px at 95% 60%, rgba(127, 190, 245, 0.07), transparent 70%),
+    #f1faf8;
+}
+
+/* ---------- cards ---------- */
+.cpd-card {
+  position: relative;
+  overflow: hidden;
+  border-color: #d9ede7;
+  background: linear-gradient(160deg, #ffffff 0%, #f6fcfa 100%);
+  transition: box-shadow 0.3s ease, transform 0.3s var(--cpd-ease), border-color 0.3s ease;
+}
+
+.cpd-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* animated accent bar on top */
+.cpd-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  height: 4px;
+  background: linear-gradient(90deg, #14d3ac, #2ab59c, #7ac7f0, #14d3ac);
+  background-size: 250% 100%;
+  transform-origin: left;
+  animation:
+    cpdBarGrow 0.8s var(--cpd-ease) 0.3s both,
+    cpdShade 8s ease-in-out infinite;
+}
+
+/* drifting glow bubble in the corner */
+.cpd-card::after {
+  content: "";
+  position: absolute;
+  top: -50px;
+  right: -40px;
+  z-index: 0;
+  width: 170px;
+  height: 170px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, rgba(20, 211, 172, 0.14), transparent 70%);
+  pointer-events: none;
+  animation: cpdGlowDrift 11s ease-in-out infinite;
+}
+
+.cpd-card:hover {
+  transform: translateY(-4px);
+  border-color: #b9e3d9;
+  box-shadow: 0 20px 40px rgba(25, 74, 74, 0.12);
+}
+
+.cpd-section-heading h2 {
+  background: linear-gradient(90deg, #12344a, #0f8f7d);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: #173f45;
+}
+
+.cpd-section-kicker {
+  position: relative;
+  padding-left: 14px;
+}
+.cpd-section-kicker::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 7px;
+  height: 7px;
+  margin-top: -3.5px;
+  border-radius: 50%;
+  background: #14d3ac;
+  box-shadow: 0 0 0 3px rgba(20, 211, 172, 0.18);
+  animation: pdDotPulse 2.2s ease-in-out infinite;
+}
+
+.cpd-heading-icon {
+  background: linear-gradient(135deg, #d9f7ee, #bfeede);
+  box-shadow: 0 6px 14px rgba(20, 160, 135, 0.18);
+}
+
+/* ---------- workflow card ---------- */
+.cpd-workflow-card {
+  background:
+    radial-gradient(500px 160px at 100% 0%, rgba(20, 211, 172, 0.1), transparent 70%),
+    linear-gradient(160deg, #ffffff, #f2fbf8);
+}
+
+.cpd-workflow-label {
+  background: linear-gradient(135deg, #e3f8f2, #d2f1e8);
+  border: 1px solid #bfe6da;
+}
+
+/* ---------- description + notes ---------- */
+.cpd-description {
+  padding: 16px 18px;
+  border-left: 3px solid #14d3ac;
+  border-radius: 0 12px 12px 0;
+  background: linear-gradient(90deg, #eefaf6, rgba(238, 250, 246, 0));
+}
+
+.cpd-resolution-box {
+  background: linear-gradient(135deg, #eafaf2, #f4fcf8);
+  box-shadow: 0 8px 20px rgba(22, 130, 75, 0.08);
+}
+
+/* ---------- solutions ---------- */
+.cpd-problem-solution-card {
+  position: relative;
+  overflow: hidden;
+  border-color: #dcece6;
+  background: linear-gradient(160deg, #ffffff, #f7fcfa);
+  transition: transform 0.25s var(--cpd-ease), box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.cpd-problem-solution-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 4px;
+  background: linear-gradient(180deg, #14d3ac, #0f9d84);
+}
+.cpd-problem-solution-card:hover {
+  transform: translateY(-3px);
+  border-color: #b9e3d9;
+  box-shadow: 0 14px 28px rgba(25, 74, 74, 0.1);
+}
+.solution-approved {
+  background: linear-gradient(135deg, #d7f7e3, #bff0d2);
+  border: 1px solid #a9e6c1;
+}
+.solution-evidence-grid figure {
+  transition: transform 0.25s var(--cpd-ease), box-shadow 0.25s ease;
+}
+.solution-evidence-grid figure:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 24px rgba(25, 74, 74, 0.12);
+}
+.cpd-solutions-empty,
+.cpd-empty-evidence {
+  background:
+    radial-gradient(120% 90% at 50% 0%, rgba(20, 211, 172, 0.1), transparent 70%),
+    #f9fcfb;
+}
+
+/* ---------- attachments / location ---------- */
+.cpd-attachment {
+  background: linear-gradient(160deg, #ffffff, #f7fcfa);
+}
+.cpd-location-box {
+  background: linear-gradient(135deg, #f1fbf8, #e8f7f2);
+  transition: transform 0.25s var(--cpd-ease), box-shadow 0.25s ease;
+}
+.cpd-location-box:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px rgba(25, 74, 74, 0.08);
+}
+.cpd-map-link {
+  background: linear-gradient(135deg, #ffffff, #e9faf4);
+}
+
+/* ---------- sidebar: dark facts card ---------- */
+.cpd-facts-card {
+  border-color: #143b4e;
+  background: linear-gradient(135deg, #082638 0%, #0b3446 55%, #0a4250 100%);
+  background-size: 200% 200%;
+  box-shadow: 0 16px 36px rgba(9, 38, 56, 0.22);
+  animation:
+    pdRise 0.65s var(--cpd-ease) forwards,
+    cpdShade 14s ease-in-out infinite;
+  animation-delay: var(--d, 0s), 0s;
+}
+.cpd-facts-card::before {
+  background: linear-gradient(90deg, #14d3ac, #7ff5e4, #7ac7f0, #14d3ac);
+  background-size: 250% 100%;
+}
+.cpd-facts-card::after {
+  background: radial-gradient(circle at 35% 35%, rgba(127, 245, 228, 0.22), transparent 70%);
+}
+.cpd-facts-card:hover {
+  border-color: #1f6a78;
+  box-shadow: 0 22px 44px rgba(9, 38, 56, 0.3);
+}
+.cpd-facts-card .cpd-section-kicker { color: #7ff5e4; }
+.cpd-facts-card h2 {
+  background: none;
+  -webkit-text-fill-color: #ffffff;
+  color: #ffffff;
+}
+.cpd-facts-card .cpd-fact { border-bottom-color: rgba(255, 255, 255, 0.1); }
+.cpd-facts-card .cpd-fact-icon {
+  background: rgba(127, 245, 228, 0.12);
+  border: 1px solid rgba(127, 245, 228, 0.25);
+  color: #7ff5e4;
+}
+.cpd-facts-card .cpd-fact:hover .cpd-fact-icon {
+  background: rgba(127, 245, 228, 0.22);
+}
+.cpd-facts-card .cpd-fact > div > span { color: #a9cbd3; }
+.cpd-facts-card .cpd-fact strong { color: #ffffff; }
+
+/* ---------- help card ---------- */
+.cpd-help-card {
+  background:
+    radial-gradient(260px 160px at 100% 0%, rgba(20, 211, 172, 0.2), transparent 70%),
+    linear-gradient(145deg, #dff6ef, #f4fcf9);
+  background-size: 100% 100%, 200% 200%;
+  animation:
+    pdRise 0.65s var(--cpd-ease) forwards,
+    cpdShade 12s ease-in-out infinite;
+  animation-delay: var(--d, 0s), 0s;
+  transition: transform 0.3s var(--cpd-ease), box-shadow 0.3s ease;
+}
+.cpd-help-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 18px 34px rgba(25, 74, 74, 0.12);
+}
+.cpd-help-card::before,
+.cpd-help-card::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(circle at 35% 35%, rgba(20, 211, 172, 0.22), rgba(20, 211, 172, 0.03) 70%);
+  animation: cpdBubbleUp 7s ease-in infinite;
+}
+.cpd-help-card::before { left: 18px; bottom: 10px; width: 18px; height: 18px; }
+.cpd-help-card::after  { left: 62px; bottom: 4px;  width: 11px; height: 11px; animation-delay: -3s; }
+
+.cpd-all-reports-button {
+  background: linear-gradient(135deg, #ffffff, #eefaf6);
+}
+
+/* ---------- loading / error cards ---------- */
+.cpd-loading,
+.cpd-error {
+  background: linear-gradient(160deg, #ffffff, #f4fbf8);
+}
+
+/* ---------- responsive ---------- */
+@media (max-width: 560px) {
+  .cpd-description { padding: 12px 14px; }
+}
+
+/* ---------- reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .cpd-card::before,
+  .cpd-card::after,
+  .cpd-help-card::before,
+  .cpd-help-card::after,
+  .cpd-section-kicker::before {
+    animation: none !important;
+  }
+  .cpd-facts-card,
+  .cpd-help-card {
+    opacity: 1 !important;
+  }
+}
+
+
+/* let the layout's shaded + bubble background show through this page */
+.cpd-page {
+  background: transparent;
+}

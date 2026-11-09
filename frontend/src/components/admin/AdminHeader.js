@@ -15,7 +15,6 @@ const NAV_ITEMS = [
     { label: "Assignments", to: "/admin/assignments" },
     { label: "Categories", to: "/admin/categories" },
     { label: "Solutions", to: "/admin/solutions" },
-    { label: "Complaints", to: "/admin/complaints" },
     { label: "Analytics", to: "/admin/analytics" },
     { label: "Notifications", to: "/admin/notifications" },
 ];
@@ -166,13 +165,14 @@ function AdminHeader() {
             return { title: "Problem Assignments", subtitle: "Assign reported problems to responsible organizations." };
         }
         if (path.includes("/categories")) {
-            return { title: "Category Management", subtitle: "Manage community problem categories." };
+            return {
+                title: "Category Management",
+                subtitle: "Manage community problem categories.",
+                action: { label: "Add category", event: "admin:new-category" },
+            };
         }
         if (path.includes("/solutions")) {
             return { title: "Solution Monitoring", subtitle: "Monitor proposed and completed solutions." };
-        }
-        if (path.includes("/complaints")) {
-            return { title: "Complaints & Reports", subtitle: "Review complaints and reported platform issues." };
         }
         if (path.includes("/notifications")) {
             return { title: "Notifications", subtitle: "Monitor CivicSolve system notifications." };

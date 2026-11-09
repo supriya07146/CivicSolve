@@ -56,7 +56,6 @@ import AdminLayout from "./components/admin/AdminLayout";
 import OrganizationManagement from "./pages/admin/OrganizationManagement";
 import ProblemManagement from "./pages/admin/ProblemManagement";
 import AssignmentManagement from "./pages/admin/AssignmentManagement";
-import Complaints from "./pages/admin/Complaints";
 import SolutionManagement from "./pages/admin/SolutionManagement";
 import CategoryManagement from "./pages/admin/CategoryManagement";
 import Analytics from "./pages/admin/Analytics";
@@ -384,11 +383,6 @@ function App() {
                         <Route
                             path="solutions"
                             element={<SolutionManagement />}
-                        />
-
-                        <Route
-                            path="complaints"
-                            element={<Complaints />}
                         />
 
                         <Route

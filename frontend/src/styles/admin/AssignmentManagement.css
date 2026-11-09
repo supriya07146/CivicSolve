@@ -5,21 +5,21 @@
    ========================================================= */
 
 .assignment-page {
-    --am-teal: var(--ad-teal, #12b5a0);
-    --am-teal-dark: var(--ad-teal-dark, #0a8f86);
-    --am-teal-soft: var(--ad-teal-soft, #dff5f1);
-    --am-amber: var(--ad-amber, #f59e0b);
-    --am-amber-soft: var(--ad-amber-soft, #fef3dc);
-    --am-indigo: var(--ad-indigo, #6366f1);
-    --am-indigo-soft: var(--ad-indigo-soft, #e9eafe);
-    --am-purple-soft: var(--ad-purple-soft, #efe9ff);
-    --am-red: var(--ad-red, #e53e3e);
-    --am-ink: var(--ad-ink, #0d1b2a);
-    --am-ink-soft: var(--ad-ink-soft, #5b7083);
-    --am-line: var(--ad-line, #e3eeec);
-    --am-card: var(--ad-card, #ffffff);
+    --am-teal: #13877f;
+    --am-teal-dark: #116a68;
+    --am-teal-soft: #e5f1ef;
+    --am-amber: #c27b12;
+    --am-amber-soft: #fbf1df;
+    --am-indigo: #5759c6;
+    --am-indigo-soft: #ececf8;
+    --am-purple-soft: #edeaf7;
+    --am-red: #c83d42;
+    --am-ink: #172b3a;
+    --am-ink-soft: #566b78;
+    --am-line: #d9e2e6;
+    --am-card: #ffffff;
     --am-radius: var(--ad-radius, 16px);
-    --am-shadow: var(--ad-shadow, 0 10px 30px rgba(13, 27, 42, 0.06));
+    --am-shadow: 0 10px 28px rgba(13, 27, 42, 0.08);
 
     color: var(--am-ink);
     min-width: 0;
@@ -1149,6 +1149,31 @@
 
     .am-banner-inner { align-items: flex-start; }
     .am-banner p { font-size: 13px; }
+}
+
+.am-problem-card,
+.am-reassign,
+.am-confirm,
+.am-team {
+    transition: box-shadow 0.22s ease, transform 0.22s ease, border-color 0.22s ease;
+}
+
+.am-problem-card:hover,
+.am-reassign:hover,
+.am-confirm:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 32px rgba(13, 27, 42, 0.12);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .assignment-page *,
+    .assignment-page *::before,
+    .assignment-page *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+    }
 }
 
 /* white headings on the dark cards */

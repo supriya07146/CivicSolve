@@ -212,24 +212,6 @@ function AdminSidebar() {
 
 
                     <NavLink
-                        to="/admin/complaints"
-                        className={({ isActive }) =>
-                            `admin-nav-link ${
-                                isActive ? "active" : ""
-                            }`
-                        }
-                    >
-                        <span className="admin-nav-icon">
-                            ⚑
-                        </span>
-
-                        <span>
-                            Complaints
-                        </span>
-                    </NavLink>
-
-
-                    <NavLink
                         to="/admin/notifications"
                         className={({ isActive }) =>
                             `admin-nav-link ${

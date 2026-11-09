@@ -12,18 +12,9 @@ import "../../styles/admin/CategoryManagement.css";
 /*  Constants & helpers                                                */
 /* ------------------------------------------------------------------ */
 
-const EXPERTISE_OPTIONS = [
-    "Road maintenance",
-    "Electrical works",
-    "Waste management",
-    "Water & drainage",
-    "General services",
-];
-
 const EMPTY_FORM = {
     name: "",
     description: "",
-    expertise: "",
     is_active: true,
 };
 
@@ -53,7 +44,7 @@ function CategoryManagement() {
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
 
-    const pageRef = useRef(null);
+    const formRef = useRef(null);
     const firstLoad = useRef(true);
 
     /* ---------------- data loading ---------------- */
@@ -107,7 +98,6 @@ function CategoryManagement() {
         setForm({
             name: category.name || "",
             description: category.description || "",
-            expertise: category.suggested_expertise || "",
             is_active: !!category.is_active,
         });
     };
@@ -117,7 +107,7 @@ function CategoryManagement() {
         setForm(EMPTY_FORM);
         setError("");
         setSuccess("");
-        pageRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+        formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     }, []);
 
     /* open the first category in the editor once, like the design */
@@ -169,7 +159,6 @@ function CategoryManagement() {
             const payload = {
                 name: form.name.trim(),
                 description: form.description.trim(),
-                suggested_expertise: form.expertise,
                 is_active: form.is_active,
             };
 
@@ -269,7 +258,7 @@ function CategoryManagement() {
     /* ---------------- render ---------------- */
 
     return (
-        <div className="category-page" ref={pageRef}>
+        <div className="category-page">
             <div className="cm-container">
 
                 {success && <div className="cm-success" role="status">{success}</div>}
@@ -383,7 +372,7 @@ function CategoryManagement() {
                     {/* ---------- right: editor + delete ---------- */}
                     <aside className="cm-side">
 
-                        <form className="cm-edit-card" onSubmit={handleSubmit}>
+                        <form className="cm-edit-card" onSubmit={handleSubmit} ref={formRef}>
                             <h2>
                                 <span className="cm-title-icon">✎</span>
                                 {editingId !== null ? `Edit category · ${selected?.name || ""}` : "Add new category"}
@@ -401,17 +390,6 @@ function CategoryManagement() {
                                 <textarea id="category-description" name="description" rows={3}
                                     value={form.description} onChange={handleInputChange}
                                     placeholder="Describe the types of problems in this category..." />
-                            </div>
-
-                            <div className="cm-field">
-                                <label htmlFor="category-expertise">Suggested responsible expertise</label>
-                                <select id="category-expertise" name="expertise"
-                                    value={form.expertise} onChange={handleInputChange}>
-                                    <option value="">Not specified</option>
-                                    {EXPERTISE_OPTIONS.map((option) => (
-                                        <option key={option} value={option}>{option}</option>
-                                    ))}
-                                </select>
                             </div>
 
                             <label className="cm-check">

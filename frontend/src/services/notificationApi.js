@@ -1,5 +1,7 @@
 
-const NOTIFICATION_API_URL = "http://127.0.0.1:8000/api/notifications";
+import { API_ROOT } from "./api";
+
+const NOTIFICATION_API_URL = `${API_ROOT}/notifications`;
 
 async function notificationRequest(endpoint, options = {}) {
     const token = localStorage.getItem("access_token");

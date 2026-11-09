@@ -7,10 +7,10 @@ import {
     deleteCitizenProfileImage,
     changeCitizenPassword,
 } from "../../services/api";
+import { API_ORIGIN } from "../../services/api";
 import "../../styles/user/UserProfile.css";
 
 const FORM_ID = "up-profile-form";
-const DJANGO_BASE_URL = "http://127.0.0.1:8000";
 
 const DEFAULT_PREFERENCES = {
     language_preference: "en",
@@ -76,7 +76,7 @@ function getImageUrl(response) {
     }
 
     try {
-        return new URL(imagePath, `${DJANGO_BASE_URL}/`).href;
+        return new URL(imagePath, `${API_ORIGIN}/`).href;
     } catch {
         return "";
     }

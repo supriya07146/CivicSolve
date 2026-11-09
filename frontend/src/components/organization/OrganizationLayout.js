@@ -5,7 +5,7 @@ import "../../styles/organization/OrganizationLayout.css";
 import { getOrganizationProfile } from "../../services/api";
 import { useToast } from "../../components/toast/ToastContext";
 import logo from "../../assets/logo-mark-white.png";
-import { API_ROOT } from "../../services/api";
+import { API_ORIGIN } from "../../services/api";
 /*
   Logo: an SVG recreation of the CivicSolve mark.
   To use your real logo file, put it in /public
@@ -24,8 +24,6 @@ const PRIMARY_NAV = [
 ];
 
 const MORE_NAV = [];
-
-const DJANGO_BASE_URL = new URL(API_ROOT).origin;
 
 export function getOrganizationImageUrl(imageUrl) {
     if (!imageUrl || typeof imageUrl !== "string") {
@@ -46,7 +44,7 @@ export function getOrganizationImageUrl(imageUrl) {
         return trimmedUrl;
     }
 
-    return `${DJANGO_BASE_URL}${trimmedUrl.startsWith("/") ? "" : "/"}${trimmedUrl}`;
+    return new URL(trimmedUrl, `${API_ORIGIN}/`).href;
 }
 
 function CivicLogo() {

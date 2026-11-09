@@ -11,6 +11,7 @@ export const API_ROOT = (
   process.env.REACT_APP_API_URL ||
   "http://127.0.0.1:8000/api"
 ).replace(/\/+$/, "");
+export const API_ORIGIN = new URL(API_ROOT).origin;
 
 const API_BASE_URL = `${API_ROOT}/auth`;
 const ADMIN_API_BASE_URL = `${API_ROOT}/admin`;

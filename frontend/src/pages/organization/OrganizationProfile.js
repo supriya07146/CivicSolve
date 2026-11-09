@@ -8,6 +8,7 @@ import {
     updateOrganizationProfile,
     uploadOrganizationProfileImage,
     deleteOrganizationProfileImage,
+    API_ORIGIN,
 } from "../../services/api";
 
 import "../../styles/organization/OrganizationProfile.css";
@@ -79,9 +80,14 @@ function getCategoryLabel(item) {
 }
 
 function normalizeProfile(data = {}) {
+    const imageUrl = data.profile_image_url;
+
     return {
         ...EMPTY_PROFILE,
         ...data,
+        profile_image_url: imageUrl
+            ? new URL(imageUrl, `${API_ORIGIN}/`).href
+            : null,
         latitude: data.latitude ?? "",
         longitude: data.longitude ?? "",
         categories: Array.isArray(data.categories)

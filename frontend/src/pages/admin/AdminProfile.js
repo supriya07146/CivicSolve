@@ -5,9 +5,8 @@ import {
     updateAdminProfile,
     changeAdminPassword,
 } from "../../services/api";
+import { API_ORIGIN } from "../../services/api";
 import "../../styles/admin/AdminProfile.css";
-
-const API_ORIGIN = "http://127.0.0.1:8000";
 
 const initialForm = {
     full_name: "",
@@ -40,15 +39,18 @@ const PASSWORD_FIELDS = [
 function getImageUrl(image) {
     if (!image) return "";
 
-    if (image.startsWith("blob:") || image.startsWith("data:")) {
-        return image;
+    const imagePath = typeof image === "string" ? image : image.url || "";
+    if (!imagePath) return "";
+
+    if (imagePath.startsWith("blob:") || imagePath.startsWith("data:")) {
+        return imagePath;
     }
 
-    if (image.startsWith("http://") || image.startsWith("https://")) {
-        return image;
+    if (/^https?:\/\//i.test(imagePath)) {
+        return imagePath;
     }
 
-    return `${API_ORIGIN}${image.startsWith("/") ? "" : "/"}${image}`;
+    return new URL(imagePath, `${API_ORIGIN}/`).href;
 }
 
 function getErrorMessage(error) {

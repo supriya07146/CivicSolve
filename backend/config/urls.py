@@ -130,10 +130,16 @@ if settings.DEBUG:
         document_root=settings.MEDIA_ROOT
     )
 else:
-    urlpatterns += [
-        path(
-            "media/problem_attachments/<path:path>",
-            serve,
-            {"document_root": settings.MEDIA_ROOT / "problem_attachments"},
-        ),
-    ]
+    for media_directory in (
+        "problem_attachments",
+        "profile_images",
+        "organization_profiles",
+        "admin_profiles",
+    ):
+        urlpatterns.append(
+            path(
+                f"media/{media_directory}/<path:path>",
+                serve,
+                {"document_root": settings.MEDIA_ROOT / media_directory},
+            )
+        )

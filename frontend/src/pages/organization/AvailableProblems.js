@@ -6,12 +6,13 @@ import React, {
     useState,
 } from "react";
 import { Link } from "react-router-dom";
+import { API_ROOT } from "../../services/api";
 import "../../styles/organization/AvailableProblems.css";
 
 /* ------------------------------------------------------------------ */
 /*  Config – adjust these to match your router / API                   */
 /* ------------------------------------------------------------------ */
-const DASHBOARD_API = "http://127.0.0.1:8000/api/organization/dashboard/";
+const DASHBOARD_API = `${API_ROOT}/organization/dashboard/`;
 const PROFILE_ROUTE = "/organization/profile";
 const DASHBOARD_ROUTE = "/organization/dashboard";
 const PAGE_SIZE = 3;

@@ -1,0 +1,172 @@
+.cz-shell,
+.org-layout {
+  --portal-bg: #07151e;
+  --portal-surface: rgba(15, 35, 46, 0.94);
+  --portal-surface-raised: rgba(20, 45, 54, 0.96);
+  --portal-line: rgba(126, 222, 201, 0.18);
+  --portal-text: #eaf5f2;
+  --portal-muted: #a7bfbd;
+  --portal-teal: #35d4b0;
+  --portal-amber: #e6a965;
+}
+
+.cz-shell {
+  color: var(--portal-text);
+  background-color: var(--portal-bg);
+  background-image:
+    linear-gradient(155deg, rgba(10, 39, 49, 0.94), rgba(7, 21, 30, 0.99)),
+    repeating-linear-gradient(
+      135deg,
+      transparent 0,
+      transparent 30px,
+      rgba(126, 222, 201, 0.025) 31px,
+      transparent 32px
+    );
+}
+
+.org-layout {
+  color: var(--portal-text);
+  background-color: var(--portal-bg);
+  background-image:
+    linear-gradient(155deg, rgba(10, 39, 49, 0.94), rgba(7, 21, 30, 0.99)),
+    repeating-linear-gradient(
+      135deg,
+      transparent 0,
+      transparent 30px,
+      rgba(126, 222, 201, 0.025) 31px,
+      transparent 32px
+    );
+}
+
+.cz-main > :is(
+  .cd-page,
+  .crp-page,
+  .my-problems-page,
+  .bp-page,
+  .cpd-page,
+  .pd-page,
+  .cn-page,
+  .up-page,
+  .verify-resolution-page
+),
+.org-layout .org-page > :is(
+  .od-page,
+  .ap-page,
+  .oa-page,
+  .org-notifications-page,
+  .op-page,
+  .pd-page,
+  .rp-page,
+  .org-solutions-page,
+  .org-progress-page
+) {
+  color: var(--portal-text) !important;
+  background: transparent !important;
+  animation: portal-page-enter 480ms cubic-bezier(0.2, 0.7, 0.25, 1) both;
+}
+
+.cz-main [class*="-card"],
+.cz-main [class*="-panel"],
+.cz-main [class*="-section"],
+.org-layout .org-page [class*="-card"],
+.org-layout .org-page [class*="-panel"],
+.org-layout .org-page [class*="-section"] {
+  border-color: var(--portal-line) !important;
+  background-color: var(--portal-surface) !important;
+  color: var(--portal-text);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(12px);
+}
+
+.cz-main [class*="-card"]:hover,
+.cz-main [class*="-panel"]:hover,
+.org-layout .org-page [class*="-card"]:hover,
+.org-layout .org-page [class*="-panel"]:hover {
+  border-color: rgba(53, 212, 176, 0.38) !important;
+  box-shadow: 0 22px 54px rgba(0, 0, 0, 0.28);
+}
+
+.cz-main :is(h1, h2, h3, h4, strong),
+.org-layout .org-page :is(h1, h2, h3, h4, strong) {
+  color: var(--portal-text);
+}
+
+.cz-main :is(p, label, small, figcaption),
+.org-layout .org-page :is(p, label, small, figcaption) {
+  color: var(--portal-muted);
+}
+
+.cz-main :is(input, textarea, select),
+.org-layout .org-page :is(input, textarea, select) {
+  border-color: var(--portal-line);
+  background-color: rgba(5, 20, 28, 0.82);
+  color: var(--portal-text);
+}
+
+.cz-main :is(input, textarea, select)::placeholder,
+.org-layout .org-page :is(input, textarea, select)::placeholder {
+  color: #819b9b;
+}
+
+.cz-main a:not([class*="button"]),
+.org-layout .org-page a:not([class*="button"]) {
+  color: var(--portal-teal);
+}
+
+.cz-main :is(button, a),
+.org-layout .org-page :is(button, a) {
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    background-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.cz-main button:hover,
+.org-layout .org-page button:hover {
+  transform: translateY(-1px);
+}
+
+@keyframes portal-page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cz-main > :is(
+    .cd-page,
+    .crp-page,
+    .my-problems-page,
+    .bp-page,
+    .cpd-page,
+    .pd-page,
+    .cn-page,
+    .up-page,
+    .verify-resolution-page
+  ),
+  .org-layout .org-page > :is(
+    .od-page,
+    .ap-page,
+    .oa-page,
+    .org-notifications-page,
+    .op-page,
+    .pd-page,
+    .rp-page,
+    .org-solutions-page,
+    .org-progress-page
+  ) {
+    animation: none;
+  }
+
+  .cz-main *,
+  .org-layout .org-page * {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}

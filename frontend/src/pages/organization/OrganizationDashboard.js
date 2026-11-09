@@ -2,9 +2,10 @@ import React, { useEffect, useRef, useState } from "react";
 import { Link, useOutletContext } from "react-router-dom";
 import "../../styles/organization/OrganizationDashboard.css";
 import { getOrganizationImageUrl } from "../../components/organization/OrganizationLayout";
+import { API_ROOT } from "../../services/api";
 
 
-const API_URL = "http://127.0.0.1:8000/api/organization/dashboard/";
+const API_URL = `${API_ROOT}/organization/dashboard/`;
 
 /*
   Keep these in sync with the routes in your router.

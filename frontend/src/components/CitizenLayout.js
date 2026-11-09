@@ -23,7 +23,7 @@ import {
     clearCitizenSession,
 } from "./utils/citizenSession";
 
-import { API_ROOT } from "../services/api";
+import { API_ORIGIN } from "../services/api";
 
 import logo from "../assets/logo-mark-white.png";
 import "../styles/user/CitizenLayout.css";
@@ -37,8 +37,6 @@ const NAV_LINKS = [
     { to: "/user/browse", label: "Browse Problems" },
     { to: "/user/problem-discussion", label: "Problem Discussion" },
 ];
-
-const CITIZEN_API_ORIGIN = new URL(API_ROOT).origin;
 
 function getInitials(name) {
     const parts = String(name).trim().split(/\s+/).filter(Boolean);
@@ -97,7 +95,7 @@ function getCitizenProfileImage(profile) {
 
     if (/^https?:\/\//i.test(imagePath)) return imagePath;
 
-    return new URL(imagePath, `${CITIZEN_API_ORIGIN}/`).href;
+    return new URL(imagePath, `${API_ORIGIN}/`).href;
 }
 
 function CitizenLayout() {

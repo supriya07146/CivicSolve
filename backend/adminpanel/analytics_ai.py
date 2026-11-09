@@ -1,15 +1,8 @@
 # adminpanel/analytics_ai.py
 
 import json
-from urllib.error import HTTPError, URLError
-from urllib.request import Request, urlopen
 
-from django.conf import settings
-
-OLLAMA_BASE_URL = settings.OLLAMA_BASE_URL.rstrip("/")
-OLLAMA_MODEL = settings.OLLAMA_MODEL
-
-from problems.ollama_client import get_ollama_headers
+from problems.gemini_client import GeminiAPIError, generate_gemini_text
 
 
 class AdminInsightsAIError(Exception):
@@ -45,83 +38,20 @@ STRICT RULES:
 - Do not output JSON. Return a readable administrator-facing report.
 """
 
-    payload = {
-        "model": OLLAMA_MODEL,
-        "stream": False,
-        "messages": [
-            {
-                "role": "system",
-                "content": system_prompt,
-            },
-            {
-                "role": "user",
-                "content": (
-                    "Analyze these verified CivicSolve analytics:\n\n"
-                    + json.dumps(
-                        analytics_data,
-                        ensure_ascii=False,
-                        default=str,
-                    )
-                ),
-            },
-        ],
-        "options": {
-            "temperature": 0.1,
-        },
-    }
-
-    request = Request(
-        f"{OLLAMA_BASE_URL}/api/chat",
-        data=json.dumps(payload).encode("utf-8"),
-        headers=get_ollama_headers(),
-        method="POST",
-    )
-
     try:
-        with urlopen(request, timeout=45) as response:
-            result = json.loads(
-                response.read().decode("utf-8")
-            )
-
-        answer = (
-            result.get("message", {}).get("content", "")
-            if isinstance(result, dict)
-            else ""
+        return generate_gemini_text(
+            system_instruction=system_prompt,
+            prompt=(
+                "Analyze these verified CivicSolve analytics:\n\n"
+                + json.dumps(
+                    analytics_data,
+                    ensure_ascii=False,
+                    default=str,
+                )
+            ),
+            temperature=0.1,
         )
-
-        answer = answer.strip()
-
-        if not answer:
-            raise AdminInsightsAIError(
-                "The AI returned an empty response."
-            )
-
-        return answer
-
-    except HTTPError as exc:
-        print(
-            f"[CivicSolve Admin Insights] Ollama HTTP error "
-            f"{exc.code}: "
-            f"{exc.read().decode('utf-8', errors='replace')}",
-            flush=True,
-        )
-
+    except GeminiAPIError as exc:
         raise AdminInsightsAIError(
-            "The AI service returned an error."
-        ) from exc
-
-    except (
-        URLError,
-        TimeoutError,
-        OSError,
-        json.JSONDecodeError,
-    ) as exc:
-        print(
-            f"[CivicSolve Admin Insights] "
-            f"AI connection error: {type(exc).__name__}: {exc}",
-            flush=True,
-        )
-
-        raise AdminInsightsAIError(
-            "Could not connect to the AI service."
+            "The AI service is unavailable."
         ) from exc

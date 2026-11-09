@@ -1,37 +1,17 @@
 
 import json
-import logging
-import os
 from decimal import Decimal
-from urllib.error import HTTPError, URLError
-from urllib.request import Request, urlopen
 
 from django.utils import timezone
 from datetime import timedelta
 
 from .models import Problem, DuplicateProblemSuggestion
-from .ollama_client import get_ollama_headers
-
-
-logger = logging.getLogger(__name__)
-
-OLLAMA_BASE_URL = os.getenv(
-    "OLLAMA_BASE_URL",
-    "http://localhost:11434",
-).rstrip("/")
-
-OLLAMA_MODEL = os.getenv(
-    "OLLAMA_MODEL",
-    "qwen2.5:1.5b",
-)
+from .gemini_client import GeminiAPIError, generate_gemini_text
 
 # Detection settings
 MAX_CANDIDATES = 12
 LOOKBACK_DAYS = 180
 MIN_SIMILARITY_SCORE = 70
-AI_TIMEOUT = 40
-
-
 class DuplicateDetectionError(Exception):
     """Raised when AI duplicate detection cannot complete."""
 
@@ -139,58 +119,20 @@ similarity_score must be a number from 0 to 100.
 Only include reasonably strong possible matches.
 """
 
-    payload = {
-        "model": OLLAMA_MODEL,
-        "messages": [
-            {
-                "role": "system",
-                "content": (
-                    "You are a careful CivicSolve duplicate-report "
-                    "comparison assistant. Return valid JSON only."
-                ),
-            },
-            {
-                "role": "user",
-                "content": prompt,
-            },
-        ],
-        "stream": False,
-        "format": "json",
-        "options": {
-            "temperature": 0.1,
-        },
-    }
-
-    request = Request(
-        f"{OLLAMA_BASE_URL}/api/chat",
-        data=json.dumps(payload).encode("utf-8"),
-        headers=get_ollama_headers(),
-        method="POST",
-    )
-
     try:
-        with urlopen(
-            request,
-            timeout=AI_TIMEOUT,
-        ) as response:
-            result = json.loads(
-                response.read().decode("utf-8")
-            )
-
-    except (HTTPError, URLError, TimeoutError, OSError) as exc:
+        content = generate_gemini_text(
+            system_instruction=(
+                "You are a careful CivicSolve duplicate-report "
+                "comparison assistant. Return valid JSON only."
+            ),
+            prompt=prompt,
+            temperature=0.1,
+            response_mime_type="application/json",
+        )
+    except GeminiAPIError as exc:
         raise DuplicateDetectionError(
-            "The local AI service is unavailable."
+            "The AI service is unavailable."
         ) from exc
-
-    except (json.JSONDecodeError, UnicodeDecodeError) as exc:
-        raise DuplicateDetectionError(
-            "The AI service returned an invalid response."
-        ) from exc
-
-    content = (
-        result.get("message", {})
-        .get("content", "")
-    )
 
     if not content:
         raise DuplicateDetectionError(

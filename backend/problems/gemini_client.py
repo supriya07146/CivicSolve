@@ -21,6 +21,7 @@ def generate_gemini_text(
     model = getattr(settings, "GEMINI_MODEL", "gemini-2.5-flash-lite")
 
     if not api_key:
+        logger.error("Gemini API key is missing; configure GEMINI_API_KEY.")
         raise GeminiAPIError("The Gemini API key is not configured.")
 
     url = (
@@ -52,6 +53,13 @@ def generate_gemini_text(
             },
             timeout=45,
         )
+        if response.status_code >= 400:
+            logger.error(
+                "Gemini API returned HTTP %s for model %s: %s",
+                response.status_code,
+                model,
+                response.text[:1000],
+            )
         response.raise_for_status()
         data = response.json()
         answer = "".join(

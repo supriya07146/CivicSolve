@@ -7,8 +7,10 @@ from rest_framework.test import APIRequestFactory
 
 from .gemini_client import GeminiAPIError, generate_gemini_text
 from .ai_service import generate_problem_suggestions
+from .duplicate_detection import _request_ai_comparison
 from .ollama_client import get_ollama_headers
 from .serializers import ProblemAttachmentSerializer
+from adminpanel.analytics_ai import generate_admin_insights
 
 
 class OllamaHeadersTests(TestCase):
@@ -38,6 +40,7 @@ class GeminiClientTests(TestCase):
 	@patch("problems.gemini_client.requests.post")
 	def test_sends_server_key_and_returns_generated_text(self, post):
 		response = Mock()
+		response.status_code = 200
 		response.json.return_value = {
 			"candidates": [{
 				"content": {"parts": [{"text": "Hello from Gemini."}]},
@@ -86,6 +89,38 @@ class ProblemSuggestionTests(TestCase):
 		self.assertEqual(
 			generate_text.call_args.kwargs["response_mime_type"],
 			"application/json",
+		)
+
+
+class OtherGeminiFeatureTests(TestCase):
+	@patch("problems.duplicate_detection.generate_gemini_text")
+	def test_duplicate_detection_uses_gemini_json_mode(self, generate_text):
+		generate_text.return_value = '{"matches": []}'
+		problem = Mock(
+			title="Broken streetlight",
+			description="A streetlight is not working.",
+			location="Main Street",
+		)
+		problem.category.name = "Lighting"
+
+		result = _request_ai_comparison(problem, [])
+
+		self.assertEqual(result, {"matches": []})
+		self.assertEqual(
+			generate_text.call_args.kwargs["response_mime_type"],
+			"application/json",
+		)
+
+	@patch("adminpanel.analytics_ai.generate_gemini_text")
+	def test_admin_insights_use_gemini(self, generate_text):
+		generate_text.return_value = "Insights summary"
+
+		result = generate_admin_insights({"report_count": 3})
+
+		self.assertEqual(result, "Insights summary")
+		self.assertEqual(
+			generate_text.call_args.kwargs["temperature"],
+			0.1,
 		)
 
 

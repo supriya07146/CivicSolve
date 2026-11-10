@@ -1546,10 +1546,23 @@ class DraftAttachmentUploadView(APIView):
 
 
 def copy_draft_attachment_file(file_field):
-    filename = PurePosixPath(file_field.name).name
+    source_path = PurePosixPath(file_field.name)
+    filename = source_path.name
+    cloudinary_resource_marker = next(
+        (
+            part
+            for part in source_path.parts
+            if part in {"__image__", "__video__", "__raw__"}
+        ),
+        None,
+    )
+    destination = PurePosixPath("problem_attachments")
+    if cloudinary_resource_marker:
+        destination /= cloudinary_resource_marker
+
     with file_field.open("rb") as source_file:
         return file_field.storage.save(
-            f"problem_attachments/{filename}",
+            str(destination / filename),
             File(source_file),
         )
 

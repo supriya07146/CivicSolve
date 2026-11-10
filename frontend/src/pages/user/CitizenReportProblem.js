@@ -687,7 +687,7 @@ function CitizenReportProblem() {
     priority: form.priority,
   });
 
-  const saveDraft = async (showMessage = true) => {
+  const saveDraft = async (showMessage = true, throwOnError = false) => {
     setSaving(true);
     setError("");
     setMessage("");
@@ -725,6 +725,9 @@ function CitizenReportProblem() {
       return savedDraftId;
     } catch (err) {
       setError(getErrorMessage(err));
+      if (throwOnError) {
+        throw err;
+      }
       return null;
     } finally {
       setSaving(false);
@@ -755,11 +758,7 @@ function CitizenReportProblem() {
 
     try {
       // Persist the latest form values and evidence first.
-      const savedId = await saveDraft(false);
-
-      if (!savedId) {
-        return;
-      }
+      const savedId = await saveDraft(false, true);
 
       const response = await submitProblemDraft(savedId);
       showToast(

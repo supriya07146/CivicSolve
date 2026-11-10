@@ -7,14 +7,21 @@ from django.test import TestCase
 from django.test import override_settings
 from django.core.files.base import ContentFile
 from django.core.files.storage import FileSystemStorage
-from rest_framework.test import APIRequestFactory
+from rest_framework.test import APIRequestFactory, force_authenticate
 
+from accounts.models import User
+from .models import (
+	DraftAttachment,
+	ProblemAttachment,
+	ProblemCategory,
+	ProblemDraft,
+)
 from .gemini_client import GeminiAPIError, generate_gemini_text
 from .ai_service import generate_problem_suggestions
 from .duplicate_detection import _request_ai_comparison
 from .ollama_client import get_ollama_headers
 from .serializers import ProblemAttachmentSerializer
-from .views import copy_draft_attachment_file
+from .views import ProblemDraftSubmitView, copy_draft_attachment_file
 from adminpanel.analytics_ai import generate_admin_insights
 
 
@@ -213,3 +220,97 @@ class ProblemAttachmentSerializerTests(TestCase):
 			self.assertTrue(published_name.startswith("problem_attachments/"))
 			with storage.open(published_name, "rb") as published_file:
 				self.assertEqual(published_file.read(), b"image bytes")
+
+	def test_cloudinary_draft_evidence_keeps_its_resource_type_when_copied(self):
+		storage = Mock()
+		storage.save.return_value = (
+			"problem_attachments/__image__/evidence"
+		)
+		file_field = Mock()
+		file_field.name = "problem_drafts/__image__/evidence"
+		file_field.storage = storage
+		file_field.open.return_value = ContentFile(b"image bytes")
+
+		published_name = copy_draft_attachment_file(file_field)
+
+		self.assertEqual(
+			published_name,
+			"problem_attachments/__image__/evidence",
+		)
+		self.assertEqual(
+			storage.save.call_args.args[0],
+			"problem_attachments/__image__/evidence",
+		)
+
+
+class ProblemDraftSubmitTests(TestCase):
+	def test_submission_publishes_draft_evidence_with_the_problem(self):
+		with TemporaryDirectory() as media_root:
+			with override_settings(MEDIA_ROOT=media_root):
+				citizen = User.objects.create_user(
+					email="citizen@example.com",
+					password="test-password",
+					full_name="Test Citizen",
+					phone="1234567890",
+					role="citizen",
+					is_active=True,
+					email_verified=True,
+				)
+				category = ProblemCategory.objects.create(
+					name="Road maintenance",
+				)
+				draft = ProblemDraft.objects.create(
+					reported_by=citizen,
+					title="Broken road surface",
+					description="A large pothole is blocking the road.",
+					category=category,
+					location="Main Street",
+				)
+				attachment = DraftAttachment.objects.create(
+					draft=draft,
+					file=ContentFile(
+						b"test image bytes",
+						name="evidence.jpg",
+					),
+				)
+				source_name = attachment.file.name
+
+				request = APIRequestFactory().post(
+					f"/api/problems/drafts/{draft.pk}/submit/",
+					{},
+					format="json",
+				)
+				force_authenticate(request, user=citizen)
+
+				with patch("problems.views.detect_duplicate_problems"):
+					with patch("problems.views.create_notification"):
+						with patch("problems.views.notify_admins"):
+							with self.captureOnCommitCallbacks(execute=True):
+								response = ProblemDraftSubmitView.as_view()(
+									request,
+									draft_id=draft.pk,
+								)
+
+				self.assertEqual(response.status_code, 201)
+				self.assertEqual(
+					len(response.data["problem"]["attachments"]),
+					1,
+				)
+				self.assertEqual(
+					ProblemDraft.objects.filter(pk=draft.pk).count(),
+					0,
+				)
+				published_attachment = ProblemAttachment.objects.get(
+					problem_id=response.data["problem"]["id"],
+				)
+				self.assertTrue(
+					published_attachment.file.name.startswith(
+						"problem_attachments/"
+					)
+				)
+				self.assertTrue(
+					published_attachment.file.storage.exists(
+						published_attachment.file.name,
+					)
+				)
+				self.assertFalse(attachment.file.storage.exists(source_name))

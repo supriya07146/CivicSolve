@@ -1676,3 +1676,101 @@
 
   .cn-hero-inner::after { animation-delay: -1.8s; }
 }
+
+/* ======================================================
+   NOTIFICATIONS — DARK GREEN ACCENT CARDS
+   Paste at the VERY BOTTOM of CitizenNotifications.css
+   (page stays light, no JSX changes)
+   ====================================================== */
+
+@keyframes cnRoad  { to { background-position: 28px 0; } }
+@keyframes cnBand  { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+@keyframes cnSweep { to { background-position: 150% 0; } }
+
+/* ---------- history card: dark header band, light list ---------- */
+.cn-page .cn-history::before { display: none; }
+
+.cn-page .cn-history-head {
+  overflow: hidden;
+  margin: -22px -22px 18px;
+  padding: 20px 22px;
+  border-radius: 14px 14px 0 0;
+  background: linear-gradient(120deg, #0a1b30 0%, #0b3a45 55%, #0f6a63 100%);
+  background-size: 200% 200%;
+  animation: cnBand 12s ease-in-out infinite;
+}
+.cn-page .cn-history-head::before {           /* moving dashed road */
+  content: "";
+  position: absolute; left: 0; right: 0; bottom: 6px; height: 2px;
+  background: repeating-linear-gradient(90deg, rgba(20,211,172,.7) 0 14px, transparent 14px 28px);
+  animation: cnRoad 1.2s linear infinite;
+}
+.cn-page .cn-history-head::after {            /* glowing orb */
+  content: "";
+  position: absolute; right: 22%; top: -50px; width: 130px; height: 130px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(20,211,172,.35), transparent 70%);
+  animation: cnBlob 10s ease-in-out infinite;
+  pointer-events: none;
+}
+.cn-page .cn-history-head > * { position: relative; z-index: 1; }
+.cn-page .cn-history-head h2 { color: #fff; }
+.cn-page .cn-history-head p  { color: rgba(255,255,255,.7); }
+.cn-page .cn-refresh { background: rgba(255,255,255,.08); color: #7ff5e4; border-color: rgba(127,245,228,.55); }
+.cn-page .cn-refresh:hover:not(:disabled) { background: rgba(20,211,172,.22); }
+.cn-page .cn-mark-all:disabled { background: rgba(255,255,255,.1); color: rgba(255,255,255,.55); border-color: rgba(255,255,255,.18); }
+
+/* ---------- sidebar: all cards dark green ---------- */
+.cn-page .cn-side-card,
+.cn-page .cn-audit-card {
+  border: 1px solid rgba(255,255,255,.1);
+  background: linear-gradient(160deg, #0a2a3d 0%, #0b4a52 100%);
+  color: #fff;
+  box-shadow: 0 16px 36px rgba(6,30,44,.28);
+  transition: transform .3s ease, box-shadow .3s ease;
+}
+.cn-page .cn-audit-card { border-left: 3px solid #9a8cf5; }
+.cn-page .cn-side-card:hover,
+.cn-page .cn-audit-card:hover { transform: translateY(-3px); box-shadow: 0 20px 44px rgba(15,157,132,.3); }
+
+/* light sweeping over the top edge + corner orb */
+.cn-page .cn-side-card::before,
+.cn-page .cn-audit-card::before {
+  content: "";
+  position: absolute; left: 0; right: 0; top: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, #14d3ac, transparent) -50% 0 / 40% 100% no-repeat;
+  animation: cnSweep 4.5s ease-in-out infinite;
+  pointer-events: none;
+}
+.cn-page .cn-side-card::after {
+  content: "";
+  position: absolute; right: -50px; bottom: -60px; width: 160px; height: 160px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(20,211,172,.28), transparent 70%);
+  animation: cnBlob 12s ease-in-out infinite;
+  pointer-events: none;
+}
+.cn-page .cn-side-card > * { position: relative; z-index: 1; }
+
+.cn-page .cn-side-card h2 { color: #fff; }
+.cn-page .cn-muted        { color: rgba(255,255,255,.65); }
+
+/* notification types */
+.cn-page .cn-type-row {
+  border-color: rgba(127,245,228,.18);
+  background: rgba(255,255,255,.06);
+  color: #fff;
+}
+.cn-page .cn-type-row:hover  { border-color: rgba(127,245,228,.55); }
+.cn-page .cn-type-row.active { border-color: #14d3ac; background: rgba(20,211,172,.2); box-shadow: 0 6px 14px rgba(0,0,0,.25); }
+.cn-page .cn-type-row b      { background: rgba(20,211,172,.2); color: #7ff5e4; box-shadow: none; }
+
+/* audit trail text */
+.cn-page .cn-audit-card h3 { color: #d7d0ff; }
+.cn-page .cn-audit-card p  { color: rgba(255,255,255,.75); }
+
+/* this week */
+.cn-page .cn-activity-count { color: rgba(255,255,255,.7); }
+.cn-page .cn-activity-col small { color: rgba(255,255,255,.55); }
+.cn-page .cn-activity-bar { background: linear-gradient(180deg, #7ff5e4, #14b8a0); opacity: .75; }
+.cn-page .cn-activity-bar.is-today { opacity: 1; background: linear-gradient(180deg, #7ff5e4, #14d3ac); box-shadow: 0 0 14px rgba(20,211,172,.55); }

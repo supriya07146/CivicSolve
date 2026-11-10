@@ -2372,3 +2372,171 @@
   .crp-ai-lists { grid-template-columns: 1fr; }
   .crp-ai-actions button { flex: 1; justify-content: center; }
 }
+
+/* =====================================================
+   REPORT PROBLEM — DARK GREEN ACCENT CARDS
+   Paste at the VERY BOTTOM of CitizenReportProblem.css
+   (page body stays light; no JSX changes needed)
+   ===================================================== */
+
+@keyframes rpRoad  { to { background-position: 28px 0; } }
+@keyframes rpBand  { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+@keyframes rpSweep { to { background-position: 150% 0; } }
+
+/* ---------- form cards: dark header band, light body ---------- */
+.crp-page .crp-card::before { display: none; }
+
+.crp-page .crp-card-heading {
+  position: relative;
+  overflow: hidden;
+  margin: -26px -26px 24px;
+  padding: 20px 26px;
+  border-radius: 19px 19px 0 0;
+  background: linear-gradient(120deg, #0a1b30 0%, #0b3a45 55%, #0f6a63 100%);
+  background-size: 200% 200%;
+  animation: rpBand 12s ease-in-out infinite;
+}
+
+/* moving dashed "road" along the bottom of the band */
+.crp-page .crp-card-heading::before {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: 6px;
+  height: 2px;
+  background: repeating-linear-gradient(90deg, rgba(20,211,172,.7) 0 14px, transparent 14px 28px);
+  animation: rpRoad 1.2s linear infinite;
+}
+
+/* glowing orb */
+.crp-page .crp-card-heading::after {
+  content: "";
+  position: absolute;
+  right: 18%; top: -50px;
+  width: 130px; height: 130px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(20,211,172,.35), transparent 70%);
+  animation: rpBlob 10s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.crp-page .crp-card-heading > * { position: relative; z-index: 1; }
+.crp-page .crp-card-heading h2 { color: #fff; }
+
+.crp-page .crp-card-icon,
+.crp-page .crp-card-icon.pin,
+.crp-page .crp-card-icon.clip {
+  background: rgba(127, 245, 228, .16);
+  color: #7ff5e4;
+  box-shadow: inset 0 0 0 1px rgba(127, 245, 228, .25);
+}
+
+.crp-page .crp-tag {
+  background: rgba(255, 255, 255, .1);
+  color: #7ff5e4;
+  border: 1px solid rgba(127, 245, 228, .35);
+}
+.crp-page .crp-tag.soft { background: rgba(20, 211, 172, .18); color: #bffaf0; }
+
+.crp-page .crp-card:hover { box-shadow: 0 18px 40px rgba(15, 106, 99, .16); }
+
+
+/* ---------- AI Smart Reporting: dark accent box ---------- */
+.crp-page .crp-ai {
+  background:
+    linear-gradient(135deg, #0a2a3d, #0b4a52) padding-box,
+    linear-gradient(135deg, #1fe0c0, #8fa8ff 60%, #b9a7ff) border-box;
+  color: #fff;
+}
+.crp-page .crp-ai-head-text h3 { color: #fff; }
+.crp-page .crp-ai-head-text p  { color: rgba(255, 255, 255, .72); }
+.crp-page .crp-ai-help         { color: rgba(255, 255, 255, .6); }
+.crp-page .crp-ai-badge        { color: #04302b; }
+.crp-page .crp-ai-button       { background: linear-gradient(135deg, #1fe0c0, #12b5a0); color: #04302b; }
+.crp-page .crp-ai-skeleton i {
+  background: linear-gradient(90deg, rgba(255,255,255,.08) 25%, rgba(255,255,255,.2) 50%, rgba(255,255,255,.08) 75%);
+  background-size: 200% 100%;
+}
+
+
+/* ---------- sidebar: all cards dark green ---------- */
+.crp-page .crp-side-card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, .1);
+  background: linear-gradient(160deg, #0a2a3d 0%, #0b4a52 100%);
+  color: #fff;
+  box-shadow: 0 16px 36px rgba(6, 30, 44, .28);
+}
+.crp-page .crp-side-card:hover {
+  box-shadow: 0 20px 44px rgba(15, 157, 132, .3);
+  transform: translateY(-3px);
+}
+
+/* light sweeping over the top edge (all dark sidebar cards) */
+.crp-page .crp-side-card::before,
+.crp-page .crp-dark-card::before {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; top: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #14d3ac, transparent) -50% 0 / 40% 100% no-repeat;
+  animation: rpSweep 4.5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* glowing orb in the corner of the side cards */
+.crp-page .crp-side-card::after {
+  content: "";
+  position: absolute;
+  right: -50px; bottom: -60px;
+  width: 160px; height: 160px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(20,211,172,.28), transparent 70%);
+  animation: rpBlob 12s ease-in-out infinite;
+  pointer-events: none;
+}
+.crp-page .crp-side-card > * { position: relative; z-index: 1; }
+
+/* drafts */
+.crp-page .crp-drafts-heading h3 { color: #fff; }
+.crp-page .crp-drafts-heading p  { color: rgba(255, 255, 255, .62); }
+.crp-page .crp-draft-count {
+  background: rgba(20, 211, 172, .2);
+  color: #7ff5e4;
+  box-shadow: inset 0 0 0 1px rgba(127, 245, 228, .3);
+}
+.crp-page .crp-empty-drafts p     { color: #fff; }
+.crp-page .crp-empty-drafts small { color: rgba(255, 255, 255, .62); }
+
+.crp-page .crp-draft-item {
+  border-color: rgba(127, 245, 228, .18);
+  background: rgba(255, 255, 255, .06);
+}
+.crp-page .crp-draft-item:hover {
+  border-color: rgba(127, 245, 228, .55);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, .25);
+}
+.crp-page .crp-draft-label { background: rgba(245, 165, 36, .2); color: #fbbf24; }
+.crp-page .crp-draft-date  { color: rgba(255, 255, 255, .5); }
+.crp-page .crp-draft-item h4 { color: #fff; }
+.crp-page .crp-draft-item > p { color: rgba(255, 255, 255, .66); }
+.crp-page .crp-draft-actions { border-top-color: rgba(255, 255, 255, .12); }
+.crp-page .crp-draft-actions button { color: #7ff5e4; }
+.crp-page .crp-draft-actions .crp-delete-draft { color: #ff9b9b; }
+
+/* tips */
+.crp-page .crp-tips-title { color: #fff; }
+.crp-page .crp-tips li {
+  border-color: rgba(127, 245, 228, .16);
+  background: rgba(255, 255, 255, .06);
+  color: rgba(255, 255, 255, .85);
+}
+.crp-page .crp-tips li:hover { border-color: rgba(127, 245, 228, .5); }
+.crp-page .crp-tip-icon,
+.crp-page .crp-tip-icon.pin,
+.crp-page .crp-tip-icon.clock {
+  background: rgba(127, 245, 228, .16);
+  color: #7ff5e4;
+}
+
+/* keep the motion off when asked (existing rule already covers .crp-page *) */

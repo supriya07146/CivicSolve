@@ -1075,9 +1075,13 @@ function ProblemDiscussion() {
 
                             <ol className="pd-checkpoints">
                                 {CHECKPOINTS.map(([label, needed], index) => {
-                                    const done = currentStatus && lifecycleIndex >= needed &&
-                                        currentStatus !== "rejected" ||
-                                        (currentStatus === "rejected" && needed === 0);
+                                    const done = (
+                                        currentStatus &&
+                                        lifecycleIndex >= needed &&
+                                        currentStatus !== "rejected"
+                                    ) || (
+                                        currentStatus === "rejected" && needed === 0
+                                    );
 
                                     return (
                                         <li

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { getUserFromToken } from '../services/auth.js'; // decode JWT payload
 import { useNavigate } from 'react-router-dom';
 
@@ -11,13 +11,13 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   // Helper to clear all session data
-  const clearSession = () => {
+  const clearSession = useCallback(() => {
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
     sessionStorage.removeItem('access_token');
     sessionStorage.removeItem('refresh_token');
     setUser(null);
-  };
+  }, []);
 
   // Logout – clear session and redirect to login page
   const logout = () => {
@@ -46,7 +46,7 @@ export const AuthProvider = ({ children }) => {
       }
     }
     setLoading(false);
-  }, []);
+  }, [clearSession, navigate]);
 
   // Login – store tokens, decode payload, and navigate to home/dashboard
   const login = ({ access_token, refresh_token }) => {

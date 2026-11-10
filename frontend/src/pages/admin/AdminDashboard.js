@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import {
@@ -173,13 +173,13 @@ function AdminDashboard() {
     const [snapshotAt, setSnapshotAt] = useState(null);
 
 
-    const showToast = (type, text) => {
+    const showToast = useCallback((type, text) => {
         setToast({ type, text });
         setTimeout(() => setToast(null), 3200);
-    };
+    }, []);
 
 
-    const loadOrganizations = async () => {
+    const loadOrganizations = useCallback(async () => {
 
         try {
 
@@ -196,10 +196,10 @@ function AdminDashboard() {
             setOrgLoading(false);
 
         }
-    };
+    }, [showToast]);
 
 
-    const loadDashboard = async () => {
+    const loadDashboard = useCallback(async () => {
 
         const [a, o, p] = await Promise.allSettled([
             getAdminAnalytics(),
@@ -216,7 +216,7 @@ function AdminDashboard() {
 
         setSnapshotAt(new Date());
         setDashLoading(false);
-    };
+    }, [showToast]);
 
 
     useEffect(() => {
@@ -224,7 +224,7 @@ function AdminDashboard() {
         loadOrganizations();
         loadDashboard();
 
-    }, []);
+    }, [loadOrganizations, loadDashboard]);
 
 
     const approve = async (id) => {

@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useNavigate } from "react-router-dom";
 import {
     getMyProblems,
-    getMyProblemDetails,
 } from "../../services/api";
 import "../../styles/user/MyProblems.css";
 
@@ -350,7 +349,7 @@ function MyProblems() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const [selectedProblem, setSelectedProblem] = useState(null);
-    const [detailLoading, setDetailLoading] = useState(false);
+    const [detailLoading] = useState(false);
     const [detailError, setDetailError] = useState("");
 
     const loadProblems = useCallback(async () => {

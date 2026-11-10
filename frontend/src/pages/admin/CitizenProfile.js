@@ -1,4 +1,5 @@
 import React, {
+    useCallback,
     useEffect,
     useState,
 } from "react";
@@ -52,7 +53,7 @@ function CitizenProfile() {
         useState("");
 
 
-    const loadProfile = async () => {
+    const loadProfile = useCallback(async () => {
 
         try {
 
@@ -79,10 +80,10 @@ function CitizenProfile() {
             setLoading(false);
 
         }
-    };
+    }, [userId]);
 
 
-    const loadProblems = async () => {
+    const loadProblems = useCallback(async () => {
 
         try {
 
@@ -111,24 +112,21 @@ function CitizenProfile() {
             setProblemLoading(false);
 
         }
-    };
+    }, [problemFilter, userId]);
 
 
     useEffect(() => {
 
         loadProfile();
 
-    }, [userId]);
+    }, [loadProfile]);
 
 
     useEffect(() => {
 
         loadProblems();
 
-    }, [
-        userId,
-        problemFilter,
-    ]);
+    }, [loadProblems]);
 
 
     const changeStatus = async () => {

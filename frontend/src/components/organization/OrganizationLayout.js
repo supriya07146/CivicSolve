@@ -151,9 +151,6 @@ export default function OrganizationLayout() {
         // Initial load
         loadOrganizationHeader();
 
-        // Reload on route changes to ensure image persists
-        const unlisten = () => {};
-        // We'll use a separate effect below for route changes.
         return () => {
             isMounted = false;
         };

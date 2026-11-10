@@ -70,7 +70,6 @@ INSTALLED_APPS = [
 
     # Third party
     "corsheaders",
-    "storages",
     "rest_framework",
     "rest_framework_simplejwt",
     "rest_framework_simplejwt.token_blacklist",
@@ -262,20 +261,24 @@ MEDIA_URL = "/media/"
 
 MEDIA_ROOT = Path(os.getenv("MEDIA_ROOT") or BASE_DIR / "media")
 
-if os.getenv("AWS_STORAGE_BUCKET_NAME"):
+CLOUDINARY_CLOUD_NAME = os.getenv("CLOUDINARY_CLOUD_NAME", "")
+CLOUDINARY_API_KEY = os.getenv("CLOUDINARY_API_KEY", "")
+CLOUDINARY_API_SECRET = os.getenv("CLOUDINARY_API_SECRET", "")
+CLOUDINARY_CREDENTIALS = (
+    CLOUDINARY_CLOUD_NAME,
+    CLOUDINARY_API_KEY,
+    CLOUDINARY_API_SECRET,
+)
+
+if any(CLOUDINARY_CREDENTIALS) and not all(CLOUDINARY_CREDENTIALS):
+    raise RuntimeError(
+        "Set CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, and "
+        "CLOUDINARY_API_SECRET together."
+    )
+
+if all(CLOUDINARY_CREDENTIALS):
     STORAGES["default"] = {
-        "BACKEND": "storages.backends.s3.S3Storage",
-        "OPTIONS": {
-            "bucket_name": os.environ["AWS_STORAGE_BUCKET_NAME"],
-            "region_name": os.getenv("AWS_S3_REGION_NAME", "us-east-1"),
-            "endpoint_url": os.getenv("AWS_S3_ENDPOINT_URL") or None,
-            "custom_domain": os.getenv("AWS_S3_CUSTOM_DOMAIN") or None,
-            "access_key": os.getenv("AWS_ACCESS_KEY_ID") or None,
-            "secret_key": os.getenv("AWS_SECRET_ACCESS_KEY") or None,
-            "default_acl": None,
-            "querystring_auth": False,
-            "file_overwrite": False,
-        },
+        "BACKEND": "config.storage.CloudinaryMediaStorage",
     }
 
 

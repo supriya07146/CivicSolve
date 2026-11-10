@@ -83,6 +83,7 @@ const formatMonth = (value) => {
 };
 
 const ACCENTS = ["teal", "navy", "indigo", "amber"];
+const EMPTY_STATUSES = [];
 
 /* ------------------------------------------------------------------ */
 /* Presentational components                                           */
@@ -799,7 +800,7 @@ function Analytics() {
     const categories = dashboard?.problems_by_category || [];
     const months = dashboard?.problems_by_month || [];
     const locations = dashboard?.problems_by_location || [];
-    const statuses = dashboard?.problems_by_status || [];
+    const statuses = dashboard?.problems_by_status || EMPTY_STATUSES;
     const organizations = dashboard?.organization_performance || [];
 
     const statusTotal = useMemo(

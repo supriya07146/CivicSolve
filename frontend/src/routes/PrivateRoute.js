@@ -31,14 +31,6 @@ function isTokenExpired(token) {
     }
 }
 
-function getDashboardPath(accountType) {
-    if (accountType === "admin") return "/admin/dashboard";
-    if (accountType === "organization") return "/organization/dashboard";
-    if (accountType === "citizen") return "/user/dashboard";
-
-    return "/";
-}
-
 function PrivateRoute({ children, allowedRoles }) {
     const token = localStorage.getItem("access_token");
     const accountType = localStorage.getItem("account_type");

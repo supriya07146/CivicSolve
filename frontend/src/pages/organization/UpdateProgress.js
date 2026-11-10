@@ -40,6 +40,7 @@ export default function UpdateProgress() {
     assignments.find(
       (item) => String(item.assignment_id) === String(selectedId)
     ) || null;
+  const selectedAssignmentProgress = selectedAssignment?.latest_progress;
 
   const loadAssignments = useCallback(async () => {
     setLoading(true);
@@ -102,16 +103,12 @@ export default function UpdateProgress() {
   }, [loadHistory]);
 
   useEffect(() => {
-    if (selectedAssignment) {
-      setProgress(Number(selectedAssignment.latest_progress || 0));
-    } else {
-      setProgress(0);
-    }
+    setProgress(Number(selectedAssignmentProgress || 0));
 
     setNotes("");
     setEvidence(null);
     setSuccess("");
-  }, [selectedId]); // Reset form when another assignment is selected.
+  }, [selectedAssignmentProgress, selectedId]); // Reset form when another assignment is selected.
 
   const handleSubmit = async (event) => {
     event.preventDefault();

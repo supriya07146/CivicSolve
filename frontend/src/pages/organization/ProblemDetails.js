@@ -76,6 +76,7 @@ function priorityClass(value) {
 }
 
 const PRIORITY_LEVEL = { low: 1, medium: 2, high: 3, urgent: 4 };
+const EMPTY_LIST = [];
 
 /* Count-up for the metric numbers (instant when reduced motion). */
 function useCountUp(target, duration = 900) {
@@ -559,8 +560,8 @@ export default function ProblemDetails() {
   const report = data?.report || {};
   const assignment = data?.assignment || {};
   const metrics = data?.metrics || {};
-  const solutions = data?.solutions || [];
-  const timeline = data?.timeline || [];
+  const solutions = data?.solutions || EMPTY_LIST;
+  const timeline = data?.timeline || EMPTY_LIST;
   const discussion = data?.discussion?.messages || [];
   const followUp = data?.follow_up || {};
 

@@ -3,6 +3,7 @@ import { NavLink, useLocation, useNavigate } from "react-router-dom";
 
 import logo from "../../assets/logo-mark-white.png";
 import NotificationBell from "../notifications/NotificationBell";
+import { API_ORIGIN, getAdminProfile } from "../../services/api";
 import "../../styles/admin/AdminHeader.css";
 
 
@@ -61,12 +62,39 @@ function AdminHeader() {
     const adminData = readAdmin();
 
     const [userOpen, setUserOpen] = useState(false);
+    const [adminProfile, setAdminProfile] = useState({});
+    const [adminImageFailed, setAdminImageFailed] = useState(false);
     const [edge, setEdge] = useState({ left: false, right: false });
     const [duplicateCount, setDuplicateCount] = useState(0);
 
     const userRef = useRef(null);
     const navRef = useRef(null);
 
+    useEffect(() => {
+        let isMounted = true;
+
+        const loadAdminProfile = async () => {
+            try {
+                const response = await getAdminProfile();
+                if (isMounted) {
+                    setAdminProfile(response.data || {});
+                    setAdminImageFailed(false);
+                }
+            } catch (error) {
+                console.error("Unable to load admin header profile:", error);
+            }
+        };
+
+        const handleProfileUpdated = () => loadAdminProfile();
+
+        loadAdminProfile();
+        window.addEventListener("admin:profile-updated", handleProfileUpdated);
+
+        return () => {
+            isMounted = false;
+            window.removeEventListener("admin:profile-updated", handleProfileUpdated);
+        };
+    }, []);
 
     /* close the profile dropdown on outside click / route change */
     useEffect(() => {
@@ -194,7 +222,11 @@ function AdminHeader() {
     };
 
     const pageInfo = getPageInfo();
-    const displayName = adminData.full_name || "Administrator";
+    const displayName =
+        adminProfile.full_name || adminData.full_name || "Administrator";
+    const profileImage = adminProfile.profile_image
+        ? new URL(adminProfile.profile_image, `${API_ORIGIN}/`).href
+        : "";
 
 
     return (
@@ -271,7 +303,17 @@ function AdminHeader() {
                                 onClick={() => setUserOpen((o) => !o)}
                                 aria-expanded={userOpen}
                             >
-                                <span className="ad-avatar">{getInitials(adminData.full_name)}</span>
+                                <span className="ad-avatar">
+                                    {profileImage && !adminImageFailed ? (
+                                        <img
+                                            src={profileImage}
+                                            alt=""
+                                            onError={() => setAdminImageFailed(true)}
+                                        />
+                                    ) : (
+                                        getInitials(displayName)
+                                    )}
+                                </span>
                                 <span className="ad-user-name">{displayName}</span>
                                 <Caret />
                             </button>

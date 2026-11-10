@@ -567,12 +567,14 @@ export default function ProblemDetails() {
   const evidence = useMemo(() => {
     const original = (report.attachments || []).map((item) => ({
       ...item,
+      url: item.url || item.file || null,
       evidenceType: "Original report",
     }));
 
     const resolution = solutions.flatMap((solution) =>
       (solution.evidence || []).map((item) => ({
         ...item,
+        url: item.url || item.file || null,
         evidenceType: item.type === "after" ? "After" : "Before",
         solutionTitle: solution.title,
       }))

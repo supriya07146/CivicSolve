@@ -13,6 +13,8 @@ const ORGANIZATION_TYPES = [
     { value: "government", label: "Government department" },
     { value: "private", label: "Private company" },
     { value: "community", label: "Community group" },
+    { value: "educational", label: "Educational institution" },
+    { value: "other", label: "Other" },
 ];
 
 const EMPTY_FORM = {
@@ -31,7 +33,17 @@ const EMPTY_FORM = {
     password: "",
 };
 
-const REQUIRED = ["organization_name", "organization_type", "email"];
+const REQUIRED = [
+    "organization_name",
+    "organization_type",
+    "email",
+    "phone",
+    "address",
+    "city",
+    "state",
+    "service_area",
+    "description",
+];
 
 
 /* ---------- small helpers / icons ---------- */
@@ -168,8 +180,8 @@ function AddOrganization() {
         setSuccess("");
         setAttempted(true);
 
-        if (!form.organization_name.trim() || !form.email.trim() || !form.organization_type) {
-            setError("Organization name, type and email are required.");
+        if (REQUIRED.some((key) => !String(form[key]).trim())) {
+            setError("Complete all required organization details before submitting.");
             return;
         }
 
@@ -345,8 +357,8 @@ function AddOrganization() {
                                         </div>
                                     )}
 
-                                    <label className="ao-field ao-span-2">
-                                        <span>Description</span>
+                                    <label className={`ao-field ao-span-2 ${isInvalid("description") ? "is-invalid" : ""}`}>
+                                        <span>Description <b>*</b></span>
                                         <textarea
                                             name="description"
                                             rows="3"
@@ -354,6 +366,7 @@ function AddOrganization() {
                                             onChange={handleChange}
                                             placeholder="What does this organization do?"
                                         />
+                                        {isInvalid("description") && <small className="ao-error-text">Required</small>}
                                     </label>
 
                                 </div>
@@ -385,8 +398,8 @@ function AddOrganization() {
                                         {isInvalid("email") && <small className="ao-error-text">Required</small>}
                                     </label>
 
-                                    <label className="ao-field">
-                                        <span>Phone</span>
+                                    <label className={`ao-field ${isInvalid("phone") ? "is-invalid" : ""}`}>
+                                        <span>Phone <b>*</b></span>
                                         <input
                                             name="phone"
                                             value={form.phone}
@@ -394,6 +407,7 @@ function AddOrganization() {
                                             inputMode="tel"
                                             placeholder="10-digit mobile number"
                                         />
+                                        {isInvalid("phone") && <small className="ao-error-text">Required</small>}
                                     </label>
 
                                     <label className="ao-field ao-span-2">
@@ -436,42 +450,46 @@ function AddOrganization() {
 
                                 <div className="ao-grid">
 
-                                    <label className="ao-field ao-span-2">
-                                        <span>Address</span>
+                                    <label className={`ao-field ao-span-2 ${isInvalid("address") ? "is-invalid" : ""}`}>
+                                        <span>Address <b>*</b></span>
                                         <input
                                             name="address"
                                             value={form.address}
                                             onChange={handleChange}
                                             placeholder="Street, area, landmark"
                                         />
+                                        {isInvalid("address") && <small className="ao-error-text">Required</small>}
                                     </label>
 
-                                    <label className="ao-field">
-                                        <span>City</span>
+                                    <label className={`ao-field ${isInvalid("city") ? "is-invalid" : ""}`}>
+                                        <span>City <b>*</b></span>
                                         <input
                                             name="city"
                                             value={form.city}
                                             onChange={handleChange}
                                         />
+                                        {isInvalid("city") && <small className="ao-error-text">Required</small>}
                                     </label>
 
-                                    <label className="ao-field">
-                                        <span>State</span>
+                                    <label className={`ao-field ${isInvalid("state") ? "is-invalid" : ""}`}>
+                                        <span>State <b>*</b></span>
                                         <input
                                             name="state"
                                             value={form.state}
                                             onChange={handleChange}
                                         />
+                                        {isInvalid("state") && <small className="ao-error-text">Required</small>}
                                     </label>
 
-                                    <label className="ao-field ao-span-2">
-                                        <span>Service area</span>
+                                    <label className={`ao-field ao-span-2 ${isInvalid("service_area") ? "is-invalid" : ""}`}>
+                                        <span>Service area <b>*</b></span>
                                         <input
                                             name="service_area"
                                             value={form.service_area}
                                             onChange={handleChange}
                                             placeholder="Areas or wards this organization covers"
                                         />
+                                        {isInvalid("service_area") && <small className="ao-error-text">Required</small>}
                                     </label>
 
                                     <label className="ao-field">

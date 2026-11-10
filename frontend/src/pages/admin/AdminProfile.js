@@ -348,6 +348,7 @@ export default function AdminProfile() {
 
             setImageUrl(getImageUrl(profile.profile_image));
             setSelectedImage(null);
+            window.dispatchEvent(new Event("admin:profile-updated"));
 
             setSuccess(
                 response.message || "Your profile was saved successfully."

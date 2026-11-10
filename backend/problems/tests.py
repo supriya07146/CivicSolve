@@ -15,14 +15,99 @@ from .models import (
 	ProblemAttachment,
 	ProblemCategory,
 	ProblemDraft,
+	ProblemSupport,
+	Problem,
 )
 from .gemini_client import GeminiAPIError, generate_gemini_text
 from .ai_service import generate_problem_suggestions
 from .duplicate_detection import _request_ai_comparison
 from .ollama_client import get_ollama_headers
 from .serializers import ProblemAttachmentSerializer
-from .views import ProblemDraftSubmitView, copy_draft_attachment_file
+from .views import (
+	BrowseProblemsView,
+	ProblemDraftSubmitView,
+	ProblemSupportView,
+	copy_draft_attachment_file,
+)
 from adminpanel.analytics_ai import generate_admin_insights
+
+
+class ProblemSupportTests(TestCase):
+	def setUp(self):
+		self.citizen = User.objects.create_user(
+			email="citizen@example.com",
+			password="TestPassword123!",
+			full_name="Test Citizen",
+			phone="1234567890",
+			role="citizen",
+			is_active=True,
+			email_verified=True,
+		)
+		self.other_citizen = User.objects.create_user(
+			email="other@example.com",
+			password="TestPassword123!",
+			full_name="Other Citizen",
+			phone="1234567891",
+			role="citizen",
+			is_active=True,
+			email_verified=True,
+		)
+		category = ProblemCategory.objects.create(name="Road maintenance")
+		self.problem = Problem.objects.create(
+			title="Broken road surface",
+			description="A large pothole is blocking the road.",
+			category=category,
+			reported_by=self.citizen,
+			location="Main Street",
+		)
+		self.factory = APIRequestFactory()
+
+	def call_support(self, method, user):
+		path = f"/api/problems/{self.problem.pk}/support/"
+		request = getattr(self.factory, method)(
+			path,
+			{} if method != "delete" else None,
+			format="json",
+		)
+		force_authenticate(request, user=user)
+		return ProblemSupportView.as_view()(
+			request,
+			problem_id=self.problem.pk,
+		)
+
+	def browse(self, user):
+		request = self.factory.get(
+			"/api/problems/browse/",
+			{"sort": "most_supported"},
+		)
+		force_authenticate(request, user=user)
+		return BrowseProblemsView.as_view()(request)
+
+	def test_support_is_saved_once_and_visible_to_all_citizens(self):
+		response = self.call_support("put", self.citizen)
+		self.assertEqual(response.status_code, 200)
+		self.assertEqual(response.data["support_count"], 1)
+		self.assertTrue(response.data["has_supported"])
+
+		self.call_support("put", self.citizen)
+		self.assertEqual(ProblemSupport.objects.count(), 1)
+
+		citizen_problem = self.browse(self.citizen).data["problems"][0]
+		other_problem = self.browse(self.other_citizen).data["problems"][0]
+		self.assertEqual(citizen_problem["support_count"], 1)
+		self.assertTrue(citizen_problem["has_supported"])
+		self.assertEqual(other_problem["support_count"], 1)
+		self.assertFalse(other_problem["has_supported"])
+
+	def test_citizen_can_remove_their_support(self):
+		self.call_support("put", self.citizen)
+
+		response = self.call_support("delete", self.citizen)
+
+		self.assertEqual(response.status_code, 200)
+		self.assertEqual(response.data["support_count"], 0)
+		self.assertFalse(response.data["has_supported"])
+		self.assertEqual(ProblemSupport.objects.count(), 0)
 
 
 class OllamaHeadersTests(TestCase):

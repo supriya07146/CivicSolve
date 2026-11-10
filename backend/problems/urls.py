@@ -17,6 +17,7 @@ from .views import (
     DraftAttachmentUploadView,
     ProblemDraftSubmitView,
     BrowseProblemsView,
+    ProblemSupportView,
     ProblemDiscussionListCreateView,
     ProblemDiscussionModerationView,
 
@@ -132,6 +133,12 @@ urlpatterns = [
     "browse/",
     BrowseProblemsView.as_view(),
     name="browse-community-problems",
+    ),
+
+    path(
+    "<int:problem_id>/support/",
+    ProblemSupportView.as_view(),
+    name="problem-support",
     ),
 
     path(

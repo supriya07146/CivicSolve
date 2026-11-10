@@ -1,6 +1,9 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getBrowseProblems } from "../../services/api";
+import {
+    getBrowseProblems,
+    setProblemSupport,
+} from "../../services/api";
 import "../../styles/user/BrowseProblems.css";
 
 const PAGE_SIZE = 6;
@@ -488,6 +491,8 @@ function BrowseProblems() {
     const [locationNote, setLocationNote] = useState("");
 
     const [supported, setSupported] = useState({});
+    const [supporting, setSupporting] = useState({});
+    const [supportNotice, setSupportNotice] = useState("");
     const [hoverId, setHoverId] = useState(null);
 
     const sortParam = tab === "supported" ? "most_supported" : "newest";
@@ -712,14 +717,47 @@ function BrowseProblems() {
         navigate(`/user/problem/${encodeURIComponent(id)}/discussion`);
     };
 
-    /* UI-only until a support endpoint is connected */
-    const toggleSupport = (problem) => {
+    const toggleSupport = async (problem) => {
         const id = getProblemId(problem);
 
-        setSupported((previous) => ({
-            ...previous,
-            [id]: !isSupported(problem),
-        }));
+        if (id === undefined || id === null || id === "" || supporting[id]) {
+            return;
+        }
+
+        const nextSupported = !isSupported(problem);
+        setSupporting((previous) => ({ ...previous, [id]: true }));
+        setError("");
+
+        try {
+            const response = await setProblemSupport(id, nextSupported);
+
+            setSupported((previous) => ({
+                ...previous,
+                [id]: response.has_supported,
+            }));
+            setProblems((previous) =>
+                previous.map((item) =>
+                    String(getProblemId(item)) === String(id)
+                        ? {
+                            ...item,
+                            support_count: response.support_count,
+                            has_supported: response.has_supported,
+                        }
+                        : item
+                )
+            );
+            setSupportNotice(
+                response.has_supported
+                    ? `You support "${problem.title || "this problem"}".`
+                    : `Your support for "${problem.title || "this problem"}" was removed.`
+            );
+        } catch (err) {
+            setError(
+                err.message || "Unable to update your support. Please try again."
+            );
+        } finally {
+            setSupporting((previous) => ({ ...previous, [id]: false }));
+        }
     };
 
     const useMyLocation = () => {
@@ -1035,6 +1073,7 @@ function BrowseProblems() {
                                                     type="button"
                                                     className={`bp-support bp-support-float ${on ? "on" : ""}`}
                                                     onClick={() => toggleSupport(problem)}
+                                                    disabled={Boolean(supporting[id])}
                                                     aria-pressed={on}
                                                     aria-label={`${on ? "Remove support from" : "Support"} ${problem.title || "this report"}`}
                                                 >
@@ -1189,6 +1228,11 @@ function BrowseProblems() {
                                 <p className="bp-support-note">
                                     Human reviewers decide priority and assignment.
                                 </p>
+                                {supportNotice && (
+                                    <p className="bp-support-note" role="status">
+                                        {supportNotice}
+                                    </p>
+                                )}
                             </div>
                         </article>
 

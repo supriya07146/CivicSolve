@@ -258,6 +258,8 @@ class ProblemCreateSerializer(ProblemSerializer):
 
 
 class BrowseProblemSerializer(serializers.ModelSerializer):
+    support_count = serializers.IntegerField(read_only=True)
+    has_supported = serializers.BooleanField(read_only=True)
     category_details = ProblemCategorySerializer(
         source="category",
         read_only=True,
@@ -285,6 +287,8 @@ class BrowseProblemSerializer(serializers.ModelSerializer):
             "resolution_notes",
             "resolved_at",
             "attachments",
+            "support_count",
+            "has_supported",
             "created_at",
             "updated_at",
         ]

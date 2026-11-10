@@ -11,7 +11,7 @@ from .ai_service import (
     generate_problem_suggestions,
     AIServiceError,
 )
-from django.db.models import Q
+from django.db.models import Count, Exists, OuterRef, Q
 from django.utils import timezone
 from .serializers import BrowseProblemSerializer
 
@@ -45,6 +45,7 @@ from .models import (
     Problem,
     ProblemCategory,
     ProblemAttachment,
+    ProblemSupport,
     DuplicateProblemSuggestion,
 )
 
@@ -641,6 +642,7 @@ class BrowseProblemsView(APIView):
         "newest": "-created_at",
         "oldest": "created_at",
         "title": "title",
+        "most_supported": "-support_count",
     }
 
     def get(self, request):
@@ -649,6 +651,15 @@ class BrowseProblemsView(APIView):
             .select_related("category")
             .prefetch_related("attachments")
             .exclude(status="rejected")
+            .annotate(
+                support_count=Count("supports", distinct=True),
+                has_supported=Exists(
+                    ProblemSupport.objects.filter(
+                        problem_id=OuterRef("pk"),
+                        user=request.user,
+                    )
+                ),
+            )
         )
 
         # Search by title, description, location, category, or code.
@@ -803,6 +814,50 @@ class BrowseProblemsView(APIView):
             },
             status=status.HTTP_200_OK,
         )
+
+
+class ProblemSupportView(APIView):
+    permission_classes = [IsCitizen]
+
+    def put(self, request, problem_id):
+        problem = get_object_or_404(
+            Problem.objects.exclude(status="rejected"),
+            pk=problem_id,
+        )
+
+        with transaction.atomic():
+            ProblemSupport.objects.get_or_create(
+                problem=problem,
+                user=request.user,
+            )
+            support_count = problem.supports.count()
+
+        return Response({
+            "success": True,
+            "has_supported": True,
+            "support_count": support_count,
+            "message": "You support this problem.",
+        })
+
+    def delete(self, request, problem_id):
+        problem = get_object_or_404(
+            Problem.objects.exclude(status="rejected"),
+            pk=problem_id,
+        )
+
+        with transaction.atomic():
+            ProblemSupport.objects.filter(
+                problem=problem,
+                user=request.user,
+            ).delete()
+            support_count = problem.supports.count()
+
+        return Response({
+            "success": True,
+            "has_supported": False,
+            "support_count": support_count,
+            "message": "Your support was removed.",
+        })
 
 
 

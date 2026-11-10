@@ -176,6 +176,38 @@ class Problem(models.Model):
         return f"{self.problem_code} - {self.title}"
 
 
+class ProblemSupport(models.Model):
+    problem = models.ForeignKey(
+        Problem,
+        on_delete=models.CASCADE,
+        related_name="supports",
+    )
+    user = models.ForeignKey(
+        "accounts.User",
+        on_delete=models.CASCADE,
+        related_name="problem_supports",
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = "problem_supports"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["problem", "user"],
+                name="unique_problem_support_per_user",
+            ),
+        ]
+        indexes = [
+            models.Index(
+                fields=["problem", "created_at"],
+                name="problem_support_date_idx",
+            ),
+        ]
+
+    def __str__(self):
+        return f"Support for {self.problem.problem_code} by {self.user_id}"
+
+
 class ProblemAttachment(models.Model):
 
     problem = models.ForeignKey(

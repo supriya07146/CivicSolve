@@ -914,6 +914,12 @@ export const getBrowseProblems = (params = {}) => {
   return problemRequest(`/browse/${suffix}`);
 };
 
+export const setProblemSupport = (problemId, supported) =>
+  problemRequest(
+    `/${encodeURIComponent(problemId)}/support/`,
+    { method: supported ? "PUT" : "DELETE" }
+  );
+
 // ======================================================
 // CITIZEN - PROBLEM DISCUSSION
 // ======================================================

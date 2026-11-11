@@ -1622,6 +1622,16 @@ def copy_draft_attachment_file(file_field):
         )
 
 
+def delete_draft_attachment_file(storage, name):
+    try:
+        storage.delete(name)
+    except Exception:
+        logger.exception(
+            "Could not remove draft attachment %s after publishing",
+            name,
+        )
+
+
 class ProblemDraftSubmitView(APIView):
     permission_classes = [IsCitizen]
 
@@ -1670,7 +1680,7 @@ class ProblemDraftSubmitView(APIView):
                 )
                 transaction.on_commit(
                     lambda storage=source_storage, name=source_name:
-                        storage.delete(name)
+                        delete_draft_attachment_file(storage, name)
                 )
                 draft_attachment.delete()
 

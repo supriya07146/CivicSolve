@@ -399,3 +399,73 @@ class ProblemDraftSubmitTests(TestCase):
 					)
 				)
 				self.assertFalse(attachment.file.storage.exists(source_name))
+
+	def test_submission_succeeds_when_draft_file_cleanup_fails(self):
+		with TemporaryDirectory() as media_root:
+			with override_settings(MEDIA_ROOT=media_root):
+				citizen = User.objects.create_user(
+					email="cleanup@example.com",
+					password="test-password",
+					full_name="Test Citizen",
+					phone="1234567890",
+					role="citizen",
+					is_active=True,
+					email_verified=True,
+				)
+				category = ProblemCategory.objects.create(
+					name="Street lighting",
+				)
+				draft = ProblemDraft.objects.create(
+					reported_by=citizen,
+					title="Streetlight is not working",
+					description="The streetlight has been out for a week.",
+					category=category,
+					location="Main Street",
+				)
+				attachment = DraftAttachment.objects.create(
+					draft=draft,
+					file=ContentFile(
+						b"test image bytes",
+						name="evidence.jpg",
+					),
+				)
+
+				request = APIRequestFactory().post(
+					f"/api/problems/drafts/{draft.pk}/submit/",
+					{},
+					format="json",
+				)
+				force_authenticate(request, user=citizen)
+
+				with patch("problems.views.detect_duplicate_problems"):
+					with patch("problems.views.create_notification"):
+						with patch("problems.views.notify_admins"):
+							with patch.object(
+								attachment.file.storage,
+								"delete",
+								side_effect=OSError("storage unavailable"),
+							):
+								with self.assertLogs(
+									"problems.views",
+									level="ERROR",
+								):
+									with self.captureOnCommitCallbacks(
+										execute=True,
+									):
+										response = ProblemDraftSubmitView.as_view()(
+											request,
+											draft_id=draft.pk,
+										)
+
+				self.assertEqual(response.status_code, 201)
+				published_attachment = ProblemAttachment.objects.get(
+					problem_id=response.data["problem"]["id"],
+				)
+				self.assertTrue(
+					published_attachment.file.storage.exists(
+						published_attachment.file.name,
+					)
+				)
+				self.assertTrue(
+					attachment.file.storage.exists(attachment.file.name)
+				)

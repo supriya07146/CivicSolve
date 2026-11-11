@@ -1,5 +1,4 @@
 from django.shortcuts import get_object_or_404
-from django.core.files import File
 from drf_spectacular.utils import extend_schema
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
@@ -59,7 +58,6 @@ from .serializers import (
 
 
 from django.db import transaction
-from pathlib import PurePosixPath
 from rest_framework.parsers import JSONParser
 
 from .models import ProblemDraft, DraftAttachment
@@ -1600,38 +1598,6 @@ class DraftAttachmentUploadView(APIView):
 
 
 
-def copy_draft_attachment_file(file_field):
-    source_path = PurePosixPath(file_field.name)
-    filename = source_path.name
-    cloudinary_resource_marker = next(
-        (
-            part
-            for part in source_path.parts
-            if part in {"__image__", "__video__", "__raw__"}
-        ),
-        None,
-    )
-    destination = PurePosixPath("problem_attachments")
-    if cloudinary_resource_marker:
-        destination /= cloudinary_resource_marker
-
-    with file_field.open("rb") as source_file:
-        return file_field.storage.save(
-            str(destination / filename),
-            File(source_file),
-        )
-
-
-def delete_draft_attachment_file(storage, name):
-    try:
-        storage.delete(name)
-    except Exception:
-        logger.exception(
-            "Could not remove draft attachment %s after publishing",
-            name,
-        )
-
-
 class ProblemDraftSubmitView(APIView):
     permission_classes = [IsCitizen]
 
@@ -1667,20 +1633,11 @@ class ProblemDraftSubmitView(APIView):
                 reported_by=request.user
             )
 
-            # Move draft evidence into the served problem-attachments path.
+            # Reuse the already uploaded evidence instead of transferring it.
             for draft_attachment in list(draft.attachments.all()):
-                source_name = draft_attachment.file.name
-                source_storage = draft_attachment.file.storage
-                published_name = copy_draft_attachment_file(
-                    draft_attachment.file,
-                )
                 ProblemAttachment.objects.create(
                     problem=problem,
-                    file=published_name,
-                )
-                transaction.on_commit(
-                    lambda storage=source_storage, name=source_name:
-                        delete_draft_attachment_file(storage, name)
+                    file=draft_attachment.file.name,
                 )
                 draft_attachment.delete()
 

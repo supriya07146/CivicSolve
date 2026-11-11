@@ -6,7 +6,6 @@ from unittest.mock import Mock, patch
 from django.test import TestCase
 from django.test import override_settings
 from django.core.files.base import ContentFile
-from django.core.files.storage import FileSystemStorage
 from rest_framework.test import APIRequestFactory, force_authenticate
 
 from accounts.models import User
@@ -27,7 +26,6 @@ from .views import (
 	BrowseProblemsView,
 	ProblemDraftSubmitView,
 	ProblemSupportView,
-	copy_draft_attachment_file,
 )
 from adminpanel.analytics_ai import generate_admin_insights
 
@@ -285,51 +283,9 @@ class ProblemAttachmentSerializerTests(TestCase):
 			"https://backend.example.com/media/problem_attachments/photo.jpg",
 		)
 
-	def test_draft_evidence_is_copied_into_published_storage_path(self):
-		with TemporaryDirectory() as media_root:
-			storage = FileSystemStorage(location=media_root)
-			source_name = storage.save(
-				"problem_drafts/evidence.jpg",
-				ContentFile(b"image bytes"),
-			)
-			file_field = Mock()
-			file_field.name = source_name
-			file_field.storage = storage
-			file_field.open.side_effect = lambda mode: storage.open(
-				source_name,
-				mode,
-			)
-
-			published_name = copy_draft_attachment_file(file_field)
-
-			self.assertTrue(published_name.startswith("problem_attachments/"))
-			with storage.open(published_name, "rb") as published_file:
-				self.assertEqual(published_file.read(), b"image bytes")
-
-	def test_cloudinary_draft_evidence_keeps_its_resource_type_when_copied(self):
-		storage = Mock()
-		storage.save.return_value = (
-			"problem_attachments/__image__/evidence"
-		)
-		file_field = Mock()
-		file_field.name = "problem_drafts/__image__/evidence"
-		file_field.storage = storage
-		file_field.open.return_value = ContentFile(b"image bytes")
-
-		published_name = copy_draft_attachment_file(file_field)
-
-		self.assertEqual(
-			published_name,
-			"problem_attachments/__image__/evidence",
-		)
-		self.assertEqual(
-			storage.save.call_args.args[0],
-			"problem_attachments/__image__/evidence",
-		)
-
 
 class ProblemDraftSubmitTests(TestCase):
-	def test_submission_publishes_draft_evidence_with_the_problem(self):
+	def test_submission_reuses_draft_evidence_without_copying_it(self):
 		with TemporaryDirectory() as media_root:
 			with override_settings(MEDIA_ROOT=media_root):
 				citizen = User.objects.create_user(
@@ -367,14 +323,21 @@ class ProblemDraftSubmitTests(TestCase):
 				)
 				force_authenticate(request, user=citizen)
 
-				with patch("problems.views.detect_duplicate_problems"):
-					with patch("problems.views.create_notification"):
-						with patch("problems.views.notify_admins"):
-							with self.captureOnCommitCallbacks(execute=True):
-								response = ProblemDraftSubmitView.as_view()(
-									request,
-									draft_id=draft.pk,
-								)
+				with patch.object(
+					attachment.file.storage,
+					"open",
+					side_effect=AssertionError(
+						"Submission should not read or copy evidence."
+					),
+				):
+					with patch("problems.views.detect_duplicate_problems"):
+						with patch("problems.views.create_notification"):
+							with patch("problems.views.notify_admins"):
+								with self.captureOnCommitCallbacks(execute=True):
+									response = ProblemDraftSubmitView.as_view()(
+										request,
+										draft_id=draft.pk,
+									)
 
 				self.assertEqual(response.status_code, 201)
 				self.assertEqual(
@@ -388,84 +351,19 @@ class ProblemDraftSubmitTests(TestCase):
 				published_attachment = ProblemAttachment.objects.get(
 					problem_id=response.data["problem"]["id"],
 				)
-				self.assertTrue(
-					published_attachment.file.name.startswith(
-						"problem_attachments/"
-					)
-				)
+				self.assertEqual(published_attachment.file.name, source_name)
 				self.assertTrue(
 					published_attachment.file.storage.exists(
 						published_attachment.file.name,
 					)
 				)
-				self.assertFalse(attachment.file.storage.exists(source_name))
+				from config.urls import serve_published_draft_attachment
 
-	def test_submission_succeeds_when_draft_file_cleanup_fails(self):
-		with TemporaryDirectory() as media_root:
-			with override_settings(MEDIA_ROOT=media_root):
-				citizen = User.objects.create_user(
-					email="cleanup@example.com",
-					password="test-password",
-					full_name="Test Citizen",
-					phone="1234567890",
-					role="citizen",
-					is_active=True,
-					email_verified=True,
-				)
-				category = ProblemCategory.objects.create(
-					name="Street lighting",
-				)
-				draft = ProblemDraft.objects.create(
-					reported_by=citizen,
-					title="Streetlight is not working",
-					description="The streetlight has been out for a week.",
-					category=category,
-					location="Main Street",
-				)
-				attachment = DraftAttachment.objects.create(
-					draft=draft,
-					file=ContentFile(
-						b"test image bytes",
-						name="evidence.jpg",
+				file_response = serve_published_draft_attachment(
+					APIRequestFactory().get(
+						f"/media/{source_name}",
 					),
+					path=source_name.removeprefix("problem_drafts/"),
 				)
-
-				request = APIRequestFactory().post(
-					f"/api/problems/drafts/{draft.pk}/submit/",
-					{},
-					format="json",
-				)
-				force_authenticate(request, user=citizen)
-
-				with patch("problems.views.detect_duplicate_problems"):
-					with patch("problems.views.create_notification"):
-						with patch("problems.views.notify_admins"):
-							with patch.object(
-								attachment.file.storage,
-								"delete",
-								side_effect=OSError("storage unavailable"),
-							):
-								with self.assertLogs(
-									"problems.views",
-									level="ERROR",
-								):
-									with self.captureOnCommitCallbacks(
-										execute=True,
-									):
-										response = ProblemDraftSubmitView.as_view()(
-											request,
-											draft_id=draft.pk,
-										)
-
-				self.assertEqual(response.status_code, 201)
-				published_attachment = ProblemAttachment.objects.get(
-					problem_id=response.data["problem"]["id"],
-				)
-				self.assertTrue(
-					published_attachment.file.storage.exists(
-						published_attachment.file.name,
-					)
-				)
-				self.assertTrue(
-					attachment.file.storage.exists(attachment.file.name)
-				)
+				self.assertEqual(file_response.status_code, 200)
+				file_response.close()

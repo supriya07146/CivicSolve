@@ -1,6 +1,9 @@
+from pathlib import Path
+
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
+from django.http import Http404
 from django.urls import path, include
 from django.views.static import serve
 
@@ -10,6 +13,19 @@ from drf_spectacular.views import (
     SpectacularRedocView,
 )
 from accounts.views import AdminLoginView
+from problems.models import ProblemAttachment
+
+
+def serve_published_draft_attachment(request, path):
+    stored_name = (Path("problem_drafts") / path).as_posix()
+    if not ProblemAttachment.objects.filter(file=stored_name).exists():
+        raise Http404
+
+    return serve(
+        request,
+        path,
+        document_root=Path(settings.MEDIA_ROOT) / "problem_drafts",
+    )
 
 
 urlpatterns = [
@@ -143,3 +159,10 @@ else:
                 {"document_root": settings.MEDIA_ROOT / media_directory},
             )
         )
+    urlpatterns.append(
+        path(
+            "media/problem_drafts/<path:path>",
+            serve_published_draft_attachment,
+            name="published-draft-attachment",
+        )
+    )

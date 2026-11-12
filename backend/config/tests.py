@@ -29,21 +29,39 @@ class CloudinaryMediaStorageTests(SimpleTestCase):
 
     def test_save_uses_media_type_without_marker_directories(self):
         cases = [
-            ("problem_attachments/photo.jpg", "image", "problem_attachments/photo"),
-            ("problem_attachments/clip.mp4", "video", "problem_attachments/clip"),
+            (
+                "problem_attachments/photo.jpg",
+                "image",
+                "problem_attachments/photo",
+                "https://res.cloudinary.com/test-cloud/image/upload/"
+                "v123/problem_attachments/photo.jpg",
+                "v123/problem_attachments/photo.jpg",
+            ),
+            (
+                "problem_attachments/clip.mp4",
+                "video",
+                "problem_attachments/clip",
+                "https://res.cloudinary.com/test-cloud/video/upload/"
+                "v123/problem_attachments/clip.mp4",
+                "v123/problem_attachments/clip.mp4",
+            ),
             (
                 "organization_documents/certificate.pdf",
                 "raw",
                 "organization_documents/certificate.pdf",
+                "https://res.cloudinary.com/test-cloud/raw/upload/"
+                "v123/organization_documents/certificate.pdf",
+                "v123/organization_documents/certificate.pdf",
             ),
         ]
 
-        for filename, resource_type, public_id in cases:
+        for filename, resource_type, public_id, secure_url, stored_name in cases:
             with self.subTest(resource_type=resource_type):
                 with patch(
                     "config.storage.cloudinary.uploader.upload",
                     return_value={
-                        "public_id": public_id
+                        "public_id": public_id,
+                        "secure_url": secure_url,
                     },
                 ) as upload:
                     saved_name = self.storage._save(
@@ -51,7 +69,7 @@ class CloudinaryMediaStorageTests(SimpleTestCase):
                         ContentFile(b"test media"),
                     )
 
-                self.assertNotIn("__", saved_name)
+                self.assertEqual(saved_name, stored_name)
                 self.assertEqual(
                     upload.call_args.kwargs["resource_type"],
                     resource_type,
@@ -61,6 +79,26 @@ class CloudinaryMediaStorageTests(SimpleTestCase):
                     public_id,
                 )
                 self.assertNotIn("folder", upload.call_args.kwargs)
+
+    def test_url_uses_version_from_cloudinary_upload_url(self):
+        self.assertEqual(
+            self.storage.url("v123/problem_drafts/photo.jpg"),
+            "https://res.cloudinary.com/test-cloud/image/upload/"
+            "v123/problem_drafts/photo.jpg",
+        )
+
+    def test_delete_uses_public_id_from_versioned_storage_name(self):
+        with patch(
+            "config.storage.cloudinary.uploader.destroy",
+            return_value={"result": "ok"},
+        ) as destroy:
+            self.storage.delete("v123/problem_drafts/photo.jpg")
+
+        self.assertEqual(destroy.call_args.args[0], "problem_drafts/photo")
+        self.assertEqual(
+            destroy.call_args.kwargs["resource_type"],
+            "image",
+        )
 
     def test_url_does_not_add_a_nonexistent_default_version(self):
         url = self.storage.url(

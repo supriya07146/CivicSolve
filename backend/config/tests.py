@@ -27,7 +27,7 @@ class CloudinaryMediaStorageTests(SimpleTestCase):
         self.assertTrue(first.startswith("problem_attachments/"))
         self.assertTrue(first.endswith(".jpg"))
 
-    def test_save_uses_media_type_and_records_it_in_cloudinary_id(self):
+    def test_save_uses_media_type_without_marker_directories(self):
         cases = [
             ("problem_attachments/photo.jpg", "image"),
             ("problem_attachments/clip.mp4", "video"),
@@ -39,9 +39,7 @@ class CloudinaryMediaStorageTests(SimpleTestCase):
                 with patch(
                     "config.storage.cloudinary.uploader.upload",
                     return_value={
-                        "public_id": (
-                            f"problem_attachments/__{resource_type}__/asset"
-                        )
+                        "public_id": filename.rsplit("/", 1)[0] + "/asset"
                     },
                 ) as upload:
                     saved_name = self.storage._save(
@@ -49,23 +47,23 @@ class CloudinaryMediaStorageTests(SimpleTestCase):
                         ContentFile(b"test media"),
                     )
 
-                self.assertIn(f"__{resource_type}__", saved_name)
+                self.assertNotIn("__", saved_name)
                 self.assertEqual(
                     upload.call_args.kwargs["resource_type"],
                     resource_type,
                 )
                 self.assertEqual(
                     upload.call_args.kwargs["folder"],
-                    f"{filename.rsplit('/', 1)[0]}/__{resource_type}__",
+                    filename.rsplit("/", 1)[0],
                 )
 
     def test_url_does_not_add_a_nonexistent_default_version(self):
         url = self.storage.url(
-            "problem_drafts/__image__/photo.jpg"
+            "problem_drafts/photo.jpg"
         )
 
         self.assertEqual(
             url,
             "https://res.cloudinary.com/test-cloud/image/upload/"
-            "problem_drafts/__image__/photo.jpg",
+            "problem_drafts/photo.jpg",
         )

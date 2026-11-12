@@ -29,17 +29,21 @@ class CloudinaryMediaStorageTests(SimpleTestCase):
 
     def test_save_uses_media_type_without_marker_directories(self):
         cases = [
-            ("problem_attachments/photo.jpg", "image"),
-            ("problem_attachments/clip.mp4", "video"),
-            ("organization_documents/certificate.pdf", "raw"),
+            ("problem_attachments/photo.jpg", "image", "problem_attachments/photo"),
+            ("problem_attachments/clip.mp4", "video", "problem_attachments/clip"),
+            (
+                "organization_documents/certificate.pdf",
+                "raw",
+                "organization_documents/certificate.pdf",
+            ),
         ]
 
-        for filename, resource_type in cases:
+        for filename, resource_type, public_id in cases:
             with self.subTest(resource_type=resource_type):
                 with patch(
                     "config.storage.cloudinary.uploader.upload",
                     return_value={
-                        "public_id": filename.rsplit("/", 1)[0] + "/asset"
+                        "public_id": public_id
                     },
                 ) as upload:
                     saved_name = self.storage._save(
@@ -53,9 +57,10 @@ class CloudinaryMediaStorageTests(SimpleTestCase):
                     resource_type,
                 )
                 self.assertEqual(
-                    upload.call_args.kwargs["folder"],
-                    filename.rsplit("/", 1)[0],
+                    upload.call_args.kwargs["public_id"],
+                    public_id,
                 )
+                self.assertNotIn("folder", upload.call_args.kwargs)
 
     def test_url_does_not_add_a_nonexistent_default_version(self):
         url = self.storage.url(

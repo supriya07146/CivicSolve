@@ -84,14 +84,14 @@ class CloudinaryMediaStorage(Storage):
     def _save(self, name, content):
         path = PurePosixPath(name.replace("\\", "/"))
         resource_type = self._resource_type(name)
-        folder = path.parent
         public_id = (
-            path.stem if resource_type in {"image", "video"} else path.name
+            (path.parent / path.stem).as_posix()
+            if resource_type in {"image", "video"}
+            else path.as_posix()
         )
 
         result = cloudinary.uploader.upload(
             content,
-            folder=None if str(folder) == "." else str(folder),
             public_id=public_id,
             resource_type=resource_type,
             unique_filename=False,

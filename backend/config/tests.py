@@ -59,20 +59,13 @@ class CloudinaryMediaStorageTests(SimpleTestCase):
                     f"{filename.rsplit('/', 1)[0]}/__{resource_type}__",
                 )
 
-    def test_url_uses_the_resource_type_in_the_saved_id(self):
-        with patch(
-            "config.storage.cloudinary.CloudinaryResource"
-        ) as resource:
-            resource.return_value.url = (
-                "https://res.cloudinary.com/test-cloud/image/upload/photo"
-            )
+    def test_url_does_not_add_a_nonexistent_default_version(self):
+        url = self.storage.url(
+            "problem_drafts/__image__/photo.jpg"
+        )
 
-            url = self.storage.url(
-                "problem_attachments/__image__/photo"
-            )
-
-        self.assertIn("cloudinary.com", url)
-        resource.assert_called_once_with(
-            "problem_attachments/__image__/photo",
-            default_resource_type="image",
+        self.assertEqual(
+            url,
+            "https://res.cloudinary.com/test-cloud/image/upload/"
+            "problem_drafts/__image__/photo.jpg",
         )

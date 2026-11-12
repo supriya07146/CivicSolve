@@ -123,6 +123,7 @@ class CloudinaryMediaStorage(Storage):
         asset = cloudinary.CloudinaryResource(
             name,
             default_resource_type=resource_type,
+            url_options={"force_version": False},
         )
         return asset.url
 

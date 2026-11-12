@@ -4,6 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import {
   getMyProblemDetails,
   getCitizenResolutionReview,
+  resolveMediaUrl,
 } from "../../services/api";
 import "../../styles/user/CitizenProblemDetails.css";
 
@@ -99,7 +100,7 @@ function getOrganization(problem) {
 }
 
 function getAttachmentUrl(attachment) {
-  return (
+  return resolveMediaUrl(
     attachment?.file ||
     attachment?.file_url ||
     attachment?.url ||
@@ -117,6 +118,7 @@ function isVideoAttachment(attachment, url) {
 
   if (contentType.startsWith("video/")) return true;
   if (contentType.startsWith("image/")) return false;
+  if (/\/video\/upload(?:\/|$)/i.test(url)) return true;
 
   const cleanUrl = url.split("?")[0].split("#")[0];
   return /\.(mp4|webm|ogg|mov|m4v)$/i.test(cleanUrl);
@@ -132,6 +134,7 @@ function isImageAttachment(attachment, url) {
 
   if (contentType.startsWith("image/")) return true;
   if (contentType.startsWith("video/")) return false;
+  if (/\/image\/upload(?:\/|$)/i.test(url)) return true;
 
   const cleanUrl = url.split("?")[0].split("#")[0];
   return /\.(png|jpe?g|gif|webp|bmp|svg|avif)$/i.test(cleanUrl);
@@ -421,8 +424,9 @@ function OrganizationSolutions({ solutions, loading, error }) {
                     <h4>Resolution evidence</h4>
                     <div className="solution-evidence-grid">
                       {evidence.map((item, index) => {
-                        const fileUrl =
-                          typeof item.file === "string" ? item.file : "";
+                        const fileUrl = resolveMediaUrl(
+                          typeof item.file === "string" ? item.file : ""
+                        );
                         const evidenceType = String(
                           item.evidence_type || ""
                         ).toLowerCase();

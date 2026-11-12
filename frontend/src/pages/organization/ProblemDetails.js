@@ -5,6 +5,7 @@ import {
   cancelOrganizationAssignment,
   getProblemDiscussions,
   createProblemDiscussion,
+  resolveMediaUrl,
 } from "../../services/api";
 import "../../styles/organization/ProblemDetails.css";
 
@@ -568,14 +569,14 @@ export default function ProblemDetails() {
   const evidence = useMemo(() => {
     const original = (report.attachments || []).map((item) => ({
       ...item,
-      url: item.url || item.file || null,
+      url: resolveMediaUrl(item.url || item.file || ""),
       evidenceType: "Original report",
     }));
 
     const resolution = solutions.flatMap((solution) =>
       (solution.evidence || []).map((item) => ({
         ...item,
-        url: item.url || item.file || null,
+        url: resolveMediaUrl(item.url || item.file || ""),
         evidenceType: item.type === "after" ? "After" : "Before",
         solutionTitle: solution.title,
       }))

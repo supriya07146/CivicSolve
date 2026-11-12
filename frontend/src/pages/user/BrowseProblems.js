@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useNavigate } from "react-router-dom";
 import {
     getBrowseProblems,
+    resolveMediaUrl,
     setProblemSupport,
 } from "../../services/api";
 import "../../styles/user/BrowseProblems.css";
@@ -93,16 +94,17 @@ function getProblemId(problem) {
 function getImage(problem) {
     const attachment = problem.attachments?.[0];
 
-    if (typeof attachment === "string") return attachment;
+    const imagePath =
+        typeof attachment === "string"
+            ? attachment
+            : attachment?.file ||
+              attachment?.file_url ||
+              problem.image ||
+              problem.image_url ||
+              problem.thumbnail ||
+              "";
 
-    return (
-        attachment?.file ||
-        attachment?.file_url ||
-        problem.image ||
-        problem.image_url ||
-        problem.thumbnail ||
-        ""
-    );
+    return resolveMediaUrl(imagePath);
 }
 
 function shortCode(problem) {

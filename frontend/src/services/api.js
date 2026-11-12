@@ -12,6 +12,8 @@ export const API_ROOT = (
   "http://127.0.0.1:8000/api"
 ).replace(/\/+$/, "");
 export const API_ORIGIN = new URL(API_ROOT).origin;
+export const resolveMediaUrl = (path) =>
+  path ? new URL(path, `${API_ORIGIN}/`).href : "";
 
 const API_BASE_URL = `${API_ROOT}/auth`;
 const ADMIN_API_BASE_URL = `${API_ROOT}/admin`;
